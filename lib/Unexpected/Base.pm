@@ -1,11 +1,11 @@
-# @(#)$Ident: Base.pm 2013-05-08 07:29 pjf ;
+# @(#)$Ident: Base.pm 2013-05-08 07:53 pjf ;
 
 package Unexpected::Base;
 
 # Package namespace::autoclean does not play nice with overload
 use namespace::clean -except => 'meta';
 use overload '""' => sub { shift->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Moose;
 use Moose::Util                   qw(ensure_all_roles);
@@ -37,15 +37,15 @@ around 'BUILDARGS' => sub {
 };
 
 # Public methods
-sub add_roles { # Ensure all roles have been applied
-   my ($self, @roles) = @_; my $ns = $self->namespace || "${self}::TraitFor";
+sub add_roles { # Class method that ensures all roles have been applied
+   my ($class, @roles) = @_; my $ns = $class->namespace || "${class}::TraitFor";
 
    my @classes = map { substr( $_, 0, 1 ) eq '+'
                      ? substr( $_, 1    ) : "${ns}::${_}" } @roles;
 
-   $self->meta->make_mutable;
-   ensure_all_roles( $self, @classes );
-   $self->meta->make_immutable;
+   $class->meta->make_mutable;
+   ensure_all_roles( $class, @classes );
+   $class->meta->make_immutable;
    return;
 }
 
@@ -82,7 +82,7 @@ Unexpected::Base - Base class for exception handling
 
 =head1 Version
 
-This documents version v0.1.$Rev: 2 $ of L<Unexpected::Base>
+This documents version v0.1.$Rev: 3 $ of L<Unexpected::Base>
 
 =head1 Synopsis
 

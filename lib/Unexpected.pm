@@ -1,9 +1,9 @@
-# @(#)Ident: Unexpected.pm 2013-05-08 07:14 pjf ;
+# @(#)Ident: Unexpected.pm 2013-05-08 15:59 pjf ;
 
 package Unexpected;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Moose;
 
@@ -59,7 +59,7 @@ Unexpected - Moose exception class composed from traits
 
 =head1 Version
 
-This documents version v0.1.$Rev: 2 $ of L<Unexpected>
+This documents version v0.1.$Rev: 3 $ of L<Unexpected>
 
 =head1 Description
 
@@ -77,8 +77,8 @@ plus a leader if the optional C<ErrorLeader> role has been applied
 
 =head1 Configuration and Environment
 
-Calls to C<Unexpected->add_roles> applies the
-specified list of optional roles
+Calls to C<< Unexpected->add_roles >> apply the specified list of optional
+roles, e.g. C<< Unexpected->add_roles( 'ErrorLeader' ); >>
 
 =head1 Subroutines/Methods
 
@@ -103,6 +103,8 @@ None
 =item L<namespace::autoclean>
 
 =item L<Unexpected::Base>
+
+=item L<Unexpected::TraitFor::ErrorLeader>
 
 =item L<Unexpected::TraitFor::Throwing>
 

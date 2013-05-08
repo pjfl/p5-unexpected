@@ -1,9 +1,9 @@
-# @(#)Ident: ErrorLeader.pm 2013-05-08 07:18 pjf ;
+# @(#)Ident: ErrorLeader.pm 2013-05-08 16:04 pjf ;
 
 package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use MooseX::Types::Common::Numeric qw(PositiveOrZeroInt);
@@ -75,7 +75,7 @@ Unexpected::TraitFor::ErrorLeader - Prepends a leader to the exception
 
 =head1 Version
 
-This documents version v0.1.$Rev: 2 $
+This documents version v0.1.$Rev: 3 $
 of L<Unexpected::TraitFor::ErrorLeader>
 
 =head1 Description
@@ -85,7 +85,8 @@ Prepends a one line stack summary to the exception error message
 =head1 Configuration and Environment
 
 Requires the C<as_string> method and the C<ignore> attribute in the
-consuming class
+consuming class, as well as C<filtered_frames> from the stack trace
+role
 
 Defines the following attributes;
 

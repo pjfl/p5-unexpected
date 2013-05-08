@@ -30,7 +30,7 @@ Unexpected - Moose exception class composed from traits
 
 # Version
 
-This documents version v0.1.$Rev: 2 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.1.$Rev: 3 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
@@ -48,8 +48,8 @@ plus a leader if the optional `ErrorLeader` role has been applied
 
 # Configuration and Environment
 
-Calls to `Unexpected-`add\_roles> applies the
-specified list of optional roles
+Calls to `Unexpected->add_roles` apply the specified list of optional
+roles, e.g. `Unexpected->add_roles( 'ErrorLeader' );`
 
 # Subroutines/Methods
 
@@ -71,6 +71,7 @@ None
 
 - [namespace::autoclean](https://metacpan.org/module/namespace::autoclean)
 - [Unexpected::Base](https://metacpan.org/module/Unexpected::Base)
+- [Unexpected::TraitFor::ErrorLeader](https://metacpan.org/module/Unexpected::TraitFor::ErrorLeader)
 - [Unexpected::TraitFor::Throwing](https://metacpan.org/module/Unexpected::TraitFor::Throwing)
 - [Unexpected::TraitFor::TracingStacks](https://metacpan.org/module/Unexpected::TraitFor::TracingStacks)
 - [Moose](https://metacpan.org/module/Moose)
