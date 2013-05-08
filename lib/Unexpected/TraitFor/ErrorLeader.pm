@@ -1,16 +1,22 @@
-# @(#)Ident: ErrorLeader.pm 2013-05-08 18:43 pjf ;
+# @(#)Ident: ErrorLeader.pm 2013-05-08 18:53 pjf ;
 
 package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 7 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 8 $ =~ /\d+/gmx );
 
 use Moose::Role;
+use MooseX::ClassAttribute;
 use MooseX::Types::Common::Numeric qw(PositiveOrZeroInt);
 use MooseX::Types::Common::String  qw(SimpleStr);
+use MooseX::Types::Moose           qw(ArrayRef);
 use List::Util                     qw(first);
 
-requires qw(as_string filtered_frames ignore);
+requires qw(as_string filtered_frames);
+
+class_has 'Ignore' => is => 'ro', isa => ArrayRef, traits => [ 'Array' ],
+   default         => sub { [] }, handles => { ignore_class => 'push' },
+   reader          => 'ignore';
 
 # Object methods (public)
 has 'leader' => is => 'ro', isa => SimpleStr,
@@ -78,7 +84,7 @@ Unexpected::TraitFor::ErrorLeader - Prepends a leader to the exception
 
 =head1 Version
 
-This documents version v0.1.$Rev: 7 $
+This documents version v0.1.$Rev: 8 $
 of L<Unexpected::TraitFor::ErrorLeader>
 
 =head1 Description
@@ -87,9 +93,13 @@ Prepends a one line stack summary to the exception error message
 
 =head1 Configuration and Environment
 
-Requires the C<as_string> method and the C<ignore> attribute in the
-consuming class, as well as C<filtered_frames> from the stack trace
-role
+Requires the C<as_string> method in the consuming class, as well as
+C<filtered_frames> from the stack trace role
+
+The C<< Unexpected->Ignore >> class attribute is an
+array ref of methods whose presence should be ignored by the error
+message leader. It does the 'Array' trait where C<push> implements the
+C<ignore_class> method. Defaults to an empty array ref
 
 Defines the following attributes;
 
@@ -123,9 +133,11 @@ None
 
 =item L<namespace::autoclean>
 
+=item L<List::Util>
+
 =item L<Moose::Role>
 
-=item L<List::Util>
+=item L<MooseX::ClassAttribute>
 
 =item L<MooseX::Types::Common>
 

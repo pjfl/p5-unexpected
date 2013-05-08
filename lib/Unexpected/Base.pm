@@ -1,21 +1,15 @@
-# @(#)$Ident: Base.pm 2013-05-08 18:35 pjf ;
+# @(#)$Ident: Base.pm 2013-05-08 18:53 pjf ;
 
 package Unexpected::Base;
 
 # Package namespace::autoclean does not play nice with overload
 use namespace::clean -except => 'meta';
 use overload '""' => sub { shift->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 7 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 8 $ =~ /\d+/gmx );
 
 use Moose;
-use Moose::Util                   qw(ensure_all_roles);
-use MooseX::ClassAttribute;
-use MooseX::Types::Common::String qw(NonEmptySimpleStr SimpleStr);
+use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 use MooseX::Types::Moose          qw(ArrayRef Str);
-
-class_has 'Ignore' => is => 'ro', isa => ArrayRef, traits => [ 'Array' ],
-   default         => sub { [] }, handles => { ignore_class => 'push' },
-   reader          => 'ignore';
 
 # Object attributes (public)
 has 'args'  => is => 'ro', isa => ArrayRef,          default => sub { [] };
@@ -67,7 +61,7 @@ Unexpected::Base - Base class for exception handling
 
 =head1 Version
 
-This documents version v0.1.$Rev: 7 $ of L<Unexpected::Base>
+This documents version v0.1.$Rev: 8 $ of L<Unexpected::Base>
 
 =head1 Synopsis
 
@@ -80,11 +74,6 @@ This documents version v0.1.$Rev: 7 $ of L<Unexpected::Base>
 Base class for exception handling
 
 =head1 Configuration and Environment
-
-The C<< Unexpected->Ignore >> class attribute is an
-array ref of methods whose presence should be ignored by the error
-message leader. It does the 'Array' trait where C<push> implements the
-C<ignore_class> method. Defaults to an empty array ref
 
 Defines the following list of read only attributes;
 
@@ -135,8 +124,6 @@ None
 =item L<overload>
 
 =item L<Moose>
-
-=item L<MooseX::ClassAttribute>
 
 =item L<MooseX::Types::Common>
 

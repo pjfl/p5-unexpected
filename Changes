@@ -1,6 +1,7 @@
 Revision history for Unexpected
 
 0.1.7     2013-05-08 19:45:02
+          - Moved Ignore class attr to ErrorLeader
           - Removed apply_roles and namespace
           - Added an ignore class test
           - Removed recommends from Build.PL
