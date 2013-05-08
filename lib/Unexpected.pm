@@ -1,9 +1,9 @@
-# @(#)Ident: Unexpected.pm 2013-05-08 18:17 pjf ;
+# @(#)Ident: Unexpected.pm 2013-05-08 18:37 pjf ;
 
 package Unexpected;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 6 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 7 $ =~ /\d+/gmx );
 
 use Moose;
 
@@ -59,7 +59,7 @@ Unexpected - Moose exception class composed from traits
 
 =head1 Version
 
-This documents version v0.1.$Rev: 6 $ of L<Unexpected>
+This documents version v0.1.$Rev: 7 $ of L<Unexpected>
 
 =head1 Description
 
@@ -68,17 +68,14 @@ L<Unexpected::TraitFor::Throwing/throw> method with
 automatic re-throw upon detection of self, conditional throw if an
 exception was caught and a simplified stacktrace
 
+=head1 Configuration and Environment
+
 Applies exception roles to the exception base class
 L<Unexpected::Base>. See L</Dependencies> for the list of
 roles that are applied
 
 Error objects are overloaded to stringify to the full error message
 plus a leader if the optional C<ErrorLeader> role has been applied
-
-=head1 Configuration and Environment
-
-Calls to C<< Unexpected->apply_roles >> apply the specified list of optional
-roles, e.g. C<< Unexpected->apply_roles( 'ErrorLeader' ); >>
 
 =head1 Subroutines/Methods
 

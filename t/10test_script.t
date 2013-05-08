@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-05-08 18:13 pjf ;
+# @(#)Ident: 10test_script.t 2013-05-08 18:41 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 6 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 7 $ =~ /\d+/gmx );
 use File::Spec::Functions;
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -17,11 +17,19 @@ BEGIN {
             and plan skip_all => $current->notes->{stop_tests};
 }
 
-use_ok 'Unexpected';
+{  package MyException;
 
-my $class = 'Unexpected'; $EVAL_ERROR = undef;
+   use Moose;
 
-$class->apply_roles( 'ErrorLeader' ); $class->ignore_class( 'IgnoreMe' );
+   extends 'Unexpected';
+   with    'Unexpected::TraitFor::ErrorLeader';
+
+   1;
+}
+
+my $class = 'MyException'; $EVAL_ERROR = undef;
+
+$class->ignore_class( 'IgnoreMe' );
 
 is $class->ignore->[ 0 ], 'IgnoreMe', 'Ignores classes';
 
@@ -31,12 +39,13 @@ ok ! $e, 'No throw without error';
 
 eval { $class->throw( 'PracticeKill' ) };
 
-$e = $EVAL_ERROR; $EVAL_ERROR = undef; my $min_level = $e->level;
+$e = $EVAL_ERROR; $EVAL_ERROR = undef;
 
-is ref $e, $class, 'Good class';
-like $e, qr{ \A main \[\d+ / $min_level \] }mx, 'Package and default level';
+is ref $e, $class, 'Good class'; my $min_level = $e->level;
+
+like $e, qr{ \A main \[ \d+ / $min_level \] }mx, 'Package and default level';
 like $e, qr{ PracticeKill \s* \z   }mx, 'Throws error message';
-is $e->class, "${class}::Base", 'Default error class';
+is $e->class, "Unexpected::Base", 'Default error class';
 
 my ($line1, $line2, $line3);
 

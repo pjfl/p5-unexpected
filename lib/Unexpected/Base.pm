@@ -1,11 +1,11 @@
-# @(#)$Ident: Base.pm 2013-05-08 16:37 pjf ;
+# @(#)$Ident: Base.pm 2013-05-08 18:35 pjf ;
 
 package Unexpected::Base;
 
 # Package namespace::autoclean does not play nice with overload
 use namespace::clean -except => 'meta';
 use overload '""' => sub { shift->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 4 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 7 $ =~ /\d+/gmx );
 
 use Moose;
 use Moose::Util                   qw(ensure_all_roles);
@@ -13,12 +13,9 @@ use MooseX::ClassAttribute;
 use MooseX::Types::Common::String qw(NonEmptySimpleStr SimpleStr);
 use MooseX::Types::Moose          qw(ArrayRef Str);
 
-class_has 'Ignore'    => is => 'ro', isa => ArrayRef, traits => [ 'Array' ],
-   default            => sub { [] }, handles => { ignore_class => 'push' },
-   reader             => 'ignore';
-
-class_has 'Namespace' => is => 'rw', isa => SimpleStr, default => q(),
-   reader             => 'namespace', writer => 'set_namespace';
+class_has 'Ignore' => is => 'ro', isa => ArrayRef, traits => [ 'Array' ],
+   default         => sub { [] }, handles => { ignore_class => 'push' },
+   reader          => 'ignore';
 
 # Object attributes (public)
 has 'args'  => is => 'ro', isa => ArrayRef,          default => sub { [] };
@@ -37,19 +34,6 @@ around 'BUILDARGS' => sub {
 };
 
 # Public methods
-sub apply_roles { # Ensures all roles have been applied
-   my ($self, @roles) = @_; my $class = blessed $self || $self;
-
-   my $ns      = $class->namespace || "${class}::TraitFor";
-   my @classes = map { substr( $_, 0, 1 ) eq '+'
-                     ? substr( $_, 1    ) : "${ns}::${_}" } @roles;
-
-   $class->meta->make_mutable;
-   ensure_all_roles( $class, @classes );
-   $class->meta->make_immutable;
-   return;
-}
-
 sub as_string { # Expand positional parameters of the form [_<n>]
    my $self = shift; my $error = $self->error or return;
 
@@ -83,7 +67,7 @@ Unexpected::Base - Base class for exception handling
 
 =head1 Version
 
-This documents version v0.1.$Rev: 4 $ of L<Unexpected::Base>
+This documents version v0.1.$Rev: 7 $ of L<Unexpected::Base>
 
 =head1 Synopsis
 
@@ -101,11 +85,6 @@ The C<< Unexpected->Ignore >> class attribute is an
 array ref of methods whose presence should be ignored by the error
 message leader. It does the 'Array' trait where C<push> implements the
 C<ignore_class> method. Defaults to an empty array ref
-
-The C<< Unexpected->Namespace >> class attribute is a
-simple string that is used in place of the default,
-C<Unexpected::TraitFor> trait namespace if it is
-supplied
 
 Defines the following list of read only attributes;
 
@@ -130,12 +109,6 @@ starting at one
 =back
 
 =head1 Subroutines/Methods
-
-=head2 apply_roles
-
-   $self->apply_roles( 'ErrorLeader', ... );
-
-Ensures that the specified role is applied to the composing class
 
 =head2 as_string
 

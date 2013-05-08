@@ -30,7 +30,7 @@ Unexpected - Moose exception class composed from traits
 
 # Version
 
-This documents version v0.1.$Rev: 6 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.1.$Rev: 7 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
@@ -39,17 +39,14 @@ An exception class that supports error messages with placeholders, a
 automatic re-throw upon detection of self, conditional throw if an
 exception was caught and a simplified stacktrace
 
+# Configuration and Environment
+
 Applies exception roles to the exception base class
 [Unexpected::Base](https://metacpan.org/module/Unexpected::Base). See ["Dependencies"](#Dependencies) for the list of
 roles that are applied
 
 Error objects are overloaded to stringify to the full error message
 plus a leader if the optional `ErrorLeader` role has been applied
-
-# Configuration and Environment
-
-Calls to `Unexpected->apply_roles` apply the specified list of optional
-roles, e.g. `Unexpected->apply_roles( 'ErrorLeader' );`
 
 # Subroutines/Methods
 

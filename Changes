@@ -1,6 +1,7 @@
 Revision history for Unexpected
 
-0.1.6     2013-05-08 19:17:25
+0.1.7     2013-05-08 19:45:02
+          - Removed apply_roles and namespace
           - Added an ignore class test
           - Removed recommends from Build.PL
           - Renamed add_roles to apply_roles
