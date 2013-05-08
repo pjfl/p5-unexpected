@@ -1,9 +1,9 @@
-# @(#)Ident: ErrorLeader.pm 2013-05-08 16:04 pjf ;
+# @(#)Ident: ErrorLeader.pm 2013-05-08 16:30 pjf ;
 
 package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 4 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use MooseX::Types::Common::Numeric qw(PositiveOrZeroInt);
@@ -71,11 +71,11 @@ Unexpected::TraitFor::ErrorLeader - Prepends a leader to the exception
 
    use Unexpected;
 
-   Unexpected->add_roles( 'ErrorLeader' );
+   Unexpected->apply_roles( 'ErrorLeader' );
 
 =head1 Version
 
-This documents version v0.1.$Rev: 3 $
+This documents version v0.1.$Rev: 4 $
 of L<Unexpected::TraitFor::ErrorLeader>
 
 =head1 Description

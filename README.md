@@ -30,7 +30,7 @@ Unexpected - Moose exception class composed from traits
 
 # Version
 
-This documents version v0.1.$Rev: 3 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.1.$Rev: 4 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
@@ -48,8 +48,8 @@ plus a leader if the optional `ErrorLeader` role has been applied
 
 # Configuration and Environment
 
-Calls to `Unexpected->add_roles` apply the specified list of optional
-roles, e.g. `Unexpected->add_roles( 'ErrorLeader' );`
+Calls to `Unexpected->apply_roles` apply the specified list of optional
+roles, e.g. `Unexpected->apply_roles( 'ErrorLeader' );`
 
 # Subroutines/Methods
 
