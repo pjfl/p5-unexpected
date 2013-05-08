@@ -1,19 +1,27 @@
-# @(#)$Ident: Build.PL 2013-05-07 23:38 pjf ;
+# @(#)$Ident: Build.PL 2013-05-08 07:26 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(Unexpected),
    home_page => q(http://www.roxsoft.co.uk),
    requires  => {
-      'perl'             => 5.010,
-      'version'          => 0.77,
-      'Class::Usul'      => q(0.18.0),
-      'File::DataClass'  => q(0.20.0),
-   },
+      'perl'                         => 5.010,
+      'namespace::autoclean'         => 0.13,
+      'namespace::clean'             => 0.22,
+      'overload'                     => 1.04,
+      'version'                      => 0.77,
+      'Carp'                         => 0,
+      'List::Util'                   => 1.23,
+      'Moose'                        => 2.0801,
+      'MooseX::ClassAttribute'       => 0.27,
+      'MooseX::Types'                => 0.25,
+      'MooseX::Types::Common'        => 0.001002,
+      'MooseX::Types::LoadableClass' => 0.007,
+      'Scalar::Util'                 => 1.18, },
    recommends            => {
       'App::cpanminus'   => 1.6005,
       'Date::Format'     => 2.24,

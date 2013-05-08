@@ -1,14 +1,21 @@
-# @(#)Ident: perl_module.pm 2013-04-30 21:00 pjf ;
+# @(#)Ident: Unexpected.pm 2013-05-08 07:14 pjf ;
 
 package Unexpected;
 
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::autoclean;
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
-use Class::Usul::Moose;
-use Class::Usul::Constants;
-use Class::Usul::Functions qw(throw);
+use Moose;
 
-extends qw(Class::Usul::Programs);
+extends q(Unexpected::Base);
+with    q(Unexpected::TraitFor::Throwing);
+with    q(Unexpected::TraitFor::TracingStacks);
+
+sub BUILD {}
+
+sub is_one_of_us {
+   return $_[ 1 ] && blessed $_[ 1 ] && $_[ 1 ]->isa( __PACKAGE__ );
+}
 
 __PACKAGE__->meta->make_immutable;
 
@@ -22,36 +29,86 @@ __END__
 
 =head1 Name
 
-Unexpected - One-line description of the modules purpose
+Unexpected - Moose exception class composed from traits
 
 =head1 Synopsis
 
+   use File::DataClass::Functions qw(throw);
+   use Try::Tiny;
+
+   sub some_method {
+      my $self = shift;
+
+      try   { this_will_fail }
+      catch { throw $_ };
+   }
+
+   # OR
    use Unexpected;
-   # Brief but working code examples
+
+   sub some_method {
+      my $self = shift;
+
+      eval { this_will_fail };
+      Unexpected->throw_on_error;
+   }
+
+   # THEN
+   try   { $self->some_method() }
+   catch { warn $_."\n\n".$_->stacktrace."\n" };
 
 =head1 Version
 
-This documents version v0.1.$Rev: 1 $ of L<Unexpected>
+This documents version v0.1.$Rev: 2 $ of L<Unexpected>
 
 =head1 Description
 
+An exception class that supports error messages with placeholders, a
+L<Unexpected::TraitFor::Throwing/throw> method with
+automatic re-throw upon detection of self, conditional throw if an
+exception was caught and a simplified stacktrace
+
+Applies exception roles to the exception base class
+L<Unexpected::Base>. See L</Dependencies> for the list of
+roles that are applied
+
+Error objects are overloaded to stringify to the full error message
+plus a leader if the optional C<ErrorLeader> role has been applied
+
 =head1 Configuration and Environment
 
-Defines the following attributes;
-
-=over 3
-
-=back
+Calls to C<Unexpected->add_roles> applies the
+specified list of optional roles
 
 =head1 Subroutines/Methods
 
+=head2 BUILD
+
+Does nothing placeholder that allows the applied roles to modify it
+
+=head2 is_one_of_us
+
+   $bool = $class->is_one_of_us( $string_or_exception_object_ref );
+
+Class method which detects instances of this exception class
+
 =head1 Diagnostics
+
+None
 
 =head1 Dependencies
 
 =over 3
 
-=item L<Class::Usul>
+=item L<namespace::autoclean>
+
+=item L<Unexpected::Base>
+
+=item L<Unexpected::TraitFor::Throwing>
+
+=item L<Unexpected::TraitFor::TracingStacks>
+
+=item L<Moose>
 
 =back
 
@@ -68,6 +125,8 @@ Patches are welcome
 =head1 Acknowledgements
 
 Larry Wall - For the Perl programming language
+
+L<Throwable::Error> - Lifted the stack frame filter from here
 
 =head1 Author
 
