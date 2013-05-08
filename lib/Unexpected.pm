@@ -1,9 +1,9 @@
-# @(#)Ident: Unexpected.pm 2013-05-08 17:41 pjf ;
+# @(#)Ident: Unexpected.pm 2013-05-08 18:17 pjf ;
 
 package Unexpected;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 6 $ =~ /\d+/gmx );
 
 use Moose;
 
@@ -59,7 +59,7 @@ Unexpected - Moose exception class composed from traits
 
 =head1 Version
 
-This documents version v0.1.$Rev: 5 $ of L<Unexpected>
+This documents version v0.1.$Rev: 6 $ of L<Unexpected>
 
 =head1 Description
 

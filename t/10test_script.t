@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-05-08 16:29 pjf ;
+# @(#)Ident: 10test_script.t 2013-05-08 18:13 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 4 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 6 $ =~ /\d+/gmx );
 use File::Spec::Functions;
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -19,9 +19,11 @@ BEGIN {
 
 use_ok 'Unexpected';
 
-Unexpected->apply_roles( 'ErrorLeader' );
-
 my $class = 'Unexpected'; $EVAL_ERROR = undef;
+
+$class->apply_roles( 'ErrorLeader' ); $class->ignore_class( 'IgnoreMe' );
+
+is $class->ignore->[ 0 ], 'IgnoreMe', 'Ignores classes';
 
 eval { $class->throw_on_error }; my $e = $EVAL_ERROR; $EVAL_ERROR = undef;
 

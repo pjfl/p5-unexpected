@@ -1,9 +1,9 @@
-# @(#)$Ident: Build.PL 2013-05-08 17:39 pjf ;
+# @(#)$Ident: Build.PL 2013-05-08 17:42 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 6 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(Unexpected),
@@ -22,11 +22,11 @@ Bob->new( {
       'MooseX::Types::Common'        => 0.001002,
       'MooseX::Types::LoadableClass' => 0.007,
       'Scalar::Util'                 => 1.18, },
-   configure_requires    => {
-      'version'          => 0.77,
-      'Module::Build'    => 0.38, },
-   build_requires        => {
-      'Test::More'       => 0.74, },
+   configure_requires => {
+      'version'       => 0.77,
+      'Module::Build' => 0.38, },
+   build_requires     => {
+      'Test::More'    => 0.74, },
 } )->create_build_script; # Goal!
 
 # Local Variables:

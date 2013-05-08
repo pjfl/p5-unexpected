@@ -30,7 +30,7 @@ Unexpected - Moose exception class composed from traits
 
 # Version
 
-This documents version v0.1.$Rev: 4 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.1.$Rev: 6 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
