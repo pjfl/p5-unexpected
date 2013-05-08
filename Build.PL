@@ -1,32 +1,31 @@
-# @(#)$Ident: Build.PL 2013-05-08 18:38 pjf ;
+# @(#)$Ident: Build.PL 2013-05-08 19:20 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 7 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 9 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(Unexpected),
    home_page => q(http://www.roxsoft.co.uk),
    requires  => {
-      'perl'                         => 5.010,
-      'namespace::autoclean'         => 0.13,
-      'namespace::clean'             => 0.22,
-      'overload'                     => 1.04,
-      'version'                      => 0.77,
-      'Carp'                         => 0,
-      'List::Util'                   => 1.23,
-      'Moose'                        => 2.0801,
-      'MooseX::ClassAttribute'       => 0.27,
-      'MooseX::Types'                => 0.25,
-      'MooseX::Types::Common'        => 0.001002,
-      'MooseX::Types::LoadableClass' => 0.007,
-      'Scalar::Util'                 => 1.18, },
+      'perl'                          => 5.010,
+      'namespace::autoclean'          => 0.13,
+      'overload'                      => 1.04,
+      'version'                       => 0.77,
+      'Carp'                          => 0,
+      'List::Util'                    => 1.23,
+      'Moose'                         => 2.0801,
+      'MooseX::ClassAttribute'        => 0.27,
+      'MooseX::Role::WithOverloading' => 0.13,
+      'MooseX::Types'                 => 0.25,
+      'MooseX::Types::Common'         => 0.001002,
+      'MooseX::Types::LoadableClass'  => 0.007,
+      'Scalar::Util'                  => 1.18, },
    configure_requires => {
       'version'       => 0.77,
       'Module::Build' => 0.38, },
    build_requires     => {
-      'Moose'         => 2.0801,
       'Test::More'    => 0.74, },
 } )->create_build_script; # Goal!
 

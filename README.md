@@ -30,7 +30,7 @@ Unexpected - Moose exception class composed from traits
 
 # Version
 
-This documents version v0.1.$Rev: 7 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.1.$Rev: 9 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
@@ -47,6 +47,13 @@ roles that are applied
 
 Error objects are overloaded to stringify to the full error message
 plus a leader if the optional `ErrorLeader` role has been applied
+
+Defines these attributes;
+
+- `class`
+
+    Defaults to `__PACKAGE__`. Can be used to differentiate different
+    classes of error
 
 # Subroutines/Methods
 
@@ -67,11 +74,12 @@ None
 # Dependencies
 
 - [namespace::autoclean](https://metacpan.org/module/namespace::autoclean)
-- [Unexpected::Base](https://metacpan.org/module/Unexpected::Base)
+- [Moose](https://metacpan.org/module/Moose)
+- [MooseX::Types::Common](https://metacpan.org/module/MooseX::Types::Common)
 - [Unexpected::TraitFor::ErrorLeader](https://metacpan.org/module/Unexpected::TraitFor::ErrorLeader)
+- [Unexpected::TraitFor::StringifyingError](https://metacpan.org/module/Unexpected::TraitFor::StringifyingError)
 - [Unexpected::TraitFor::Throwing](https://metacpan.org/module/Unexpected::TraitFor::Throwing)
 - [Unexpected::TraitFor::TracingStacks](https://metacpan.org/module/Unexpected::TraitFor::TracingStacks)
-- [Moose](https://metacpan.org/module/Moose)
 
 # Incompatibilities
 

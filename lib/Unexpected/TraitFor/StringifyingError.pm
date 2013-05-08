@@ -1,22 +1,18 @@
-# @(#)$Ident: Base.pm 2013-05-08 18:53 pjf ;
+# @(#)$Ident: StringifyingError.pm 2013-05-08 19:18 pjf ;
 
-package Unexpected::Base;
+package Unexpected::TraitFor::StringifyingError;
 
-# Package namespace::autoclean does not play nice with overload
-use namespace::clean -except => 'meta';
 use overload '""' => sub { shift->as_string }, fallback => 1;
 use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 8 $ =~ /\d+/gmx );
 
-use Moose;
-use MooseX::Types::Common::String qw(NonEmptySimpleStr);
-use MooseX::Types::Moose          qw(ArrayRef Str);
+use Moose::Role;
+use MooseX::Role::WithOverloading;
+use MooseX::Types::Moose qw(ArrayRef Str);
 
 # Object attributes (public)
-has 'args'  => is => 'ro', isa => ArrayRef,          default => sub { [] };
+has 'args'  => is => 'ro', isa => ArrayRef, default => sub { [] };
 
-has 'class' => is => 'ro', isa => NonEmptySimpleStr, default => __PACKAGE__;
-
-has 'error' => is => 'ro', isa => Str,               default => 'Unknown error';
+has 'error' => is => 'ro', isa => Str,      default => 'Unknown error';
 
 # Construction
 around 'BUILDARGS' => sub {
@@ -47,8 +43,6 @@ sub __build_attr_from { # Coerce a hash ref from whatever was passed
                                               : { error => $_[ 0 ] };
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -57,21 +51,22 @@ __END__
 
 =head1 Name
 
-Unexpected::Base - Base class for exception handling
+Unexpected::TraitFor::StringifyingError - Base role for exception handling
 
 =head1 Version
 
-This documents version v0.1.$Rev: 8 $ of L<Unexpected::Base>
+This documents version v0.1.$Rev: 8 $ of
+L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis
 
    use Moose;
 
-   extends 'Unexpected::Base';
+   with 'Unexpected::TraitFor::StringifyingError';
 
 =head1 Description
 
-Base class for exception handling
+Base role for exception handling
 
 =head1 Configuration and Environment
 
@@ -83,11 +78,6 @@ Defines the following list of read only attributes;
 
 An array ref of parameters substituted in for the placeholders in the
 error message when the error is localised
-
-=item C<class>
-
-Defaults to C<__PACKAGE__>. Can be used to differentiate different classes of
-error
 
 =item C<error>
 
@@ -119,13 +109,11 @@ None
 
 =over 3
 
-=item L<namespace::clean>
-
 =item L<overload>
 
-=item L<Moose>
+=item L<Moose::Role>
 
-=item L<MooseX::Types::Common>
+=item L<MooseX::Role::WithOverloading>
 
 =item L<MooseX::Types::Moose>
 

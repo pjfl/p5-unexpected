@@ -1,15 +1,18 @@
-# @(#)Ident: Unexpected.pm 2013-05-08 18:37 pjf ;
+# @(#)Ident: Unexpected.pm 2013-05-08 19:18 pjf ;
 
 package Unexpected;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 7 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 9 $ =~ /\d+/gmx );
 
 use Moose;
+use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 
-extends q(Unexpected::Base);
-with    q(Unexpected::TraitFor::Throwing);
-with    q(Unexpected::TraitFor::TracingStacks);
+with q(Unexpected::TraitFor::StringifyingError);
+with q(Unexpected::TraitFor::Throwing);
+with q(Unexpected::TraitFor::TracingStacks);
+
+has 'class' => is => 'ro', isa => NonEmptySimpleStr, default => __PACKAGE__;
 
 sub BUILD {}
 
@@ -59,7 +62,7 @@ Unexpected - Moose exception class composed from traits
 
 =head1 Version
 
-This documents version v0.1.$Rev: 7 $ of L<Unexpected>
+This documents version v0.1.$Rev: 9 $ of L<Unexpected>
 
 =head1 Description
 
@@ -76,6 +79,17 @@ roles that are applied
 
 Error objects are overloaded to stringify to the full error message
 plus a leader if the optional C<ErrorLeader> role has been applied
+
+Defines these attributes;
+
+=over 3
+
+=item C<class>
+
+Defaults to C<__PACKAGE__>. Can be used to differentiate different
+classes of error
+
+=back
 
 =head1 Subroutines/Methods
 
@@ -99,15 +113,17 @@ None
 
 =item L<namespace::autoclean>
 
-=item L<Unexpected::Base>
+=item L<Moose>
+
+=item L<MooseX::Types::Common>
 
 =item L<Unexpected::TraitFor::ErrorLeader>
+
+=item L<Unexpected::TraitFor::StringifyingError>
 
 =item L<Unexpected::TraitFor::Throwing>
 
 =item L<Unexpected::TraitFor::TracingStacks>
-
-=item L<Moose>
 
 =back
 
