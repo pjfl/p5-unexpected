@@ -1,6 +1,7 @@
 Revision history for Unexpected
 
-0.1.9     2013-05-08 20:27:27
+0.1.10    2013-05-09 14:44:58
+          - Added Devel::StackTrace as a dependency
           - Renamed Base to TraitFor::StringifyingError
           - Moved Ignore class attr to ErrorLeader
           - Removed apply_roles and namespace
