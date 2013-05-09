@@ -1,7 +1,8 @@
 Revision history for Unexpected
 
-0.1.11    2013-05-09 16:16:06
-          - Improved synopsis. Yak shave trace_frame_filter
+0.1.12    2013-05-10 00:45:41
+          - POD updates, more tests
+          - Improved synopsis. Yak shaved trace_frame_filter
           - Added Devel::StackTrace as a dependency
           - Renamed Base to TraitFor::StringifyingError
           - Moved Ignore class attr to ErrorLeader

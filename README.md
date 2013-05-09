@@ -11,6 +11,8 @@ Unexpected - Moose exception class composed from traits
     extends 'Unexpected';
     with    'Unexpected::TraitFor::ErrorLeader';
 
+    __PACKAGE__->ignore_class( 'YourApp::IgnoreMe' );
+
     has '+class' => default => __PACKAGE__;
 
     sub message {
@@ -44,7 +46,7 @@ Unexpected - Moose exception class composed from traits
 
 # Version
 
-This documents version v0.1.$Rev: 11 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.1.$Rev: 12 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
@@ -55,9 +57,8 @@ exception was caught and a simplified stacktrace
 
 # Configuration and Environment
 
-Applies exception roles to the exception base class
-[Unexpected::Base](https://metacpan.org/module/Unexpected::Base). See ["Dependencies"](#Dependencies) for the list of
-roles that are applied
+Applies exception roles to the exception base class [Unexpected](https://metacpan.org/module/Unexpected). See
+["Dependencies"](#Dependencies) for the list of roles that are applied
 
 Error objects are overloaded to stringify to the full error message
 plus a leader if the optional `ErrorLeader` role has been applied
@@ -90,7 +91,6 @@ None
 - [namespace::autoclean](https://metacpan.org/module/namespace::autoclean)
 - [Moose](https://metacpan.org/module/Moose)
 - [MooseX::Types::Common](https://metacpan.org/module/MooseX::Types::Common)
-- [Unexpected::TraitFor::ErrorLeader](https://metacpan.org/module/Unexpected::TraitFor::ErrorLeader)
 - [Unexpected::TraitFor::StringifyingError](https://metacpan.org/module/Unexpected::TraitFor::StringifyingError)
 - [Unexpected::TraitFor::Throwing](https://metacpan.org/module/Unexpected::TraitFor::Throwing)
 - [Unexpected::TraitFor::TracingStacks](https://metacpan.org/module/Unexpected::TraitFor::TracingStacks)

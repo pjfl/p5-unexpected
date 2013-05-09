@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-05-08 19:14 pjf ;
+# @(#)Ident: 10test_script.t 2013-05-09 20:40 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 9 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 12 $ =~ /\d+/gmx );
 use File::Spec::Functions;
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -27,25 +27,31 @@ BEGIN {
    1;
 }
 
-my $class = 'MyException'; $EVAL_ERROR = undef;
+sub _eval_error () { my $e = $EVAL_ERROR; $EVAL_ERROR = undef; return $e }
 
-$class->ignore_class( 'IgnoreMe' );
+my $class = 'MyException'; my $e = _eval_error;
 
-is $class->ignore->[ 0 ], 'IgnoreMe', 'Ignores classes';
+is $class->ignore->[ 0 ], undef, 'No initial ignore class';
 
-eval { $class->throw_on_error }; my $e = $EVAL_ERROR; $EVAL_ERROR = undef;
+ok $class->ignore_class( 'IgnoreMe' ), 'Set ignore class';
 
-ok ! $e, 'No throw without error';
+is $class->ignore->[ 0 ], 'IgnoreMe', 'Get ignore class';
 
-eval { $class->throw( 'PracticeKill' ) };
+eval { $class->throw_on_error };
 
-$e = $EVAL_ERROR; $EVAL_ERROR = undef;
+ok ! _eval_error, 'No throw without error';
+
+eval { eval { die 'In a pit of fire' }; $class->throw_on_error };
+
+like _eval_error, qr{ In \s a \s pit \s of \s fire }mx , 'Throws on error';
+
+eval { $class->throw( 'PracticeKill' ) }; $e = _eval_error;
 
 is ref $e, $class, 'Good class'; my $min_level = $e->level;
 
 like $e, qr{ \A main \[ \d+ / $min_level \] }mx, 'Package and default level';
 like $e, qr{ PracticeKill \s* \z   }mx, 'Throws error message';
-is $e->class, "Unexpected", 'Default error class';
+is $e->class, 'Unexpected', 'Default error classification';
 
 my ($line1, $line2, $line3);
 
@@ -53,9 +59,9 @@ sub test_throw { $class->throw( 'PracticeKill' ) }; $line1 = __LINE__;
 
 sub test_throw1 { test_throw() }; $line2 = __LINE__;
 
-eval { test_throw1() }; $line3 = __LINE__;
+eval { test_throw1() }; $line3 = __LINE__; $e = _eval_error;
 
-$e = $EVAL_ERROR; $EVAL_ERROR = undef; my @lines = $e->stacktrace;
+my @lines = $e->stacktrace;
 
 like $e, qr{ \A main \[ $line2 / \d+ \] }mx, 'Package and line number';
 is $lines[ 0 ], "main::test_throw line ${line1}", 'Stactrace line 1';
@@ -70,31 +76,26 @@ sub test_throw3 { test_throw2() }
 
 sub test_throw4 { test_throw3() }; $line1 = __LINE__;
 
-eval { test_throw4() }; $e = $EVAL_ERROR; $EVAL_ERROR = undef;
+eval { test_throw4() }; $e = _eval_error;
 
 like $e, qr{ \A main \[ $line1 / $level \] }mx, 'Specific leader level';
 
 $line1 = __LINE__; eval {
    $class->throw( args  => [ 'flap' ],
                   class => 'nonDefault',
-                  error => 'cat: [_1] cannot open: [_2]', ) };
+                  error => 'cat: [_1] cannot open: [_2]', ) }; $e = _eval_error;
 
-$e = $EVAL_ERROR; $EVAL_ERROR = undef;
-
-is $e->class, 'nonDefault', 'Specific error class';
-
+is $e->class, 'nonDefault', 'Specific error classification';
 like $e, qr{ main\[ $line1 / \d+ \]:\scat:\sflap\scannot\sopen:\s\[\?\] }mx,
    'Placeholer substitution';
 
 $line1 = __LINE__; eval {
    $class->throw( args  => [ 'flap' ],
                   class => 'testPrevious',
-                  error => 'cat: [_1] cannot open: [_2]', ) };
+                  error => 'cat: [_1] cannot open: [_2]', ) }; $e = _eval_error;
 
-$e = $EVAL_ERROR; $EVAL_ERROR = undef;
-
-is $e->class, 'testPrevious', 'Current exception class';
-is $e->previous_exception->class, 'nonDefault', 'Previous exception class';
+is $e->class, 'testPrevious', 'Current exception classification';
+is $e->previous_exception->class, 'nonDefault', 'Previous exception';
 
 done_testing;
 

@@ -1,9 +1,9 @@
-# @(#)Ident: Unexpected.pm 2013-05-09 15:11 pjf ;
+# @(#)Ident: Unexpected.pm 2013-05-09 20:04 pjf ;
 
 package Unexpected;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 11 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 12 $ =~ /\d+/gmx );
 
 use Moose;
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
@@ -14,7 +14,7 @@ with q(Unexpected::TraitFor::TracingStacks);
 
 has 'class' => is => 'ro', isa => NonEmptySimpleStr, default => __PACKAGE__;
 
-sub BUILD {}
+sub BUILD {} # Can be modified by the applied traits
 
 sub is_one_of_us {
    return $_[ 1 ] && blessed $_[ 1 ] && $_[ 1 ]->isa( __PACKAGE__ );
@@ -42,6 +42,8 @@ Unexpected - Moose exception class composed from traits
 
    extends 'Unexpected';
    with    'Unexpected::TraitFor::ErrorLeader';
+
+   __PACKAGE__->ignore_class( 'YourApp::IgnoreMe' );
 
    has '+class' => default => __PACKAGE__;
 
@@ -76,7 +78,7 @@ Unexpected - Moose exception class composed from traits
 
 =head1 Version
 
-This documents version v0.1.$Rev: 11 $ of L<Unexpected>
+This documents version v0.1.$Rev: 12 $ of L<Unexpected>
 
 =head1 Description
 
@@ -87,9 +89,8 @@ exception was caught and a simplified stacktrace
 
 =head1 Configuration and Environment
 
-Applies exception roles to the exception base class
-L<Unexpected::Base>. See L</Dependencies> for the list of
-roles that are applied
+Applies exception roles to the exception base class L<Unexpected>. See
+L</Dependencies> for the list of roles that are applied
 
 Error objects are overloaded to stringify to the full error message
 plus a leader if the optional C<ErrorLeader> role has been applied
@@ -130,8 +131,6 @@ None
 =item L<Moose>
 
 =item L<MooseX::Types::Common>
-
-=item L<Unexpected::TraitFor::ErrorLeader>
 
 =item L<Unexpected::TraitFor::StringifyingError>
 
