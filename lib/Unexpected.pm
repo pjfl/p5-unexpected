@@ -1,9 +1,9 @@
-# @(#)Ident: Unexpected.pm 2013-05-09 13:44 pjf ;
+# @(#)Ident: Unexpected.pm 2013-05-09 15:11 pjf ;
 
 package Unexpected;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 10 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 11 $ =~ /\d+/gmx );
 
 use Moose;
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
@@ -36,33 +36,47 @@ Unexpected - Moose exception class composed from traits
 
 =head1 Synopsis
 
-   use File::DataClass::Functions qw(throw);
+   package YourApp::Exception;
+
+   use Moose;
+
+   extends 'Unexpected';
+   with    'Unexpected::TraitFor::ErrorLeader';
+
+   has '+class' => default => __PACKAGE__;
+
+   sub message {
+      my $self = shift; return $self."\n\n".$self->trace->as_string."\n";
+   }
+
+   package YourApp;
+
+   use YourApp::Exception;
    use Try::Tiny;
 
    sub some_method {
       my $self = shift;
 
       try   { this_will_fail }
-      catch { throw $_ };
+      catch { YourApp::Exception->throw $_ };
    }
 
    # OR
-   use Unexpected;
 
    sub some_method {
       my $self = shift;
 
       eval { this_will_fail };
-      Unexpected->throw_on_error;
+      YourApp::Exception->throw_on_error;
    }
 
    # THEN
    try   { $self->some_method() }
-   catch { warn $_."\n\n".$_->stacktrace."\n" };
+   catch { warn $_->message };
 
 =head1 Version
 
-This documents version v0.1.$Rev: 10 $ of L<Unexpected>
+This documents version v0.1.$Rev: 11 $ of L<Unexpected>
 
 =head1 Description
 

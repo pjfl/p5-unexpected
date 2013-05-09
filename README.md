@@ -4,33 +4,47 @@ Unexpected - Moose exception class composed from traits
 
 # Synopsis
 
-    use File::DataClass::Functions qw(throw);
+    package YourApp::Exception;
+
+    use Moose;
+
+    extends 'Unexpected';
+    with    'Unexpected::TraitFor::ErrorLeader';
+
+    has '+class' => default => __PACKAGE__;
+
+    sub message {
+       my $self = shift; return $self."\n\n".$self->trace->as_string."\n";
+    }
+
+    package YourApp;
+
+    use YourApp::Exception;
     use Try::Tiny;
 
     sub some_method {
        my $self = shift;
 
        try   { this_will_fail }
-       catch { throw $_ };
+       catch { YourApp::Exception->throw $_ };
     }
 
     # OR
-    use Unexpected;
 
     sub some_method {
        my $self = shift;
 
        eval { this_will_fail };
-       Unexpected->throw_on_error;
+       YourApp::Exception->throw_on_error;
     }
 
     # THEN
     try   { $self->some_method() }
-    catch { warn $_."\n\n".$_->stacktrace."\n" };
+    catch { warn $_->message };
 
 # Version
 
-This documents version v0.1.$Rev: 9 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.1.$Rev: 11 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 

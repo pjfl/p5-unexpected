@@ -1,9 +1,9 @@
-# @(#)Ident: TracingStacks.pm 2013-05-08 07:17 pjf ;
+# @(#)Ident: TracingStacks.pm 2013-05-09 14:38 pjf ;
 
 package Unexpected::TraitFor::TracingStacks;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 11 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use MooseX::Types   -declare => [ q(Tracer) ];
@@ -63,20 +63,20 @@ sub trace_frame_filter { # Lifted from StackTrace::Auto
 
    return sub {
       my ($raw)    = @_;
-      my  $sub     = $raw->{caller}->[ 3 ];
-     (my  $package = $sub) =~ s{ :: \w+ \z }{}mx;
+      my  $subr    = $raw->{caller}->[ 3 ];
+     (my  $package = $subr) =~ s{ :: \w+ \z }{}mx;
 
       if    ($found_mark == 3) { return 1 }
       elsif ($found_mark == 2) {
-         $sub =~ m{ ::new \z }mx and $self->isa( $package ) and return 0;
+         $subr =~ m{ :: new \z }mx and $self->isa( $package ) and return 0;
          $found_mark++; return 1;
       }
       elsif ($found_mark == 1) {
-         $sub =~ m{ ::new \z }mx and $self->isa( $package ) and $found_mark++;
+         $subr =~ m{ :: new \z }mx and $self->isa( $package ) and $found_mark++;
          return 0;
       }
 
-      $raw->{caller}->[ 3 ] =~ m{ ::_build_trace \z }mx and $found_mark++;
+      $subr =~ m{ :: _build_trace \z }mx and $found_mark++;
       return 0;
    }
 }
@@ -113,7 +113,7 @@ Unexpected::TraitFor::TracingStacks - Provides a minimalist stacktrace
 
 =head1 Version
 
-This documents version v0.1.$Rev: 2 $ of
+This documents version v0.1.$Rev: 11 $ of
 L<Unexpected::TraitFor::TracingStacks>
 
 =head1 Description
