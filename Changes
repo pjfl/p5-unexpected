@@ -1,6 +1,7 @@
 Revision history for Unexpected
 
-0.1.12    2013-05-10 00:45:41
+0.1.13    2013-05-11 09:13:58
+          - Updated prereqs in Build.PL
           - POD updates, more tests
           - Improved synopsis. Yak shaved trace_frame_filter
           - Added Devel::StackTrace as a dependency

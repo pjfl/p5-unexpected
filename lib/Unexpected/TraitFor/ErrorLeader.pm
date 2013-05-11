@@ -1,9 +1,9 @@
-# @(#)Ident: ErrorLeader.pm 2013-05-08 18:53 pjf ;
+# @(#)Ident: ErrorLeader.pm 2013-05-11 03:55 pjf ;
 
 package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 8 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 13 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use MooseX::ClassAttribute;
@@ -18,7 +18,7 @@ class_has 'Ignore' => is => 'ro', isa => ArrayRef, traits => [ 'Array' ],
    default         => sub { [] }, handles => { ignore_class => 'push' },
    reader          => 'ignore';
 
-# Object methods (public)
+# Object attributes (public)
 has 'leader' => is => 'ro', isa => SimpleStr,
    builder   => '_build_leader', init_arg => undef, lazy => 1;
 
@@ -84,7 +84,7 @@ Unexpected::TraitFor::ErrorLeader - Prepends a leader to the exception
 
 =head1 Version
 
-This documents version v0.1.$Rev: 8 $
+This documents version v0.1.$Rev: 13 $
 of L<Unexpected::TraitFor::ErrorLeader>
 
 =head1 Description
