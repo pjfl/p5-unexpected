@@ -1,9 +1,9 @@
-# @(#)$Ident: Build.PL 2013-05-11 08:12 pjf ;
+# @(#)$Ident: Build.PL 2013-05-11 08:54 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 13 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 14 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(Unexpected),
@@ -21,7 +21,8 @@ Bob->new( {
    recommends          => {
       'App::cpanminus' => 1.6005, },
    configure_requires  => {
-      'version'        => 0.88, },
+      'version'        => 0.88,
+      'Module::Build'  => 0.4004, },
    build_requires      => {
       'version'        => 0.88,
       'Module::Build'  => 0.4004, },

@@ -46,7 +46,7 @@ Unexpected - Moose exception class composed from traits
 
 # Version
 
-This documents version v0.1.$Rev: 12 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.1.$Rev: 14 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 

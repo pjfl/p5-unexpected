@@ -1,9 +1,9 @@
-# @(#)Ident: TracingStacks.pm 2013-05-09 14:38 pjf ;
+# @(#)Ident: TracingStacks.pm 2013-05-31 20:17 pjf ;
 
 package Unexpected::TraitFor::TracingStacks;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 11 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 14 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use MooseX::Types   -declare => [ q(Tracer) ];
@@ -42,11 +42,12 @@ sub filtered_frames {
 sub stacktrace {
    my ($self, $skip) = @_; my (@lines, %seen, $subr);
 
-   for my $frame (reverse $self->filtered_frames) {
+   for my $frame (reverse $self->frames) {
       my $package = $frame->package; my $l_no;
 
       unless ($l_no = $seen{ $package } and $l_no == $frame->line) {
-         push @lines, join q( ), $subr || $package, 'line', $frame->line;
+         my $lead = $subr || $package; $lead !~ m{ :: __ANON__ \z }mx
+            and push @lines, join q( ), $lead, 'line', $frame->line;
          $seen{ $package } = $frame->line;
       }
 
@@ -113,7 +114,7 @@ Unexpected::TraitFor::TracingStacks - Provides a minimalist stacktrace
 
 =head1 Version
 
-This documents version v0.1.$Rev: 11 $ of
+This documents version v0.1.$Rev: 14 $ of
 L<Unexpected::TraitFor::TracingStacks>
 
 =head1 Description
