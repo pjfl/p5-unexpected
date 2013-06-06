@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, q(lib) );
@@ -24,8 +24,9 @@ $ENV{TEST_MEMORY}
    or  plan skip_all => 'Environment variable TEST_MEMORY not set';
 
 {  package MyError;
-   use Moose;
+   use Moo;
    extends 'Unexpected';
+   with 'Unexpected::TraitFor::ErrorLeader';
 }
 
 eval { MyError->throw( 'the error' ) };

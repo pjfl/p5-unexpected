@@ -1,20 +1,22 @@
-# @(#)Ident: Throwing.pm 2013-05-08 07:17 pjf ;
+# @(#)Ident: Throwing.pm 2013-06-06 01:23 pjf ;
 
 package Unexpected::TraitFor::Throwing;
 
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use Carp      ();
-use English qw(-no_match_vars);
-use Moose::Role;
+use Carp                ();
+use English           qw(-no_match_vars);
+use Moo::Role;
+use Scalar::Util      qw(blessed);
+use Unexpected::Types qw(Maybe Object);
 
 requires qw(BUILD is_one_of_us);
 
 my %_CACHE;
 
 # Lifted from Throwable
-has 'previous_exception' => is => 'ro',
+has 'previous_exception' => is => 'ro', isa => Maybe[Object],
    default               => sub { $_CACHE{ __cache_key() } };
 
 # Construction
@@ -86,13 +88,13 @@ Unexpected::TraitFor::Throwing - Detects and throws exceptions
 
 =head1 Synopsis
 
-   use Moose;
+   use Moo;
 
    with 'Unexpected::TraitFor::Throwing';
 
 =head1 Version
 
-This documents version v0.1.$Rev: 2 $ of
+This documents version v0.2.$Rev: 1 $ of
 L<Unexpected::TraitFor::Throwing>
 
 =head1 Description
@@ -152,9 +154,11 @@ None
 
 =over 3
 
-=item L<namespace::autoclean>
+=item L<namespace::sweep>
 
-=item L<Moose::Role>
+=item L<Moo::Role>
+
+=item L<Unexpected::Types>
 
 =back
 

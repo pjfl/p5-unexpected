@@ -1,13 +1,12 @@
-# @(#)$Ident: StringifyingError.pm 2013-05-08 19:18 pjf ;
+# @(#)$Ident: StringifyingError.pm 2013-06-06 01:21 pjf ;
 
 package Unexpected::TraitFor::StringifyingError;
 
-use overload '""' => sub { shift->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 8 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use Moose::Role;
-use MooseX::Role::WithOverloading;
-use MooseX::Types::Moose qw(ArrayRef Str);
+use Moo::Role;
+use Unexpected::Types qw(ArrayRef Str);
 
 # Object attributes (public)
 has 'args'  => is => 'ro', isa => ArrayRef, default => sub { [] };
@@ -55,12 +54,12 @@ Unexpected::TraitFor::StringifyingError - Base role for exception handling
 
 =head1 Version
 
-This documents version v0.1.$Rev: 8 $ of
+This documents version v0.2.$Rev: 1 $ of
 L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis
 
-   use Moose;
+   use Moo;
 
    with 'Unexpected::TraitFor::StringifyingError';
 
@@ -81,7 +80,7 @@ error message when the error is localised
 
 =item C<error>
 
-The actually error message which defaults to C<Unknown error>. Can contain
+The actual error message which defaults to C<Unknown error>. Can contain
 placeholders of the form C<< [_<n>] >> where C<< <n> >> is an integer
 starting at one
 
@@ -109,13 +108,11 @@ None
 
 =over 3
 
-=item L<overload>
+=item L<namespace::sweep>
 
-=item L<Moose::Role>
+=item L<Moo::Role>
 
-=item L<MooseX::Role::WithOverloading>
-
-=item L<MooseX::Types::Moose>
+=item L<Unexpected::Types>
 
 =back
 

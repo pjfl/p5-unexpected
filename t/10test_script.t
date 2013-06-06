@@ -1,31 +1,35 @@
-# @(#)Ident: 10test_script.t 2013-05-09 20:40 pjf ;
+# @(#)Ident: 10test_script.t 2013-06-06 00:59 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 12 $ =~ /\d+/gmx );
-use File::Spec::Functions;
-use FindBin qw( $Bin );
-use lib catdir( $Bin, updir, q(lib) );
+use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use File::Spec::Functions   qw( catdir updir );
+use FindBin                 qw( $Bin );
+use lib                 catdir( $Bin, updir, q(lib) );
 
-use English qw(-no_match_vars);
 use Module::Build;
 use Test::More;
 
+my $reason;
+
 BEGIN {
-   my $current = eval { Module::Build->current };
-   $current and $current->notes->{stop_tests}
-            and plan skip_all => $current->notes->{stop_tests};
+   my $builder = eval { Module::Build->current };
+
+   $builder and $reason = $builder->notes->{stop_tests};
+   $reason  and $reason =~ m{ \A TESTS: }mx and plan skip_all => $reason;
 }
 
 {  package MyException;
 
-   use Moose;
+   use Moo;
 
    extends 'Unexpected';
    with    'Unexpected::TraitFor::ErrorLeader';
 
    1;
 }
+
+use English qw(-no_match_vars);
 
 sub _eval_error () { my $e = $EVAL_ERROR; $EVAL_ERROR = undef; return $e }
 

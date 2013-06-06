@@ -1,12 +1,12 @@
 # Name
 
-Unexpected - Moose exception class composed from traits
+Unexpected - Exception class composed from traits
 
 # Synopsis
 
     package YourApp::Exception;
 
-    use Moose;
+    use Moo;
 
     extends 'Unexpected';
     with    'Unexpected::TraitFor::ErrorLeader';
@@ -46,7 +46,7 @@ Unexpected - Moose exception class composed from traits
 
 # Version
 
-This documents version v0.1.$Rev: 14 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.2.$Rev: 1 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
@@ -72,6 +72,10 @@ Defines these attributes;
 
 # Subroutines/Methods
 
+## BUILDARGS
+
+Placeholder to shut [Pod::Coverage](https://metacpan.org/module/Pod::Coverage) up
+
 ## BUILD
 
 Does nothing placeholder that allows the applied roles to modify it
@@ -88,12 +92,13 @@ None
 
 # Dependencies
 
-- [namespace::autoclean](https://metacpan.org/module/namespace::autoclean)
-- [Moose](https://metacpan.org/module/Moose)
-- [MooseX::Types::Common](https://metacpan.org/module/MooseX::Types::Common)
+- [namespace::sweep](https://metacpan.org/module/namespace::sweep)
+- [overload](https://metacpan.org/module/overload)
+- [Moo](https://metacpan.org/module/Moo)
 - [Unexpected::TraitFor::StringifyingError](https://metacpan.org/module/Unexpected::TraitFor::StringifyingError)
 - [Unexpected::TraitFor::Throwing](https://metacpan.org/module/Unexpected::TraitFor::Throwing)
 - [Unexpected::TraitFor::TracingStacks](https://metacpan.org/module/Unexpected::TraitFor::TracingStacks)
+- [Unexpected::Types](https://metacpan.org/module/Unexpected::Types)
 
 # Incompatibilities
 
@@ -110,6 +115,8 @@ Patches are welcome
 Larry Wall - For the Perl programming language
 
 [Throwable::Error](https://metacpan.org/module/Throwable::Error) - Lifted the stack frame filter from here
+
+John Sargent - Came up with the package name
 
 # Author
 

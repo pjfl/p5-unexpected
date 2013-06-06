@@ -1,8 +1,8 @@
-# @(#)Ident: 07podspelling.t 2013-05-08 07:32 pjf ;
+# @(#)Ident: 07podspelling.t 2013-06-06 01:41 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions qw(catdir catfile updir);
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -41,8 +41,11 @@ done_testing();
 __DATA__
 peter
 flanigan
+buildargs
+classname
 namespace
-Prepends
+prepends
 stacktrace
 stringifies
-Unexpected
+tcs
+unexpected

@@ -1,5 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-03-27 23:42 pjf ;
-# Bob-Version: 1.8
+# @(#)Ident: CPANTesting.pm 2013-06-06 00:55 pjf ;
 
 package CPANTesting;
 
@@ -19,9 +18,8 @@ sub should_abort {
 sub test_exceptions {
    my $p = shift; is_testing() or return 0;
 
-   $p->{stop_tests} and return 'CPAN Testing stopped in Build.PL';
-
-   $osname eq q(mirbsd) and return 'Mirbsd  OS unsupported';
+   $p->{stop_tests}     and return 'TESTS: CPAN Testing stopped in Build.PL';
+   $osname eq q(mirbsd) and return 'TESTS: Mirbsd OS unsupported';
    return 0;
 }
 

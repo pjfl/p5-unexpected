@@ -1,28 +1,22 @@
-# @(#)Ident: ErrorLeader.pm 2013-05-11 03:55 pjf ;
+# @(#)Ident: ErrorLeader.pm 2013-06-06 13:03 pjf ;
 
 package Unexpected::TraitFor::ErrorLeader;
 
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 13 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use Moose::Role;
-use MooseX::ClassAttribute;
-use MooseX::Types::Common::Numeric qw(PositiveOrZeroInt);
-use MooseX::Types::Common::String  qw(SimpleStr);
-use MooseX::Types::Moose           qw(ArrayRef);
-use List::Util                     qw(first);
+use Moo::Role;
+use List::Util        qw(first);
+use Unexpected::Types qw(NonZeroPositiveInt SimpleStr);
 
 requires qw(as_string filtered_frames);
 
-class_has 'Ignore' => is => 'ro', isa => ArrayRef, traits => [ 'Array' ],
-   default         => sub { [] }, handles => { ignore_class => 'push' },
-   reader          => 'ignore';
+my $Ignore = [];
 
 # Object attributes (public)
-has 'leader' => is => 'ro', isa => SimpleStr,
-   builder   => '_build_leader', init_arg => undef, lazy => 1;
+has 'leader' => is => 'lazy', isa => SimpleStr, init_arg => undef;
 
-has 'level'  => is => 'ro', isa => PositiveOrZeroInt, default => 1;
+has 'level'  => is => 'ro',   isa => NonZeroPositiveInt, default => 1;
 
 # Construction
 around 'as_string' => sub {
@@ -30,6 +24,15 @@ around 'as_string' => sub {
 
    return $str ? $self->leader.$str : $str;
 };
+
+# Public methods
+sub ignore {
+   return $Ignore;
+}
+
+sub ignore_class {
+   return push @{ $Ignore }, $_[ 1 ];
+}
 
 # Private methods
 sub _build_leader {
@@ -77,14 +80,14 @@ Unexpected::TraitFor::ErrorLeader - Prepends a leader to the exception
 
    package MyException;
 
-   use Moose;
+   use Moo;
 
    extends 'Unexpected';
    with    'Unexpected::TraitFor::ErrorLeader';
 
 =head1 Version
 
-This documents version v0.1.$Rev: 13 $
+This documents version v0.2.$Rev: 1 $
 of L<Unexpected::TraitFor::ErrorLeader>
 
 =head1 Description
@@ -95,11 +98,6 @@ Prepends a one line stack summary to the exception error message
 
 Requires the C<as_string> method in the consuming class, as well as
 C<filtered_frames> from the stack trace role
-
-The C<< Unexpected->Ignore >> class attribute is an
-array ref of methods whose presence should be ignored by the error
-message leader. It does the 'Array' trait where C<push> implements the
-C<ignore_class> method. Defaults to an empty array ref
 
 Defines the following attributes;
 
@@ -121,7 +119,20 @@ attribute to the return value
 
 =head1 Subroutines/Methods
 
-None
+=head2 ignore
+
+   $array_ref = $self->ignore;
+
+Read only accessor for the C<$Ignore> package scoped
+variable. Defaults to an empty array ref
+
+=head2 ignore_class
+
+   Unexpected->ignore_class( $classname );
+
+The C<$Ignore> package scoped variable is an array ref of methods
+whose presence should be ignored by the error message leader. This
+method pushes C<$classname> onto that array ref
 
 =head1 Diagnostics
 
@@ -131,15 +142,11 @@ None
 
 =over 3
 
-=item L<namespace::autoclean>
+=item L<namespace::sweep>
 
-=item L<List::Util>
+=item L<Moo::Role>
 
-=item L<Moose::Role>
-
-=item L<MooseX::ClassAttribute>
-
-=item L<MooseX::Types::Common>
+=item L<Unexpected::Types>
 
 =back
 

@@ -1,13 +1,15 @@
-# @(#)Ident: Unexpected.pm 2013-05-31 20:19 pjf ;
+# @(#)Ident: Unexpected.pm 2013-06-06 01:43 pjf ;
 
 package Unexpected;
 
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 14 $ =~ /\d+/gmx );
+use namespace::sweep;
+use overload '""' => sub { shift->as_string }, fallback => 1;
+use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use 5.01;
-use Moose;
-use MooseX::Types::Common::String qw(NonEmptySimpleStr);
+use Moo;
+use Scalar::Util      qw(blessed);
+use Unexpected::Types qw(NonEmptySimpleStr);
 
 with q(Unexpected::TraitFor::StringifyingError);
 with q(Unexpected::TraitFor::Throwing);
@@ -21,8 +23,6 @@ sub is_one_of_us {
    return $_[ 1 ] && blessed $_[ 1 ] && $_[ 1 ]->isa( __PACKAGE__ );
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -33,13 +33,13 @@ __END__
 
 =head1 Name
 
-Unexpected - Moose exception class composed from traits
+Unexpected - Exception class composed from traits
 
 =head1 Synopsis
 
    package YourApp::Exception;
 
-   use Moose;
+   use Moo;
 
    extends 'Unexpected';
    with    'Unexpected::TraitFor::ErrorLeader';
@@ -79,7 +79,7 @@ Unexpected - Moose exception class composed from traits
 
 =head1 Version
 
-This documents version v0.1.$Rev: 14 $ of L<Unexpected>
+This documents version v0.2.$Rev: 1 $ of L<Unexpected>
 
 =head1 Description
 
@@ -109,6 +109,10 @@ classes of error
 
 =head1 Subroutines/Methods
 
+=head2 BUILDARGS
+
+Placeholder to shut L<Pod::Coverage> up
+
 =head2 BUILD
 
 Does nothing placeholder that allows the applied roles to modify it
@@ -127,17 +131,19 @@ None
 
 =over 3
 
-=item L<namespace::autoclean>
+=item L<namespace::sweep>
 
-=item L<Moose>
+=item L<overload>
 
-=item L<MooseX::Types::Common>
+=item L<Moo>
 
 =item L<Unexpected::TraitFor::StringifyingError>
 
 =item L<Unexpected::TraitFor::Throwing>
 
 =item L<Unexpected::TraitFor::TracingStacks>
+
+=item L<Unexpected::Types>
 
 =back
 
@@ -156,6 +162,8 @@ Patches are welcome
 Larry Wall - For the Perl programming language
 
 L<Throwable::Error> - Lifted the stack frame filter from here
+
+John Sargent - Came up with the package name
 
 =head1 Author
 

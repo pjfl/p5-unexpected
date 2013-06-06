@@ -1,33 +1,24 @@
-# @(#)Ident: TracingStacks.pm 2013-05-31 20:17 pjf ;
+# @(#)Ident: TracingStacks.pm 2013-06-06 13:50 pjf ;
 
 package Unexpected::TraitFor::TracingStacks;
 
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 14 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use Moose::Role;
-use MooseX::Types   -declare => [ q(Tracer) ];
-use MooseX::Types::LoadableClass qw(LoadableClass);
-use MooseX::Types::Moose         qw(HashRef Object);
-use Scalar::Util                 qw(weaken);
+use Moo::Role;
+use Scalar::Util      qw(weaken);
+use Unexpected::Types qw(HashRef LoadableClass Tracer);
 
 requires qw(BUILD);
 
-subtype Tracer, as Object,
-   where   { $_->can( q(frames) ) },
-   message { blessed $_ ? 'Object '.(blessed $_).' is missing a frames method'
-                        : "Scalar ${_} is not on object reference" };
-
 # Object attributes (public)
-has 'trace'       => is => 'ro', isa => Tracer,
-   builder        => '_build_trace', handles => [ qw(frames) ],
-   init_arg       => undef, lazy => 1;
+has 'trace'       => is => 'lazy', isa => Tracer,
+   handles        => [ qw(frames) ], init_arg => undef;
 
-has 'trace_args'  => is => 'ro', isa => HashRef,
-   builder        => '_build_trace_args', lazy => 1;
+has 'trace_args'  => is => 'lazy', isa => HashRef;
 
-has 'trace_class' => is => 'ro', isa => LoadableClass, coerce => 1,
-   default        => sub { q(Devel::StackTrace) };
+has 'trace_class' => is => 'ro',   isa => LoadableClass,
+   default        => 'Devel::StackTrace';
 
 # Construction
 before 'BUILD' => sub {
@@ -108,13 +99,13 @@ Unexpected::TraitFor::TracingStacks - Provides a minimalist stacktrace
 
 =head1 Synopsis
 
-   use Moose;
+   use Moo;
 
    with 'Unexpected::TraitFor::TracingStacks';
 
 =head1 Version
 
-This documents version v0.1.$Rev: 14 $ of
+This documents version v0.2.$Rev: 1 $ of
 L<Unexpected::TraitFor::TracingStacks>
 
 =head1 Description
@@ -174,17 +165,11 @@ None
 
 =over 3
 
-=item L<namespace::autoclean>
+=item L<namespace::sweep>
 
-=item L<Moose::Role>
+=item L<Moo::Role>
 
-=item L<MooseX::Types>
-
-=item L<MooseX::Types::LoadableClass>
-
-=item L<MooseX::Types::Moose>
-
-=item L<Scalar::Util>
+=item L<Unexpected::Types>
 
 =back
 
