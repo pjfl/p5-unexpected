@@ -1,9 +1,9 @@
-# @(#)$Ident: StringifyingError.pm 2013-06-08 12:59 pjf ;
+# @(#)$Ident: StringifyingError.pm 2013-06-08 16:19 pjf ;
 
 package Unexpected::TraitFor::StringifyingError;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo::Role;
 use Unexpected::Types qw(ArrayRef Str);
@@ -22,7 +22,12 @@ around 'BUILDARGS' => sub {
    return $attr;
 };
 
-after 'BUILD' => sub { # Fixes 98c94be8-d01e-11e2-8bc5-3f0fbdbf7481 WTF?
+after 'BUILD' => sub {
+   # Fixes 98c94be8-d01e-11e2-8bc5-3f0fbdbf7481 WTF? Stringify fails.
+   # Bug only happens when Moose class inherits from Moo class which
+   # uses overload string. Moose class inherits from Moose class which
+   # has consumed a ::Role::WithOverloading works. Moo inherits from
+   # Moo also works
    my $self = shift; $self->as_string; return;
 };
 
@@ -62,7 +67,7 @@ Unexpected::TraitFor::StringifyingError - Base role for exception handling
 
 =head1 Version
 
-This documents version v0.3.$Rev: 1 $ of
+This documents version v0.3.$Rev: 2 $ of
 L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis
