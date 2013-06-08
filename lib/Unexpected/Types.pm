@@ -3,7 +3,7 @@
 package Unexpected::Types;
 
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Load  qw(load_class);
 use English      qw(-no_match_vars);
@@ -71,7 +71,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.2.$Rev: 2 $ of L<Unexpected::Types>
+This documents version v0.3.$Rev: 1 $ of L<Unexpected::Types>
 
 =head1 Description
 

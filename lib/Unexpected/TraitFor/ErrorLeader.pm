@@ -3,7 +3,7 @@
 package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo::Role;
 use List::Util        qw(first);
@@ -87,7 +87,7 @@ Unexpected::TraitFor::ErrorLeader - Prepends a leader to the exception
 
 =head1 Version
 
-This documents version v0.2.$Rev: 1 $
+This documents version v0.3.$Rev: 1 $
 of L<Unexpected::TraitFor::ErrorLeader>
 
 =head1 Description

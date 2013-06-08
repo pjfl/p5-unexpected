@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+0.3.1     2013-06-08 14:13:25
+          - Fixed overload string bug
           - Added ::StringifyingError::message
 
 0.2.2     2013-06-08 01:17:29
