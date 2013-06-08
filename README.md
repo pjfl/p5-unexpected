@@ -15,10 +15,6 @@ Unexpected - Exception class composed from traits
 
     has '+class' => default => __PACKAGE__;
 
-    sub message {
-       my $self = shift; return $self."\n\n".$self->trace->as_string."\n";
-    }
-
     package YourApp;
 
     use YourApp::Exception;
@@ -46,7 +42,7 @@ Unexpected - Exception class composed from traits
 
 # Version
 
-This documents version v0.2.$Rev: 1 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.2.$Rev: 2 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 

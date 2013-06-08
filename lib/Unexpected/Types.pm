@@ -1,9 +1,9 @@
-# @(#)Ident: Types.pm 2013-06-06 01:40 pjf ;
+# @(#)Ident: Types.pm 2013-06-07 00:05 pjf ;
 
 package Unexpected::Types;
 
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.2.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Load  qw(load_class);
 use English      qw(-no_match_vars);
@@ -36,6 +36,12 @@ __PACKAGE__->meta->add_type( Type::Tiny->new
          "Attribute value ${_} is not a non zero positive integer" }, ) );
 
 __PACKAGE__->meta->add_type( Type::Tiny->new
+   (  name       => 'PositiveInt',
+      constraint => sub { $_ =~ m{ \+?[0-9]+ }mx and $_ >= 0 },
+      message    => sub {
+         "Attribute value ${_} is not a positive integer" }, ) );
+
+__PACKAGE__->meta->add_type( Type::Tiny->new
    (  name       => 'SimpleStr',
       constraint => sub { length $_ < 255 and $_ !~ m{ \n }mx },
       message    => sub { "Attribute value ${_} is not a simple string" }, ) );
@@ -65,7 +71,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.2.$Rev: 1 $ of L<Unexpected::Types>
+This documents version v0.2.$Rev: 2 $ of L<Unexpected::Types>
 
 =head1 Description
 
