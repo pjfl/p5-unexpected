@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-06-06 00:59 pjf ;
+# @(#)Ident: 10test_script.t 2013-06-09 21:48 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 6 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, q(lib) );
@@ -56,6 +56,14 @@ is ref $e, $class, 'Good class'; my $min_level = $e->level;
 like $e, qr{ \A main \[ \d+ / $min_level \] }mx, 'Package and default level';
 like $e, qr{ PracticeKill \s* \z   }mx, 'Throws error message';
 is $e->class, 'Unexpected', 'Default error classification';
+
+eval { $class->throw() }; $e = _eval_error;
+
+like $e, qr{ Unknown \s+ error }mx, 'Default error string';
+
+eval { $class->throw( error => sub { 'Test firing' } ) }; $e = _eval_error;
+
+like $e, qr{ Test \s+ firing }mx, 'Derefernces coderef as error string';
 
 my ($line1, $line2, $line3);
 

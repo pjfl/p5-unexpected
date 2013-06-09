@@ -1,6 +1,7 @@
 Revision history for Unexpected
 
-0.3.5     2013-06-09 21:50:18
+0.3.6     2013-06-09 22:51:31
+          - Fixed default error string bug
           - Made defaults in rolls all subs
           - Added strict warnings to ::Types
           - Fixed overload string bug

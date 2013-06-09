@@ -1,9 +1,9 @@
-# @(#)$Ident: StringifyingError.pm 2013-06-09 20:28 pjf ;
+# @(#)$Ident: StringifyingError.pm 2013-06-09 21:50 pjf ;
 
 package Unexpected::TraitFor::StringifyingError;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 6 $ =~ /\d+/gmx );
 
 use Moo::Role;
 use Unexpected::Types qw(ArrayRef Str);
@@ -15,10 +15,14 @@ has 'error' => is => 'ro', isa => Str,      default => sub { 'Unknown error' };
 
 # Construction
 around 'BUILDARGS' => sub {
-   my ($orig, $self, @args) = @_; my $attr = __build_attr_from( @args );
+   my ($orig, $self, @args) = @_;
 
-   $attr->{error} and $attr->{error} .= q() and chomp $attr->{error};
+   my $attr = __build_attr_from( @args ); my $e = delete $attr->{error};
 
+   $e and ref $e eq 'CODE' and $e = $e->( $self, $attr );
+   $e and $e .= q() and chomp $e;
+
+   defined $e and $attr->{error} = $e;
    return $attr;
 };
 
@@ -52,7 +56,8 @@ sub message {
 sub __build_attr_from { # Coerce a hash ref from whatever was passed
    return ($_[ 0 ] && ref $_[ 0 ] eq q(HASH)) ? { %{ $_[ 0 ] } }
         :        (defined $_[ 1 ])            ? { @_ }
-                                              : { error => $_[ 0 ] };
+        :        (defined $_[ 0 ])            ? { error => $_[ 0 ] }
+                                              : {};
 }
 
 1;
@@ -67,7 +72,7 @@ Unexpected::TraitFor::StringifyingError - Base role for exception handling
 
 =head1 Version
 
-This documents version v0.3.$Rev: 5 $ of
+This documents version v0.3.$Rev: 6 $ of
 L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis
@@ -95,7 +100,9 @@ error message when the error is localised
 
 The actual error message which defaults to C<Unknown error>. Can contain
 placeholders of the form C<< [_<n>] >> where C<< <n> >> is an integer
-starting at one
+starting at one. If passed a code ref it will be called passing in the
+calling classname and constructor hash ref, the return value will be
+used as the error string
 
 =back
 

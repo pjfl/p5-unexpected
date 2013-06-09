@@ -1,9 +1,9 @@
-# @(#)Ident: Throwing.pm 2013-06-06 01:23 pjf ;
+# @(#)Ident: Throwing.pm 2013-06-09 21:20 pjf ;
 
 package Unexpected::TraitFor::Throwing;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 6 $ =~ /\d+/gmx );
 
 use Carp                ();
 use English           qw(-no_match_vars);
@@ -64,10 +64,11 @@ sub _is_object_ref {
 }
 
 # Private functions
-sub __build_attr_from {
+sub __build_attr_from { # Coerce a hash ref from whatever was passed
    return ($_[ 0 ] && ref $_[ 0 ] eq q(HASH)) ? { %{ $_[ 0 ] } }
         :        (defined $_[ 1 ])            ? { @_ }
-                                              : { error => $_[ 0 ] };
+        :        (defined $_[ 0 ])            ? { error => $_[ 0 ] }
+                                              : {};
 }
 
 sub __cache_key {
@@ -94,7 +95,7 @@ Unexpected::TraitFor::Throwing - Detects and throws exceptions
 
 =head1 Version
 
-This documents version v0.3.$Rev: 1 $ of
+This documents version v0.3.$Rev: 6 $ of
 L<Unexpected::TraitFor::Throwing>
 
 =head1 Description
