@@ -1,9 +1,9 @@
-# @(#)Ident: TracingStacks.pm 2013-06-06 13:50 pjf ;
+# @(#)Ident: TracingStacks.pm 2013-06-09 20:34 pjf ;
 
 package Unexpected::TraitFor::TracingStacks;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 5 $ =~ /\d+/gmx );
 
 use Moo::Role;
 use Scalar::Util      qw(weaken);
@@ -18,7 +18,7 @@ has 'trace'       => is => 'lazy', isa => Tracer,
 has 'trace_args'  => is => 'lazy', isa => HashRef;
 
 has 'trace_class' => is => 'ro',   isa => LoadableClass,
-   default        => 'Devel::StackTrace';
+   default        => sub { 'Devel::StackTrace' };
 
 # Construction
 before 'BUILD' => sub {
@@ -105,7 +105,7 @@ Unexpected::TraitFor::TracingStacks - Provides a minimalist stacktrace
 
 =head1 Version
 
-This documents version v0.3.$Rev: 1 $ of
+This documents version v0.3.$Rev: 5 $ of
 L<Unexpected::TraitFor::TracingStacks>
 
 =head1 Description
