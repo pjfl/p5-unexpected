@@ -1,9 +1,9 @@
-# @(#)Ident: ErrorLeader.pm 2013-06-06 13:03 pjf ;
+# @(#)Ident: ErrorLeader.pm 2013-06-09 17:57 pjf ;
 
 package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 4 $ =~ /\d+/gmx );
 
 use Moo::Role;
 use List::Util        qw(first);
@@ -20,7 +20,7 @@ has 'level'  => is => 'ro',   isa => NonZeroPositiveInt, default => 1;
 
 # Construction
 around 'as_string' => sub {
-   my ($next, $self, @args) = @_; my $str = $self->$next( @args );
+   my ($orig, $self, @args) = @_; my $str = $orig->( $self, @args );
 
    return $str ? $self->leader.$str : $str;
 };
@@ -87,7 +87,7 @@ Unexpected::TraitFor::ErrorLeader - Prepends a leader to the exception
 
 =head1 Version
 
-This documents version v0.3.$Rev: 1 $
+This documents version v0.3.$Rev: 4 $
 of L<Unexpected::TraitFor::ErrorLeader>
 
 =head1 Description

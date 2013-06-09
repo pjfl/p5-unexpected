@@ -1,9 +1,9 @@
-# @(#)$Ident: StringifyingError.pm 2013-06-08 16:19 pjf ;
+# @(#)$Ident: StringifyingError.pm 2013-06-09 17:59 pjf ;
 
 package Unexpected::TraitFor::StringifyingError;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 4 $ =~ /\d+/gmx );
 
 use Moo::Role;
 use Unexpected::Types qw(ArrayRef Str);
@@ -15,7 +15,7 @@ has 'error' => is => 'ro', isa => Str,      default => 'Unknown error';
 
 # Construction
 around 'BUILDARGS' => sub {
-   my ($next, $self, @args) = @_; my $attr = __build_attr_from( @args );
+   my ($orig, $self, @args) = @_; my $attr = __build_attr_from( @args );
 
    $attr->{error} and $attr->{error} .= q() and chomp $attr->{error};
 
@@ -67,7 +67,7 @@ Unexpected::TraitFor::StringifyingError - Base role for exception handling
 
 =head1 Version
 
-This documents version v0.3.$Rev: 2 $ of
+This documents version v0.3.$Rev: 4 $ of
 L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis
