@@ -1,9 +1,11 @@
-# @(#)Ident: Types.pm 2013-06-07 00:05 pjf ;
+# @(#)Ident: Types.pm 2013-06-09 01:02 pjf ;
 
 package Unexpected::Types;
 
+use strict;
+use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Class::Load  qw(load_class);
 use English      qw(-no_match_vars);
@@ -71,7 +73,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.3.$Rev: 1 $ of L<Unexpected::Types>
+This documents version v0.3.$Rev: 3 $ of L<Unexpected::Types>
 
 =head1 Description
 
