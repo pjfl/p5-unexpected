@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-06-09 21:48 pjf ;
+# @(#)Ident: 10test_script.t 2013-06-13 20:30 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 6 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 7 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, q(lib) );
@@ -64,6 +64,10 @@ like $e, qr{ Unknown \s+ error }mx, 'Default error string';
 eval { $class->throw( error => sub { 'Test firing' } ) }; $e = _eval_error;
 
 like $e, qr{ Test \s+ firing }mx, 'Derefernces coderef as error string';
+
+eval { $class->throw( args => {} ) }; $e = _eval_error;
+
+like $e, qr{ not \s+ pass \s+ type \s+ constraint }mx, 'Attribute type error';
 
 my ($line1, $line2, $line3);
 

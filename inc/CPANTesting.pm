@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-06-06 00:55 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-06-13 16:26 pjf ;
 
 package CPANTesting;
 
@@ -20,6 +20,9 @@ sub test_exceptions {
 
    $p->{stop_tests}     and return 'TESTS: CPAN Testing stopped in Build.PL';
    $osname eq q(mirbsd) and return 'TESTS: Mirbsd OS unsupported';
+
+   $host =~ m{ jasonclifford }mx
+      and return "TESTS: 3954afc6-d231-11e2-8b9f-bc1b31b64f85";
    return 0;
 }
 

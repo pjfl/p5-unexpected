@@ -1,11 +1,11 @@
-# @(#)Ident: Types.pm 2013-06-09 20:35 pjf ;
+# @(#)Ident: Types.pm 2013-06-13 20:26 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 7 $ =~ /\d+/gmx );
 
 use Class::Load  qw(load_class);
 use English      qw(-no_match_vars);
@@ -15,6 +15,9 @@ use Type::Tiny;
 use Type::Utils;
 
 BEGIN { extends q(Types::Standard) };
+
+$Type::Exception::CarpInternal{ 'Sub::Quote' }++;
+$Type::Exception::CarpInternal{ 'Unexpected::TraitFor::Throwing' }++;
 
 __PACKAGE__->meta->add_type( Type::Tiny->new
    (  name       => 'LoadableClass',
@@ -75,7 +78,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.3.$Rev: 5 $ of L<Unexpected::Types>
+This documents version v0.3.$Rev: 7 $ of L<Unexpected::Types>
 
 =head1 Description
 

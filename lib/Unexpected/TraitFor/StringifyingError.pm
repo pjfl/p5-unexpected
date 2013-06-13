@@ -1,9 +1,9 @@
-# @(#)$Ident: StringifyingError.pm 2013-06-09 21:50 pjf ;
+# @(#)$Ident: StringifyingError.pm 2013-06-13 19:17 pjf ;
 
 package Unexpected::TraitFor::StringifyingError;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 6 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 7 $ =~ /\d+/gmx );
 
 use Moo::Role;
 use Unexpected::Types qw(ArrayRef Str);
@@ -11,7 +11,7 @@ use Unexpected::Types qw(ArrayRef Str);
 # Object attributes (public)
 has 'args'  => is => 'ro', isa => ArrayRef, default => sub { [] };
 
-has 'error' => is => 'ro', isa => Str,      default => sub { 'Unknown error' };
+has 'error' => is => 'ro', isa => Str,      default => 'Unknown error';
 
 # Construction
 around 'BUILDARGS' => sub {
@@ -21,8 +21,7 @@ around 'BUILDARGS' => sub {
 
    $e and ref $e eq 'CODE' and $e = $e->( $self, $attr );
    $e and $e .= q() and chomp $e;
-
-   defined $e and $attr->{error} = $e;
+   $e and $attr->{error} = $e;
    return $attr;
 };
 
@@ -37,9 +36,9 @@ after 'BUILD' => sub {
 
 # Public methods
 sub as_string { # Expand positional parameters of the form [_<n>]
-   my $self = shift; my $error = $self->error or return;
+   my $self = shift; my $error = $self->error;
 
-   0 > index $error, q([_) and return $error;
+   defined $error or return $error; 0 > index $error, q([_) and return $error;
 
    my @args = map { $_ // '[?]' } @{ $self->args }, map { '[?]' } 0 .. 9;
 
@@ -72,7 +71,7 @@ Unexpected::TraitFor::StringifyingError - Base role for exception handling
 
 =head1 Version
 
-This documents version v0.3.$Rev: 6 $ of
+This documents version v0.3.$Rev: 7 $ of
 L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis
