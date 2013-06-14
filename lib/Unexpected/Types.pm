@@ -1,11 +1,11 @@
-# @(#)Ident: Types.pm 2013-06-13 20:26 pjf ;
+# @(#)Ident: Types.pm 2013-06-14 13:54 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 7 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 8 $ =~ /\d+/gmx );
 
 use Class::Load  qw(load_class);
 use English      qw(-no_match_vars);
@@ -25,6 +25,7 @@ __PACKAGE__->meta->add_type( Type::Tiny->new
          local  $EVAL_ERROR;
          my $class = ref $_ eq 'CODE' ? $_->() : $_;
          eval { load_class( $class ) };
+         $EVAL_ERROR and warn $EVAL_ERROR."\n";
          return $EVAL_ERROR ? 0 : 1;
       },
       message    => sub { "Attribute value ${_} is not a loadable class" }, ) );
@@ -78,7 +79,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.3.$Rev: 7 $ of L<Unexpected::Types>
+This documents version v0.3.$Rev: 8 $ of L<Unexpected::Types>
 
 =head1 Description
 
