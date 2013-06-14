@@ -1,10 +1,10 @@
-# @(#)Ident: Unexpected.pm 2013-06-13 16:33 pjf ;
+# @(#)Ident: Unexpected.pm 2013-06-14 21:25 pjf ;
 
 package Unexpected;
 
 use namespace::sweep;
 use overload '""' => 'as_string', fallback => 1;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 7 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 9 $ =~ /\d+/gmx );
 
 use 5.01;
 use Moo;
@@ -75,7 +75,7 @@ Unexpected - Exception class composed from traits
 
 =head1 Version
 
-This documents version v0.3.$Rev: 7 $ of L<Unexpected>
+This documents version v0.3.$Rev: 9 $ of L<Unexpected>
 
 =head1 Description
 
@@ -149,9 +149,13 @@ There are no known incompatibilities in this module
 
 =head1 Bugs and Limitations
 
-There are no known bugs in this module.
-Please report problems to the address below.
-Patches are welcome
+L<Throwable> did not let me use the stack trace filter directly, it's wrapped
+inside an attribute constructor. There was nothing else in L<Throwable>
+that would not have been overridden
+
+There are no known bugs in this module.  Please report problems to
+http://rt.cpan.org/NoAuth/Bugs.html?Dist=Unexpected. Patches
+are welcome
 
 =head1 Acknowledgements
 

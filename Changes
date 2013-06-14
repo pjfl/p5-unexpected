@@ -1,6 +1,7 @@
 Revision history for Unexpected
 
-0.3.7     2013-06-13 21:41:42
+0.3.9     2013-06-14 22:47:18
+          - Updated POD closes RT#86121
           - Added warning to ::Types::LoadableClass
           - Stopped Clifford 3954afc6-d231-11e2-8b9f-bc1b31b64f85
             Lies about installed version of Moo

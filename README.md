@@ -42,7 +42,7 @@ Unexpected - Exception class composed from traits
 
 # Version
 
-This documents version v0.3.$Rev: 7 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.3.$Rev: 9 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
@@ -102,9 +102,13 @@ There are no known incompatibilities in this module
 
 # Bugs and Limitations
 
-There are no known bugs in this module.
-Please report problems to the address below.
-Patches are welcome
+[Throwable](https://metacpan.org/module/Throwable) did not let me use the stack trace filter directly, it's wrapped
+inside an attribute constructor. There was nothing else in [Throwable](https://metacpan.org/module/Throwable)
+that would not have been overridden
+
+There are no known bugs in this module.  Please report problems to
+http://rt.cpan.org/NoAuth/Bugs.html?Dist=Unexpected. Patches
+are welcome
 
 # Acknowledgements
 
