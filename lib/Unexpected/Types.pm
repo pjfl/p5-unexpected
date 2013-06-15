@@ -1,20 +1,20 @@
-# @(#)Ident: Types.pm 2013-06-14 13:54 pjf ;
+# @(#)Ident: Types.pm 2013-06-15 22:17 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 8 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 10 $ =~ /\d+/gmx );
 
-use Class::Load  qw(load_class);
-use English      qw(-no_match_vars);
-use Scalar::Util qw(blessed);
-use Type::Library  -base;
+use Class::Load  qw( load_class );
+use English      qw( -no_match_vars );
+use Scalar::Util qw( blessed );
+use Type::Library    -base;
 use Type::Tiny;
 use Type::Utils;
 
-BEGIN { extends q(Types::Standard) };
+BEGIN { extends 'Types::Standard' };
 
 $Type::Exception::CarpInternal{ 'Sub::Quote' }++;
 $Type::Exception::CarpInternal{ 'Unexpected::TraitFor::Throwing' }++;
@@ -22,10 +22,10 @@ $Type::Exception::CarpInternal{ 'Unexpected::TraitFor::Throwing' }++;
 __PACKAGE__->meta->add_type( Type::Tiny->new
    (  name       => 'LoadableClass',
       constraint => sub {
-         local  $EVAL_ERROR;
-         my $class = ref $_ eq 'CODE' ? $_->() : $_;
-         eval { load_class( $class ) };
-         $EVAL_ERROR and warn $EVAL_ERROR."\n";
+         local  $EVAL_ERROR; my $class = ref $_ eq 'CODE' ? $_->() : $_;
+
+         eval { load_class( $class ) }; $EVAL_ERROR and warn $EVAL_ERROR."\n";
+
          return $EVAL_ERROR ? 0 : 1;
       },
       message    => sub { "Attribute value ${_} is not a loadable class" }, ) );
@@ -79,7 +79,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.3.$Rev: 8 $ of L<Unexpected::Types>
+This documents version v0.3.$Rev: 10 $ of L<Unexpected::Types>
 
 =head1 Description
 

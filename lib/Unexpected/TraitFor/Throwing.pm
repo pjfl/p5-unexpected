@@ -1,23 +1,23 @@
-# @(#)Ident: Throwing.pm 2013-06-09 21:20 pjf ;
+# @(#)Ident: Throwing.pm 2013-06-15 22:13 pjf ;
 
 package Unexpected::TraitFor::Throwing;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 6 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 10 $ =~ /\d+/gmx );
 
-use Carp                ();
-use English           qw(-no_match_vars);
+use Carp                ( );
+use English           qw( -no_match_vars );
 use Moo::Role;
-use Scalar::Util      qw(blessed);
-use Unexpected::Types qw(Maybe Object);
+use Scalar::Util      qw( blessed );
+use Unexpected::Types qw( Maybe Object );
 
-requires qw(BUILD is_one_of_us);
+requires qw( BUILD is_one_of_us );
 
-my %_CACHE;
+my %Cache;
 
 # Lifted from Throwable
 has 'previous_exception' => is => 'ro', isa => Maybe[Object],
-   default               => sub { $_CACHE{ __cache_key() } };
+   default               => sub { $Cache{ __cache_key() } };
 
 # Construction
 after 'BUILD' => sub {
@@ -50,7 +50,7 @@ sub throw_on_error {
 sub _cache_exception {
    my $self = shift; my $e = bless { %{ $self } }, blessed $self;
 
-   delete $e->{previous_exception}; $_CACHE{ __cache_key() } = $e;
+   delete $e->{previous_exception}; $Cache{ __cache_key() } = $e;
 
    return;
 }
@@ -95,7 +95,7 @@ Unexpected::TraitFor::Throwing - Detects and throws exceptions
 
 =head1 Version
 
-This documents version v0.3.$Rev: 6 $ of
+This documents version v0.3.$Rev: 10 $ of
 L<Unexpected::TraitFor::Throwing>
 
 =head1 Description

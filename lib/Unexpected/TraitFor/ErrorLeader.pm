@@ -1,15 +1,15 @@
-# @(#)Ident: ErrorLeader.pm 2013-06-09 20:31 pjf ;
+# @(#)Ident: ErrorLeader.pm 2013-06-15 22:10 pjf ;
 
 package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 10 $ =~ /\d+/gmx );
 
 use Moo::Role;
-use List::Util        qw(first);
-use Unexpected::Types qw(NonZeroPositiveInt SimpleStr);
+use List::Util        qw( first );
+use Unexpected::Types qw( NonZeroPositiveInt SimpleStr );
 
-requires qw(as_string filtered_frames);
+requires qw( as_string filtered_frames );
 
 my $Ignore = [];
 
@@ -87,7 +87,7 @@ Unexpected::TraitFor::ErrorLeader - Prepends a leader to the exception
 
 =head1 Version
 
-This documents version v0.3.$Rev: 5 $
+This documents version v0.3.$Rev: 10 $
 of L<Unexpected::TraitFor::ErrorLeader>
 
 =head1 Description

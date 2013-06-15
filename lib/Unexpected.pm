@@ -1,15 +1,15 @@
-# @(#)Ident: Unexpected.pm 2013-06-14 21:25 pjf ;
+# @(#)Ident: Unexpected.pm 2013-06-15 22:07 pjf ;
 
 package Unexpected;
 
+use 5.01;
 use namespace::sweep;
 use overload '""' => 'as_string', fallback => 1;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 9 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 10 $ =~ /\d+/gmx );
 
-use 5.01;
 use Moo;
-use Scalar::Util      qw(blessed);
-use Unexpected::Types qw(NonEmptySimpleStr);
+use Scalar::Util      qw( blessed );
+use Unexpected::Types qw( NonEmptySimpleStr );
 
 with q(Unexpected::TraitFor::StringifyingError);
 with q(Unexpected::TraitFor::Throwing);
@@ -75,7 +75,7 @@ Unexpected - Exception class composed from traits
 
 =head1 Version
 
-This documents version v0.3.$Rev: 9 $ of L<Unexpected>
+This documents version v0.3.$Rev: 10 $ of L<Unexpected>
 
 =head1 Description
 
