@@ -42,14 +42,15 @@ Unexpected - Exception class composed from traits
 
 # Version
 
-This documents version v0.3.$Rev: 9 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.3.$Rev: 11 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
 An exception class that supports error messages with placeholders, a
-["throw" in Unexpected::TraitFor::Throwing](https://metacpan.org/module/Unexpected::TraitFor::Throwing#throw) method with
-automatic re-throw upon detection of self, conditional throw if an
-exception was caught and a simplified stacktrace
+[throw](https://metacpan.org/module/Unexpected::TraitFor::Throwing#throw) method with automatic
+re-throw upon detection of self, conditional throw if an exception was
+caught and a simplified stack trace in addition to the error message
+with full stack trace
 
 # Configuration and Environment
 

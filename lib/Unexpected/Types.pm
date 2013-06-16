@@ -1,18 +1,18 @@
-# @(#)Ident: Types.pm 2013-06-15 22:17 pjf ;
+# @(#)Ident: Types.pm 2013-06-16 18:33 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 10 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 11 $ =~ /\d+/gmx );
 
 use Class::Load  qw( load_class );
 use English      qw( -no_match_vars );
 use Scalar::Util qw( blessed );
 use Type::Library    -base;
 use Type::Tiny;
-use Type::Utils;
+use Type::Utils  qw( extends );
 
 BEGIN { extends 'Types::Standard' };
 
@@ -21,45 +21,77 @@ $Type::Exception::CarpInternal{ 'Unexpected::TraitFor::Throwing' }++;
 
 __PACKAGE__->meta->add_type( Type::Tiny->new
    (  name       => 'LoadableClass',
-      constraint => sub {
-         local  $EVAL_ERROR; my $class = ref $_ eq 'CODE' ? $_->() : $_;
-
-         eval { load_class( $class ) }; $EVAL_ERROR and warn $EVAL_ERROR."\n";
-
-         return $EVAL_ERROR ? 0 : 1;
-      },
-      message    => sub { "Attribute value ${_} is not a loadable class" }, ) );
+      constraint => sub { __constraint_for_loadable_class( $_ ) },
+      message    => sub { __exception_message
+         ( 'Attribute value [_1] is not a loadable class', $_ ) },
+      parent     => Defined, ) );
 
 __PACKAGE__->meta->add_type( Type::Tiny->new
    (  name       => 'NonEmptySimpleStr',
       constraint => sub {
          length $_ > 0 and length $_ < 255 and $_ !~ m{ \n }mx },
-      message    => sub {
-         "Attribute value ${_} is not a non empty simple string" }, ) );
+      message    => sub { __exception_message
+         ( 'Attribute value [_1] is not a non empty simple string', $_ ) },
+      parent     => Defined, ) );
 
 __PACKAGE__->meta->add_type( Type::Tiny->new
    (  name       => 'NonZeroPositiveInt',
       constraint => sub { $_ =~ m{ \+?[0-9]+ }mx and $_ > 0 },
-      message    => sub {
-         "Attribute value ${_} is not a non zero positive integer" }, ) );
+      message    => sub { __exception_message
+         ( 'Attribute value [_1] is not a non zero positive integer', $_ ) },
+      parent     => Defined, ) );
 
 __PACKAGE__->meta->add_type( Type::Tiny->new
    (  name       => 'PositiveInt',
       constraint => sub { $_ =~ m{ \+?[0-9]+ }mx and $_ >= 0 },
-      message    => sub {
-         "Attribute value ${_} is not a positive integer" }, ) );
+      message    => sub { __exception_message
+         ( 'Attribute value [_1] is not a positive integer', $_ ) },
+      parent     => Defined, ) );
 
 __PACKAGE__->meta->add_type( Type::Tiny->new
    (  name       => 'SimpleStr',
       constraint => sub { length $_ < 255 and $_ !~ m{ \n }mx },
-      message    => sub { "Attribute value ${_} is not a simple string" }, ) );
+      message    => sub { __exception_message
+         ( 'Attribute value [_1] is not a simple string', $_ ) },
+      parent     => Defined, ) );
 
 __PACKAGE__->meta->add_type( Type::Tiny->new
    (  name       => 'Tracer',
       constraint => sub { $_->can( 'frames' ) },
-      message    => sub {
-         blessed $_ ? 'Object '.(blessed $_).' is missing a frames method'
-                    : "Attribute value ${_} is not on object reference" }, ) );
+      message    => sub { __exception_message_for_tracer( $_ ) },
+      parent     => Object, ) );
+
+# Private functions
+sub __constraint_for_loadable_class {
+   my $x = shift; my $class = ref $x eq 'CODE' ? $x->() : $x; local $EVAL_ERROR;
+
+   eval { load_class( $class ) }; $EVAL_ERROR and warn "${EVAL_ERROR}\n";
+
+   return $EVAL_ERROR ? 0 : 1;
+}
+
+sub __exception_message {
+   my ($error, @args) = @_;
+
+   my @vals = map { (length) ? $_ : '[]' }
+              map { $_ // '[?]' } @args, map { '[?]' } 0 .. 9;
+
+   $error =~ s{ \[ _ (\d+) \] }{$vals[ $1 - 1 ]}gmx;
+
+   return $error;
+}
+
+sub __exception_message_for_object_reference {
+   return __exception_message
+      ( 'Attribute value [_1] is not an object reference', $_[ 0 ] );
+}
+
+sub __exception_message_for_tracer {
+   blessed $_[ 0 ] and return __exception_message
+      ( 'Object [_1] is missing a frames method', blessed $_[ 0 ] );
+
+   return __exception_message_for_object_reference( $_[ 0 ] );
+}
 
 1;
 
@@ -79,7 +111,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.3.$Rev: 10 $ of L<Unexpected::Types>
+This documents version v0.3.$Rev: 11 $ of L<Unexpected::Types>
 
 =head1 Description
 
@@ -108,6 +140,10 @@ contains no newlines
 =item C<NonZeroPositiveInt>
 
 A non zero positive integer
+
+=item C<PositiveInt>
+
+A positive integer including zero
 
 =item C<SimpleStr>
 
