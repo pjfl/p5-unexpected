@@ -1,8 +1,8 @@
-# @(#)Ident: 20types.t 2013-06-16 18:49 pjf ;
+# @(#)Ident: 20types.t 2013-06-17 17:19 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 11 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 12 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, q(lib) );
@@ -20,20 +20,6 @@ BEGIN {
 }
 
 use English qw( -no_match_vars );
-
-{  package MyLoadableClass;
-
-   use Moo;
-   use Unexpected::Types qw( LoadableClass );
-
-   has 'test_class' => is => 'ro', isa => LoadableClass,
-      coerce        => LoadableClass->coercion;
-}
-
-my $mylc  = MyLoadableClass->new( test_class => 'Unexpected' );
-my $trace = $mylc->test_class->new;
-
-ok $trace->can( 'frames' ), 'Loadable class';
 
 {  package MyNESS;
 
@@ -58,6 +44,48 @@ like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non empty simple str - newline';
 eval { $myness = MyNESS->new( test_ness => 'x' ) };
 
 is $EVAL_ERROR, q(), 'Non empty simple str - passes';
+
+{  package MyNZPI;
+
+   use Moo;
+   use Unexpected::Types qw( NonZeroPositiveInt );
+
+   has 'test_nzpi'  => is => 'ro', isa => NonZeroPositiveInt, default => sub {};
+}
+
+my $mynzpi; eval { $mynzpi = MyNZPI->new };
+
+like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non zero positive int - undef';
+
+eval { $mynzpi = MyNZPI->new( test_nzpi => '' ) };
+
+like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non zero positive int - null';
+
+eval { $mynzpi = MyNZPI->new( test_nzpi => "0" ) };
+
+like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non zero positive int - zero';
+
+eval { $mynzpi = MyNZPI->new( test_nzpi => "-1" ) };
+
+like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non zero positive int - negative';
+
+eval { $mynzpi = MyNZPI->new( test_nzpi => '1' ) };
+
+is $EVAL_ERROR, q(), 'Non zero positive int - passes';
+
+{  package MyLoadableClass;
+
+   use Moo;
+   use Unexpected::Types qw( LoadableClass );
+
+   has 'test_class' => is => 'ro', isa => LoadableClass,
+      coerce        => LoadableClass->coercion;
+}
+
+my $mylc  = MyLoadableClass->new( test_class => 'Unexpected' );
+my $trace = $mylc->test_class->new;
+
+ok $trace->can( 'frames' ), 'Loadable class';
 
 {  package MyTracer;
 

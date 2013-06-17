@@ -1,6 +1,7 @@
 Revision history for Unexpected
 
-0.3.11    2013-06-16 19:58:00
+0.3.12    2013-06-17 20:06:21
+          - Normalized syntax in ::Types. Added inlining
           - Better errors from ::Types. Added tests
           - Updated POD closes RT#86121
           - Added warning to ::Types::LoadableClass

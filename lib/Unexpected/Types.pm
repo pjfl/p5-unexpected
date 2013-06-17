@@ -1,65 +1,65 @@
-# @(#)Ident: Types.pm 2013-06-16 18:33 pjf ;
+# @(#)Ident: Types.pm 2013-06-17 18:57 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 11 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 12 $ =~ /\d+/gmx );
 
 use Class::Load  qw( load_class );
 use English      qw( -no_match_vars );
 use Scalar::Util qw( blessed );
-use Type::Library    -base;
-use Type::Tiny;
-use Type::Utils  qw( extends );
+use Type::Library    -base, -declare =>
+                 qw( LoadableClass NonEmptySimpleStr
+                     NonZeroPositiveInt PositiveInt SimpleStr Tracer );
+use Type::Utils  qw( as coerce extends from
+                     inline_as message subtype via where );
 
 BEGIN { extends 'Types::Standard' };
 
 $Type::Exception::CarpInternal{ 'Sub::Quote' }++;
 $Type::Exception::CarpInternal{ 'Unexpected::TraitFor::Throwing' }++;
 
-__PACKAGE__->meta->add_type( Type::Tiny->new
-   (  name       => 'LoadableClass',
-      constraint => sub { __constraint_for_loadable_class( $_ ) },
-      message    => sub { __exception_message
-         ( 'Attribute value [_1] is not a loadable class', $_ ) },
-      parent     => Defined, ) );
-
-__PACKAGE__->meta->add_type( Type::Tiny->new
-   (  name       => 'NonEmptySimpleStr',
-      constraint => sub {
-         length $_ > 0 and length $_ < 255 and $_ !~ m{ \n }mx },
-      message    => sub { __exception_message
+subtype NonEmptySimpleStr, as Str,
+   inline_as {
+      $_[ 0 ]->parent->inline_check( $_ )
+         ." and length $_ > 0 and length $_ < 255 and $_ !~ m{ [\n] }mx" },
+   message   {
+      __exception_message
          ( 'Attribute value [_1] is not a non empty simple string', $_ ) },
-      parent     => Defined, ) );
+   where     { length $_ > 0 and length $_ < 255 and $_ !~ m{ [\n] }mx };
 
-__PACKAGE__->meta->add_type( Type::Tiny->new
-   (  name       => 'NonZeroPositiveInt',
-      constraint => sub { $_ =~ m{ \+?[0-9]+ }mx and $_ > 0 },
-      message    => sub { __exception_message
+subtype NonZeroPositiveInt, as Int,
+   inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_ > 0" },
+   message   {
+      __exception_message
          ( 'Attribute value [_1] is not a non zero positive integer', $_ ) },
-      parent     => Defined, ) );
+   where     { $_ > 0 };
 
-__PACKAGE__->meta->add_type( Type::Tiny->new
-   (  name       => 'PositiveInt',
-      constraint => sub { $_ =~ m{ \+?[0-9]+ }mx and $_ >= 0 },
-      message    => sub { __exception_message
-         ( 'Attribute value [_1] is not a positive integer', $_ ) },
-      parent     => Defined, ) );
+subtype PositiveInt, as Int,
+   inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_ >= 0" },
+   message   { __exception_message
+                  ( 'Attribute value [_1] is not a positive integer', $_ ) },
+   where     { $_ >= 0 };
 
-__PACKAGE__->meta->add_type( Type::Tiny->new
-   (  name       => 'SimpleStr',
-      constraint => sub { length $_ < 255 and $_ !~ m{ \n }mx },
-      message    => sub { __exception_message
-         ( 'Attribute value [_1] is not a simple string', $_ ) },
-      parent     => Defined, ) );
+subtype SimpleStr, as Str,
+   inline_as { $_[ 0 ]->parent->inline_check( $_ )
+                  ." and length $_ < 255 and $_ !~ m{ [\n] }mx" },
+   message   { __exception_message
+                  ( 'Attribute value [_1] is not a simple string', $_ ) },
+   where     { length $_ < 255 and $_ !~ m{ [\n] }mx };
 
-__PACKAGE__->meta->add_type( Type::Tiny->new
-   (  name       => 'Tracer',
-      constraint => sub { $_->can( 'frames' ) },
-      message    => sub { __exception_message_for_tracer( $_ ) },
-      parent     => Object, ) );
+subtype Tracer, as Object,
+   inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_->can( 'frames' )" },
+   message   { __exception_message_for_tracer( $_ ) },
+   where     { $_->can( 'frames' ) };
+
+
+subtype LoadableClass, as NonEmptySimpleStr,
+   message   { __exception_message
+                  ( 'String [_1] is not a loadable class', $_ ) },
+   where     { __constraint_for_loadable_class( $_ ) };
 
 # Private functions
 sub __constraint_for_loadable_class {
@@ -83,7 +83,7 @@ sub __exception_message {
 
 sub __exception_message_for_object_reference {
    return __exception_message
-      ( 'Attribute value [_1] is not an object reference', $_[ 0 ] );
+      ( 'String [_1] is not an object reference', $_[ 0 ] );
 }
 
 sub __exception_message_for_tracer {
@@ -111,7 +111,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.3.$Rev: 11 $ of L<Unexpected::Types>
+This documents version v0.3.$Rev: 12 $ of L<Unexpected::Types>
 
 =head1 Description
 
