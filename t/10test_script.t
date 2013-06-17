@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-06-13 20:30 pjf ;
+# @(#)Ident: 10test_script.t 2013-06-17 19:47 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 7 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 13 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, q(lib) );
@@ -86,7 +86,7 @@ is $lines[ 2 ], "main line ${line3}", 'Stactrace line 3';
 
 my $level = $min_level + 1;
 
-sub test_throw2 { $class->throw( error => 'PracticeKill', level => $level ) };
+sub test_throw2 { $class->throw( 'PracticeKill', level => $level ) };
 
 sub test_throw3 { test_throw2() }
 

@@ -1,6 +1,8 @@
 Revision history for Unexpected
 
-0.3.12    2013-06-17 20:06:21
+0.3.13    2013-06-17 22:10:03
+          - Created ::Functions
+          - Throw a list with an odd number of elements
           - Normalized syntax in ::Types. Added inlining
           - Better errors from ::Types. Added tests
           - Updated POD closes RT#86121

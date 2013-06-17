@@ -1,9 +1,9 @@
-# @(#)Ident: ErrorLeader.pm 2013-06-15 22:10 pjf ;
+# @(#)Ident: ErrorLeader.pm 2013-06-17 21:08 pjf ;
 
 package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 10 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 13 $ =~ /\d+/gmx );
 
 use Moo::Role;
 use List::Util        qw( first );
@@ -16,7 +16,7 @@ my $Ignore = [];
 # Object attributes (public)
 has 'leader' => is => 'lazy', isa => SimpleStr, init_arg => undef;
 
-has 'level'  => is => 'ro',   isa => NonZeroPositiveInt, default => sub { 1 };
+has 'level'  => is => 'ro',   isa => NonZeroPositiveInt, default => 1;
 
 # Construction
 around 'as_string' => sub {
@@ -87,7 +87,7 @@ Unexpected::TraitFor::ErrorLeader - Prepends a leader to the exception
 
 =head1 Version
 
-This documents version v0.3.$Rev: 10 $
+This documents version v0.3.$Rev: 13 $
 of L<Unexpected::TraitFor::ErrorLeader>
 
 =head1 Description

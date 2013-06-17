@@ -1,12 +1,13 @@
-# @(#)$Ident: StringifyingError.pm 2013-06-15 22:09 pjf ;
+# @(#)$Ident: StringifyingError.pm 2013-06-17 21:07 pjf ;
 
 package Unexpected::TraitFor::StringifyingError;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 10 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 13 $ =~ /\d+/gmx );
 
 use Moo::Role;
-use Unexpected::Types qw( ArrayRef Str );
+use Unexpected::Functions   qw( build_attr_from inflate_message );
+use Unexpected::Types       qw( ArrayRef Str );
 
 # Object attributes (public)
 has 'args'  => is => 'ro', isa => ArrayRef, default => sub { [] };
@@ -17,7 +18,7 @@ has 'error' => is => 'ro', isa => Str,      default => 'Unknown error';
 around 'BUILDARGS' => sub {
    my ($orig, $self, @args) = @_;
 
-   my $attr = __build_attr_from( @args ); my $e = delete $attr->{error};
+   my $attr = build_attr_from( @args ); my $e = delete $attr->{error};
 
    $e and ref $e eq 'CODE' and $e = $e->( $self, $attr );
    $e and $e .= q() and chomp $e;
@@ -35,28 +36,16 @@ after 'BUILD' => sub {
 };
 
 # Public methods
-sub as_string { # Expand positional parameters of the form [_<n>]
-   my $self = shift; my $error = $self->error;
+sub as_string { # Stringifies the error and inflates the placeholders
+   my $self = shift; my $error = $self->error; defined $error or return;
 
-   defined $error or return $error; 0 > index $error, q([_) and return $error;
+   0 > index $error, '[_' and return $error;
 
-   my @args = map { $_ // '[?]' } @{ $self->args }, map { '[?]' } 0 .. 9;
-
-   $error =~ s{ \[ _ (\d+) \] }{$args[ $1 - 1 ]}gmx;
-
-   return $error;
+   return inflate_message( $error, @{ $self->args } );
 }
 
-sub message {
+sub message { # Stringify self and a full stack trace
    my $self = shift; return $self."\n\n".$self->trace->as_string."\n";
-}
-
-# Private functions
-sub __build_attr_from { # Coerce a hash ref from whatever was passed
-   return ($_[ 0 ] && ref $_[ 0 ] eq q(HASH)) ? { %{ $_[ 0 ] } }
-        :        (defined $_[ 1 ])            ? { @_ }
-        :        (defined $_[ 0 ])            ? { error => $_[ 0 ] }
-                                              : {};
 }
 
 1;
@@ -71,7 +60,7 @@ Unexpected::TraitFor::StringifyingError - Base role for exception handling
 
 =head1 Version
 
-This documents version v0.3.$Rev: 10 $ of
+This documents version v0.3.$Rev: 13 $ of
 L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis

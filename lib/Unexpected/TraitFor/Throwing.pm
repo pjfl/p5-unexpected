@@ -1,15 +1,16 @@
-# @(#)Ident: Throwing.pm 2013-06-15 22:13 pjf ;
+# @(#)Ident: Throwing.pm 2013-06-17 20:35 pjf ;
 
 package Unexpected::TraitFor::Throwing;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 10 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 13 $ =~ /\d+/gmx );
 
-use Carp                ( );
-use English           qw( -no_match_vars );
+use Carp                      ( );
+use English                 qw( -no_match_vars );
 use Moo::Role;
-use Scalar::Util      qw( blessed );
-use Unexpected::Types qw( Maybe Object );
+use Scalar::Util            qw( blessed );
+use Unexpected::Functions   qw( build_attr_from );
+use Unexpected::Types       qw( Maybe Object );
 
 requires qw( BUILD is_one_of_us );
 
@@ -28,7 +29,7 @@ after 'BUILD' => sub {
 sub caught {
    my ($self, @args) = @_; $self->_is_object_ref( @args ) and return $self;
 
-   my $attr  = __build_attr_from( @args );
+   my $attr  = build_attr_from( @args );
    my $error = $attr->{error} ||= $EVAL_ERROR; $error or return;
 
    return $self->is_one_of_us( $error ) ? $error : $self->new( $attr );
@@ -64,13 +65,6 @@ sub _is_object_ref {
 }
 
 # Private functions
-sub __build_attr_from { # Coerce a hash ref from whatever was passed
-   return ($_[ 0 ] && ref $_[ 0 ] eq q(HASH)) ? { %{ $_[ 0 ] } }
-        :        (defined $_[ 1 ])            ? { @_ }
-        :        (defined $_[ 0 ])            ? { error => $_[ 0 ] }
-                                              : {};
-}
-
 sub __cache_key {
    return $PID.'-'.(exists $INC{ 'threads.pm' } ? threads->tid() : 0);
 }
@@ -95,7 +89,7 @@ Unexpected::TraitFor::Throwing - Detects and throws exceptions
 
 =head1 Version
 
-This documents version v0.3.$Rev: 10 $ of
+This documents version v0.3.$Rev: 13 $ of
 L<Unexpected::TraitFor::Throwing>
 
 =head1 Description

@@ -1,20 +1,22 @@
-# @(#)Ident: Types.pm 2013-06-17 18:57 pjf ;
+# @(#)Ident: Types.pm 2013-06-17 20:34 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 12 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 13 $ =~ /\d+/gmx );
 
-use Class::Load  qw( load_class );
-use English      qw( -no_match_vars );
-use Scalar::Util qw( blessed );
-use Type::Library    -base, -declare =>
-                 qw( LoadableClass NonEmptySimpleStr
-                     NonZeroPositiveInt PositiveInt SimpleStr Tracer );
-use Type::Utils  qw( as coerce extends from
-                     inline_as message subtype via where );
+use Class::Load             qw( load_class );
+use English                 qw( -no_match_vars );
+use Scalar::Util            qw( blessed );
+use Type::Library               -base, -declare =>
+                            qw( LoadableClass NonEmptySimpleStr
+                                NonZeroPositiveInt PositiveInt
+                                SimpleStr Tracer );
+use Type::Utils             qw( as coerce extends from
+                                inline_as message subtype via where );
+use Unexpected::Functions   qw( inflate_message );
 
 BEGIN { extends 'Types::Standard' };
 
@@ -26,27 +28,27 @@ subtype NonEmptySimpleStr, as Str,
       $_[ 0 ]->parent->inline_check( $_ )
          ." and length $_ > 0 and length $_ < 255 and $_ !~ m{ [\n] }mx" },
    message   {
-      __exception_message
+      inflate_message
          ( 'Attribute value [_1] is not a non empty simple string', $_ ) },
    where     { length $_ > 0 and length $_ < 255 and $_ !~ m{ [\n] }mx };
 
 subtype NonZeroPositiveInt, as Int,
    inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_ > 0" },
    message   {
-      __exception_message
+      inflate_message
          ( 'Attribute value [_1] is not a non zero positive integer', $_ ) },
    where     { $_ > 0 };
 
 subtype PositiveInt, as Int,
    inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_ >= 0" },
-   message   { __exception_message
+   message   { inflate_message
                   ( 'Attribute value [_1] is not a positive integer', $_ ) },
    where     { $_ >= 0 };
 
 subtype SimpleStr, as Str,
    inline_as { $_[ 0 ]->parent->inline_check( $_ )
                   ." and length $_ < 255 and $_ !~ m{ [\n] }mx" },
-   message   { __exception_message
+   message   { inflate_message
                   ( 'Attribute value [_1] is not a simple string', $_ ) },
    where     { length $_ < 255 and $_ !~ m{ [\n] }mx };
 
@@ -57,8 +59,7 @@ subtype Tracer, as Object,
 
 
 subtype LoadableClass, as NonEmptySimpleStr,
-   message   { __exception_message
-                  ( 'String [_1] is not a loadable class', $_ ) },
+   message   { inflate_message( 'String [_1] is not a loadable class', $_ ) },
    where     { __constraint_for_loadable_class( $_ ) };
 
 # Private functions
@@ -70,24 +71,12 @@ sub __constraint_for_loadable_class {
    return $EVAL_ERROR ? 0 : 1;
 }
 
-sub __exception_message {
-   my ($error, @args) = @_;
-
-   my @vals = map { (length) ? $_ : '[]' }
-              map { $_ // '[?]' } @args, map { '[?]' } 0 .. 9;
-
-   $error =~ s{ \[ _ (\d+) \] }{$vals[ $1 - 1 ]}gmx;
-
-   return $error;
-}
-
 sub __exception_message_for_object_reference {
-   return __exception_message
-      ( 'String [_1] is not an object reference', $_[ 0 ] );
+   return inflate_message( 'String [_1] is not an object reference', $_[ 0 ] );
 }
 
 sub __exception_message_for_tracer {
-   blessed $_[ 0 ] and return __exception_message
+   blessed $_[ 0 ] and return inflate_message
       ( 'Object [_1] is missing a frames method', blessed $_[ 0 ] );
 
    return __exception_message_for_object_reference( $_[ 0 ] );
@@ -111,7 +100,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.3.$Rev: 12 $ of L<Unexpected::Types>
+This documents version v0.3.$Rev: 13 $ of L<Unexpected::Types>
 
 =head1 Description
 
