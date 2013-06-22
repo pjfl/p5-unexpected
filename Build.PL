@@ -1,9 +1,9 @@
-# @(#)$Ident: Build.PL 2013-06-17 20:58 pjf ;
+# @(#)$Ident: Build.PL 2013-06-22 19:40 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 13 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(Unexpected),
@@ -15,7 +15,7 @@ Bob->new( {
       'Class::Load'       => 0.18,
       'Devel::StackTrace' => 1.26,
       'Moo'               => 1.002,
-      'Type::Tiny'        => 0.006, },
+      'Type::Tiny'        => 0.008, },
    recommends             => {
       'App::cpanminus'    => 1.6005, },
    configure_requires     => {
