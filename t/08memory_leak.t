@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 2 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, q(lib) );
@@ -29,11 +29,13 @@ $ENV{TEST_MEMORY}
    with 'Unexpected::TraitFor::ErrorLeader';
 }
 
-eval { MyError->throw( 'the error' ) };
+eval { MyError->throw( 'the error' ) }; my $e = $EVAL_ERROR;
 
-ok $EVAL_ERROR, 'Exception was thrown';
+ok $e, 'Exception was thrown';
 
-memory_cycle_ok( $EVAL_ERROR, 'Exception has no memory cycles' );
+$e->stacktrace; $e->message;
+
+memory_cycle_ok( $e, 'Exception has no memory cycles' );
 
 done_testing;
 

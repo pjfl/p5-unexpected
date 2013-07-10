@@ -1,9 +1,9 @@
-# @(#)$Ident: StringifyingError.pm 2013-06-17 21:07 pjf ;
+# @(#)$Ident: StringifyingError.pm 2013-06-26 00:45 pjf ;
 
 package Unexpected::TraitFor::StringifyingError;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo::Role;
 use Unexpected::Functions   qw( build_attr_from inflate_message );
@@ -39,13 +39,13 @@ after 'BUILD' => sub {
 sub as_string { # Stringifies the error and inflates the placeholders
    my $self = shift; my $error = $self->error; defined $error or return;
 
-   0 > index $error, '[_' and return $error;
+   0 > index $error, '[_' and return $error."\n";
 
-   return inflate_message( $error, @{ $self->args } );
+   return inflate_message( $error, @{ $self->args } )."\n";
 }
 
 sub message { # Stringify self and a full stack trace
-   my $self = shift; return $self."\n\n".$self->trace->as_string."\n";
+   my $self = shift; return $self."\n".$self->trace->as_string."\n";
 }
 
 1;
@@ -60,7 +60,7 @@ Unexpected::TraitFor::StringifyingError - Base role for exception handling
 
 =head1 Version
 
-This documents version v0.4.$Rev: 1 $ of
+This documents version v0.4.$Rev: 2 $ of
 L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis

@@ -1,11 +1,10 @@
-# @(#)Ident: Functions.pm 2013-06-17 21:01 pjf ;
+# @(#)Ident: Functions.pm 2013-06-30 23:03 pjf ;
 
 package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 1 $ =~ /\d+/gmx );
-
+use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 2 $ =~ /\d+/gmx );
 use parent 'Exporter::TypeTiny';
 
 our @EXPORT = qw( build_attr_from inflate_message );
@@ -49,7 +48,7 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.4.$Rev: 1 $ of L<Unexpected::Functions>
+This documents version v0.4.$Rev: 2 $ of L<Unexpected::Functions>
 
 =head1 Description
 
