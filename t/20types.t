@@ -1,8 +1,8 @@
-# @(#)Ident: 20types.t 2013-06-17 20:28 pjf ;
+# @(#)Ident: 20types.t 2013-07-14 15:37 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 3 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, q(lib) );
@@ -72,6 +72,31 @@ like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non zero positive int - negative';
 eval { $mynzpi = MyNZPI->new( test_nzpi => '1' ) };
 
 is $EVAL_ERROR, q(), 'Non zero positive int - passes';
+
+{  package MyNNSS;
+
+   use Moo;
+   use Unexpected::Types qw( NonNumericSimpleStr );
+
+   has 'test_nnss'  => is => 'ro', isa => NonNumericSimpleStr,
+   default          => sub {};
+}
+
+my $mynnss; eval { $mynnss = MyNNSS->new };
+
+like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non numeric simple str - undef';
+
+eval { $mynnss = MyNNSS->new( test_nnss => 1 ) };
+
+like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non numeric simple str - numeric';
+
+eval { $mynnss = MyNNSS->new( test_nnss => '' ) };
+
+is $EVAL_ERROR, q(), 'Non numeric simple str - null passes';
+
+eval { $mynnss = MyNNSS->new( test_nnss => 'fred' ) };
+
+is $EVAL_ERROR, q(), 'Non numeric simple str - string passes';
 
 {  package MyLoadableClass;
 

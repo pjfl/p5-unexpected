@@ -1,19 +1,19 @@
-# @(#)Ident: Types.pm 2013-06-17 20:34 pjf ;
+# @(#)Ident: Types.pm 2013-07-14 15:34 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Class::Load             qw( load_class );
 use English                 qw( -no_match_vars );
 use Scalar::Util            qw( blessed );
 use Type::Library               -base, -declare =>
                             qw( LoadableClass NonEmptySimpleStr
-                                NonZeroPositiveInt PositiveInt
-                                SimpleStr Tracer );
+                                NonNumericSimpleStr NonZeroPositiveInt
+                                PositiveInt SimpleStr Tracer );
 use Type::Utils             qw( as coerce extends from
                                 inline_as message subtype via where );
 use Unexpected::Functions   qw( inflate_message );
@@ -26,7 +26,7 @@ $Type::Exception::CarpInternal{ 'Unexpected::TraitFor::Throwing' }++;
 subtype NonEmptySimpleStr, as Str,
    inline_as {
       $_[ 0 ]->parent->inline_check( $_ )
-         ." and length $_ > 0 and length $_ < 255 and $_ !~ m{ [\n] }mx" },
+         ." and length $_ > 0 and length $_ < 255 and $_ !~ m{ [\\n] }mx" },
    message   {
       inflate_message
          ( 'Attribute value [_1] is not a non empty simple string', $_ ) },
@@ -47,7 +47,7 @@ subtype PositiveInt, as Int,
 
 subtype SimpleStr, as Str,
    inline_as { $_[ 0 ]->parent->inline_check( $_ )
-                  ." and length $_ < 255 and $_ !~ m{ [\n] }mx" },
+                  ." and length $_ < 255 and $_ !~ m{ [\\n] }mx" },
    message   { inflate_message
                   ( 'Attribute value [_1] is not a simple string', $_ ) },
    where     { length $_ < 255 and $_ !~ m{ [\n] }mx };
@@ -61,6 +61,13 @@ subtype Tracer, as Object,
 subtype LoadableClass, as NonEmptySimpleStr,
    message   { inflate_message( 'String [_1] is not a loadable class', $_ ) },
    where     { __constraint_for_loadable_class( $_ ) };
+
+subtype NonNumericSimpleStr, as SimpleStr,
+   inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_ !~ m{ \\d+ }mx" },
+   message   {
+      inflate_message
+         ( 'Attribute value [_1] is not a non numeric simple string', $_ ) },
+   where     { $_ !~ m{ \d+ }mx };
 
 # Private functions
 sub __constraint_for_loadable_class {
@@ -100,7 +107,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.4.$Rev: 1 $ of L<Unexpected::Types>
+This documents version v0.4.$Rev: 3 $ of L<Unexpected::Types>
 
 =head1 Description
 
