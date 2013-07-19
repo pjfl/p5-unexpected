@@ -3,7 +3,7 @@
 package Unexpected::TraitFor::StringifyingError;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.5.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo::Role;
 use Unexpected::Functions   qw( build_attr_from inflate_message );
@@ -60,7 +60,7 @@ Unexpected::TraitFor::StringifyingError - Base role for exception handling
 
 =head1 Version
 
-This documents version v0.4.$Rev: 2 $ of
+This documents version v0.5.$Rev: 1 $ of
 L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis
