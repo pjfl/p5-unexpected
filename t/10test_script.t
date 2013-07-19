@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-06-17 19:47 pjf ;
+# @(#)Ident: 10test_script.t 2013-07-19 14:13 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.5.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.5.%d', q$Rev: 2 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, q(lib) );
@@ -35,11 +35,11 @@ sub _eval_error () { my $e = $EVAL_ERROR; $EVAL_ERROR = undef; return $e }
 
 my $class = 'MyException'; my $e = _eval_error;
 
-is $class->ignore->[ 0 ], undef, 'No initial ignore class';
+is $class->ignore->[ 0 ], 'Try::Tiny', 'No initial ignore class';
 
 ok $class->ignore_class( 'IgnoreMe' ), 'Set ignore class';
 
-is $class->ignore->[ 0 ], 'IgnoreMe', 'Get ignore class';
+is $class->ignore->[ 1 ], 'IgnoreMe', 'Get ignore class';
 
 eval { $class->throw_on_error };
 
