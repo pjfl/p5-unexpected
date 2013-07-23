@@ -1,6 +1,10 @@
 Revision history for Unexpected
 
-0.5.1     2013-07-19 15:11:35
+0.5.3     2013-07-23 19:21:00
+          - Abort Bingoes 1d05f0a0-f34c-11e2-8c80-50d7c5c10595
+            Exit zero from Build.PL without creating Build and
+            this smoker still files an UNKNOWN report. There's
+            nothing unknown here just a badly configured smoker
           - ErrorLeader ignores Try::Tiny
 
 0.4.1     2013-06-22 20:42:51
