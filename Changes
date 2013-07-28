@@ -1,6 +1,9 @@
 Revision history for Unexpected
 
-0.5.3     2013-07-23 19:21:00
+0.5.4     2013-07-28 21:03:23
+          - Aborting Bingoes failed see df276fba-f57c-11e2-8c80-50d7c5c10595
+            No choice but to send this smoker to sleep 10 while 1.
+            Chris Williams, put my pause id in your stop list
           - Abort Bingoes 1d05f0a0-f34c-11e2-8c80-50d7c5c10595
             Exit zero from Build.PL without creating Build and
             this smoker still files an UNKNOWN report. There's
