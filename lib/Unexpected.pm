@@ -1,11 +1,11 @@
-# @(#)Ident: Unexpected.pm 2013-07-29 20:02 pjf ;
+# @(#)Ident: Unexpected.pm 2013-07-30 13:13 pjf ;
 
 package Unexpected;
 
 use 5.010001;
 use namespace::sweep;
 use overload '""' => 'as_string', fallback => 1;
-use version; our $VERSION = qv( sprintf '0.5.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.5.%d', q$Rev: 6 $ =~ /\d+/gmx );
 
 use Moo;
 use Scalar::Util      qw( blessed );
@@ -75,7 +75,7 @@ Unexpected - Exception class composed from traits
 
 =head1 Version
 
-This documents version v0.5.$Rev: 5 $ of L<Unexpected>
+This documents version v0.5.$Rev: 6 $ of L<Unexpected>
 
 =head1 Description
 
