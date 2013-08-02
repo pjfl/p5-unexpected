@@ -1,6 +1,9 @@
 Revision history for Unexpected
 
-0.5.7     2013-08-02 10:29:12
+0.5.8     2013-08-02 20:56:06
+          - Made Moo::Role last use
+            <tobyink> Functions imported into a Moo role *after* the
+            `use Moo::Role` become part of the role's API.
           - Reverted min Perl ver testing in toolchain
           - New method for CPANTesting min Perl ver
           - Added fremen and frogman to tier gruber
