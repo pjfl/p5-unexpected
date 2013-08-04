@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+0.6.1     2013-08-04 18:15:15
+          - POD Updates
+
 0.5.8     2013-08-02 20:56:06
           - Made Moo::Role last use
             <tobyink> Functions imported into a Moo role *after* the

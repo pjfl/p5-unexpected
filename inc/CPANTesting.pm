@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-07-30 13:08 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-08-03 23:14 pjf ;
 
 package CPANTesting;
 
@@ -20,7 +20,7 @@ sub should_abort {
 }
 
 sub test_exceptions {
-   my $p = shift; my $perl_ver = $p->{requires}->{perl};
+   my $p = shift; my $perl_ver = $p->{_min_perl_ver} || $p->{requires}->{perl};
 
    is_testing()         or  return 0;
    $] < $perl_ver       and return "TESTS: Perl minimum ${perl_ver}";

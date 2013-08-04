@@ -42,7 +42,7 @@ Unexpected - Exception class composed from traits
 
 # Version
 
-This documents version v0.5.$Rev: 8 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.6.$Rev: 1 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
@@ -71,7 +71,8 @@ Defines these attributes;
 
 ## BUILDARGS
 
-Placeholder to shut [Pod::Coverage](https://metacpan.org/module/Pod::Coverage) up
+Customizes the constructor. Accepts either a coderef, an object ref,
+a hashref, a scalar, or a list of key / value pairs
 
 ## BUILD
 
@@ -85,7 +86,8 @@ Class method which detects instances of this exception class
 
 # Diagnostics
 
-None
+String overload is performed in this class as opposed to the stringify
+error role since overloading is not supported in [Moo::Role](https://metacpan.org/module/Moo::Role)
 
 # Dependencies
 
