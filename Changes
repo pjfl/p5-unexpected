@@ -1,6 +1,7 @@
 Revision history for Unexpected
 
-0.6.1     2013-08-04 18:15:15
+0.6.2     2013-08-07 13:58:55
+          - Reset min perl testing to original behaviour
           - POD Updates
 
 0.5.8     2013-08-02 20:56:06
