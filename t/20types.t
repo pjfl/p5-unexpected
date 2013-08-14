@@ -1,23 +1,23 @@
-# @(#)Ident: 20types.t 2013-07-14 15:37 pjf ;
+# @(#)Ident: 20types.t 2013-08-14 19:02 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 3 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, q(lib) );
 
 use Module::Build;
 use Test::More;
+use Test::Requires { Moo => 1.002 };
 
-my $reason;
+my $notes = {};
 
 BEGIN {
    my $builder = eval { Module::Build->current };
-
-   $builder and $reason = $builder->notes->{stop_tests};
-   $reason  and $reason =~ m{ \A TESTS: }mx and plan skip_all => $reason;
+      $builder and $notes = $builder->notes;
 }
+
 
 use English qw( -no_match_vars );
 

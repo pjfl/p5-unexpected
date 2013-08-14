@@ -1,35 +1,28 @@
-# @(#)$Ident: Build.PL 2013-07-29 12:20 pjf ;
+# @(#)$Ident: Build.PL 2013-08-14 19:20 pjf ;
 
 use strict;
 use warnings;
-use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-Bob->new( {
-   module    => 'Unexpected',
-   home_page => 'http://www.roxsoft.co.uk',
-   requires  => {
-      'perl'              => 5.010001,
-      'namespace::clean'  => 0.23,
-      'namespace::sweep'  => 0.006,
-      'Class::Load'       => 0.18,
-      'Devel::StackTrace' => 1.26,
-      'Moo'               => 1.002,
-      'Type::Tiny'        => 0.012, },
-   recommends             => {
-      'App::cpanminus'    => 1.6005, },
-   configure_requires     => {
-      'version'           => 0.88,
-      'Module::Build'     => 0.4004, },
-   build_requires         => {
-      'version'           => 0.88,
-      'Module::Build'     => 0.4004,
-      'Moo'               => 1.002, },
-} )->create_build_script; # Goal!
+use Module::Build;
 
-# Local Variables:
-# mode: perl
-# eval: (load-project-state "unexpected")
-# tab-title: Unexpected
-# tab-width: 3
-# End:
+sub whimper { print {*STDOUT} $_[ 0 ]."\n"; exit 0 }
+
+my $code = do { local $/; <DATA> }; my $perl_ver = 5.010001;
+
+$] >= $perl_ver or $ENV{PERL5_CPANPLUS_IS_VERSION}
+   or whimper "Minimum required Perl version is ${perl_ver}";
+
+Module::Build->subclass( code => $code )->new(
+  'module_name' => 'Unexpected',
+  'notes'       => { min_perl_version => $perl_ver },
+##{ $plugin->get_prereqs( 1 ) ##}
+##{ $plugin->get_default('share_dir') ##}
+)->create_build_script;
+
+exit 0;
+
+__DATA__
+
+sub _normalize_prereqs { # Dynamic config
+   my $self = shift; my $p = $self->SUPER::_normalize_prereqs; return $p;
+}

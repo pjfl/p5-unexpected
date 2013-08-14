@@ -1,22 +1,21 @@
-# @(#)Ident: 10test_script.t 2013-07-19 14:13 pjf ;
+# @(#)Ident: 10test_script.t 2013-08-14 19:01 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 3 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, q(lib) );
 
 use Module::Build;
 use Test::More;
+use Test::Requires { Moo => 1.002 };
 
-my $reason;
+my $notes = {};
 
 BEGIN {
    my $builder = eval { Module::Build->current };
-
-   $builder and $reason = $builder->notes->{stop_tests};
-   $reason  and $reason =~ m{ \A TESTS: }mx and plan skip_all => $reason;
+      $builder and $notes = $builder->notes;
 }
 
 {  package MyException;
@@ -29,7 +28,7 @@ BEGIN {
    1;
 }
 
-use English qw(-no_match_vars);
+use English qw( -no_match_vars );
 
 sub _eval_error () { my $e = $EVAL_ERROR; $EVAL_ERROR = undef; return $e }
 

@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Switched to Dist::Zilla
+
 0.6.2     2013-08-07 13:58:55
           - Reset min perl testing to original behaviour
           - POD Updates
