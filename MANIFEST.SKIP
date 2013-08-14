@@ -62,4 +62,3 @@ Thumbs.db
 
 # Avoid archives of this distribution
 \bUnexpected-v?[\d\.\_]+
-#\bUnexpected-?[\d\.\_]+
