@@ -4,7 +4,7 @@ package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use parent 'Exporter::TypeTiny';
 
 our @EXPORT = qw( build_attr_from inflate_message );
@@ -48,7 +48,7 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.6.$Rev: 1 $ of L<Unexpected::Functions>
+This documents version v0.7.$Rev: 1 $ of L<Unexpected::Functions>
 
 =head1 Description
 

@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+0.7.1     2013-08-14 20:21:46
           - Switched to Dist::Zilla
 
 0.6.2     2013-08-07 13:58:55

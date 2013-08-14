@@ -3,7 +3,7 @@
 package Unexpected::TraitFor::Throwing;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Carp                      ( );
 use English                 qw( -no_match_vars );
@@ -89,7 +89,7 @@ Unexpected::TraitFor::Throwing - Detects and throws exceptions
 
 =head1 Version
 
-This documents version v0.6.$Rev: 1 $ of
+This documents version v0.7.$Rev: 1 $ of
 L<Unexpected::TraitFor::Throwing>
 
 =head1 Description
