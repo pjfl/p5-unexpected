@@ -1,28 +1,30 @@
-# @(#)$Ident: Build.PL 2013-08-14 19:20 pjf ;
+# @(#)$Ident: Build.PL 2013-07-13 10:19 pjf ;
 
 use strict;
 use warnings;
+use inc::Bob; # Module::Build subclass
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
-use Module::Build;
+Bob->new( {
+   module    => '[% project %]',
+   home_page => '[% home_page %]',
+   requires  => {
+      'perl'           => [% perl %],
+      'Class::Usul'    => q(0.22.0),
+   },
+   recommends          => {
+      'App::cpanminus' => 1.6005, },
+   configure_requires  => {
+      'version'        => 0.88,
+      'Module::Build'  => 0.4004, },
+   build_requires      => {
+      'version'        => 0.88,
+      'Module::Build'  => 0.4004, },
+} )->create_build_script; # Goal!
 
-sub whimper { print {*STDOUT} $_[ 0 ]."\n"; exit 0 }
-
-my $code = do { local $/; <DATA> }; my $perl_ver = 5.010001;
-
-$] >= $perl_ver or $ENV{PERL5_CPANPLUS_IS_VERSION}
-   or whimper "Minimum required Perl version is ${perl_ver}";
-
-Module::Build->subclass( code => $code )->new(
-  'module_name' => 'Unexpected',
-  'notes'       => { min_perl_version => $perl_ver },
-##{ $plugin->get_prereqs( 1 ) ##}
-##{ $plugin->get_default('share_dir') ##}
-)->create_build_script;
-
-exit 0;
-
-__DATA__
-
-sub _normalize_prereqs { # Dynamic config
-   my $self = shift; my $p = $self->SUPER::_normalize_prereqs; return $p;
-}
+# Local Variables:
+# mode: perl
+# eval: (load-project-state "[% appdir %]")
+# tab-title: [% project %]
+# tab-width: 3
+# End:
