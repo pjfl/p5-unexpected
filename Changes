@@ -1,6 +1,7 @@
 Revision history for Unexpected
 
-0.7.5     2013-08-16 22:17:16
+0.7.6     2013-08-16 22:45:20
+          - Raised min Perl ver to 5.10.1. Using //
           - Lowered min Perl ver to 5.8
           - Readded dependencies
           - Switched to Dist::Zilla

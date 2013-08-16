@@ -1,22 +1,25 @@
-# @(#)Ident: 10test_script.t 2013-08-14 19:01 pjf ;
+# @(#)Ident: 10test_script.t 2013-08-16 21:42 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 6 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
-use lib                 catdir( $Bin, updir, q(lib) );
+use lib                 catdir( $Bin, updir, 'lib' );
 
 use Module::Build;
 use Test::More;
-use Test::Requires { Moo => 1.002 };
 
-my $notes = {};
+my $notes = {}; my $perl_ver;
 
 BEGIN {
    my $builder = eval { Module::Build->current };
       $builder and $notes = $builder->notes;
+      $perl_ver = $notes->{min_perl_version} || 5.008;
 }
+
+use Test::Requires "${perl_ver}";
+use Test::Requires { Moo => 1.002 };
 
 {  package MyException;
 
