@@ -5,7 +5,7 @@ package Unexpected::Types;
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Load             qw( load_class );
 use English                 qw( -no_match_vars );
@@ -107,7 +107,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.7.$Rev: 1 $ of L<Unexpected::Types>
+This documents version v0.8.$Rev: 1 $ of L<Unexpected::Types>
 
 =head1 Description
 
