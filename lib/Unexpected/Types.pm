@@ -1,11 +1,11 @@
-# @(#)Ident: Types.pm 2013-07-14 15:34 pjf ;
+# @(#)Ident: Types.pm 2013-08-23 22:35 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Load             qw( load_class );
 use English                 qw( -no_match_vars );
@@ -71,9 +71,9 @@ subtype NonNumericSimpleStr, as SimpleStr,
 
 # Private functions
 sub __constraint_for_loadable_class {
-   my $x = shift; my $class = ref $x eq 'CODE' ? $x->() : $x; local $EVAL_ERROR;
+   my $class = shift; local $EVAL_ERROR;
 
-   eval { load_class( $class ) }; $EVAL_ERROR and warn "${EVAL_ERROR}\n";
+   eval { load_class( $class ) };
 
    return $EVAL_ERROR ? 0 : 1;
 }
@@ -107,7 +107,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.8.$Rev: 1 $ of L<Unexpected::Types>
+This documents version v0.8.$Rev: 2 $ of L<Unexpected::Types>
 
 =head1 Description
 

@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-08-16 21:42 pjf ;
+# @(#)Ident: 10test_script.t 2013-08-23 23:51 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 2 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -31,7 +31,8 @@ use Test::Requires { Moo => 1.002 };
    1;
 }
 
-use English qw( -no_match_vars );
+use English      qw( -no_match_vars );
+use Scalar::Util qw( blessed refaddr );
 
 sub _eval_error () { my $e = $EVAL_ERROR; $EVAL_ERROR = undef; return $e }
 
@@ -53,11 +54,35 @@ like _eval_error, qr{ In \s a \s pit \s of \s fire }mx , 'Throws on error';
 
 eval { $class->throw( 'PracticeKill' ) }; $e = _eval_error;
 
+can_ok $e, 'message';
+
+like $e->message, qr{ PracticeKill }mx, 'Message contains known string';
+
 is ref $e, $class, 'Good class'; my $min_level = $e->level;
 
 like $e, qr{ \A main \[ \d+ / $min_level \] }mx, 'Package and default level';
+
 like $e, qr{ PracticeKill \s* \z   }mx, 'Throws error message';
+
 is $e->class, 'Unexpected', 'Default error classification';
+
+my $addr = refaddr $e;
+
+is refaddr $e->caught(), $addr, 'Catches self';
+
+is refaddr $class->caught( $e ), $addr, 'Catches own objects';
+
+eval { $e->throw() }; $e = _eval_error;
+
+is refaddr $e, $addr, 'Throws self';
+
+eval { $class->throw( $e ) }; $e = _eval_error;
+
+is refaddr $e, $addr, 'Throws own objects';
+
+eval { $e->throw( 'Not allowed' ) }; $e = _eval_error;
+
+like $e, qr{ object \s+ with \s+ arguments }mx, 'No throwing objects with args';
 
 eval { $class->throw() }; $e = _eval_error;
 
@@ -82,8 +107,11 @@ eval { test_throw1() }; $line3 = __LINE__; $e = _eval_error;
 my @lines = $e->stacktrace;
 
 like $e, qr{ \A main \[ $line2 / \d+ \] }mx, 'Package and line number';
+
 is $lines[ 0 ], "main::test_throw line ${line1}", 'Stactrace line 1';
+
 is $lines[ 1 ], "main::test_throw1 line ${line2}", 'Stactrace line 2';
+
 is $lines[ 2 ], "main line ${line3}", 'Stactrace line 3';
 
 my $level = $min_level + 1;
@@ -113,7 +141,14 @@ $line1 = __LINE__; eval {
                   error => 'cat: [_1] cannot open: [_2]', ) }; $e = _eval_error;
 
 is $e->class, 'testPrevious', 'Current exception classification';
+
 is $e->previous_exception->class, 'nonDefault', 'Previous exception';
+
+$class->ignore_class( 'main' );
+
+eval { $class->throw( 'PracticeKill' ) }; $e = _eval_error;
+
+is $e->leader, q(), 'No leader';
 
 done_testing;
 

@@ -1,25 +1,27 @@
-# @(#)Ident: 20types.t 2013-08-14 19:02 pjf ;
+# @(#)Ident: 20types.t 2013-08-23 22:35 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 2 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
-use lib                 catdir( $Bin, updir, q(lib) );
+use lib                 catdir( $Bin, updir, 'lib' );
 
 use Module::Build;
 use Test::More;
-use Test::Requires { Moo => 1.002 };
 
-my $notes = {};
+my $notes = {}; my $perl_ver;
 
 BEGIN {
    my $builder = eval { Module::Build->current };
       $builder and $notes = $builder->notes;
+      $perl_ver = $notes->{min_perl_version} || 5.008;
 }
 
-
+use Test::Requires "${perl_ver}";
+use Test::Requires { Moo => 1.002 };
 use English qw( -no_match_vars );
+use Unexpected;
 
 {  package MyNESS;
 
@@ -112,6 +114,12 @@ my $trace = $mylc->test_class->new;
 
 ok $trace->can( 'frames' ), 'Loadable class';
 
+eval { MyLoadableClass->new( test_class => 'Not::Bloody::Likely' ) };
+
+my $e = Unexpected->caught;
+
+like $e, qr{ not \s+ a \s+ loadable }mx, 'Unloadable class';
+
 {  package MyTracer;
 
    use Moo;
@@ -144,10 +152,6 @@ eval { $mytracer = MyTracer->new( test_tracer => $trace ) };
 is $EVAL_ERROR, q(), 'Tracer - passes';
 
 done_testing;
-
-#SKIP: {
-#   $reason and $reason =~ m{ \A tests: }mx and skip $reason, 1;
-#}
 
 # Local Variables:
 # mode: perl

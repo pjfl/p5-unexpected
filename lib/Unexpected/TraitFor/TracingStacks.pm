@@ -1,9 +1,9 @@
-# @(#)Ident: TracingStacks.pm 2013-08-02 19:53 pjf ;
+# @(#)Ident: TracingStacks.pm 2013-08-23 22:54 pjf ;
 
 package Unexpected::TraitFor::TracingStacks;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Scalar::Util      qw( weaken );
 use Unexpected::Types qw( HashRef LoadableClass Tracer );
@@ -42,7 +42,8 @@ sub stacktrace {
          $seen{ $package } = $frame->line;
       }
 
-      $subr = $frame->subroutine;
+      $frame->subroutine !~ m{ :: __ANON__ \z }mx
+         and $subr = $frame->subroutine;
    }
 
    defined $skip or $skip = 0; pop @lines while ($skip--);
@@ -105,7 +106,7 @@ Unexpected::TraitFor::TracingStacks - Provides a minimalist stacktrace
 
 =head1 Version
 
-This documents version v0.8.$Rev: 1 $ of
+This documents version v0.8.$Rev: 2 $ of
 L<Unexpected::TraitFor::TracingStacks>
 
 =head1 Description
@@ -147,7 +148,7 @@ filtered out
 
 =head2 stacktrace
 
-   $lines = $self->stacktrace( $num_lines_to_skip );
+   $lines = $self->stacktrace( $num_frames_to_skip );
 
 Returns a minimalist stack trace. Defaults to skipping zero frames
 from the stack

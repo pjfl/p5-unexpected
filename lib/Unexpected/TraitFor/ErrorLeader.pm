@@ -1,13 +1,13 @@
-# @(#)Ident: ErrorLeader.pm 2013-07-19 12:46 pjf ;
+# @(#)Ident: ErrorLeader.pm 2013-08-23 22:08 pjf ;
 
 package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
-use Moo::Role;
 use List::Util        qw( first );
 use Unexpected::Types qw( NonZeroPositiveInt SimpleStr );
+use Moo::Role;
 
 requires qw( as_string filtered_frames );
 
@@ -36,9 +36,9 @@ sub ignore_class {
 
 # Private methods
 sub _build_leader {
-   my $self = shift; my $level = $self->level;
+   my $self = shift; my $level = $self->level; my $leader = q();
 
-   my @frames = $self->filtered_frames; my ($leader, $line, $package);
+   my @frames = $self->filtered_frames; my ($line, $package);
 
    $level >= scalar @frames and $level = scalar @frames - 1;
 
@@ -52,16 +52,12 @@ sub _build_leader {
    }
    while ($package and __is_member( $package, $self->ignore ));
 
-   return $leader || q();
+   return $leader;
 }
 
 # Private functions
 sub __is_member {
-   my ($candidate, @args) = @_; $candidate or return;
-
-   $args[ 0 ] && ref $args[ 0 ] eq q(ARRAY) and @args = @{ $args[ 0 ] };
-
-   return (first { $_ eq $candidate } @args) ? 1 : 0;
+   my $wanted = shift; return (first { $_ eq $wanted } @{ $_[ 0 ] }) ? 1 : 0;
 }
 
 1;
@@ -87,7 +83,7 @@ Unexpected::TraitFor::ErrorLeader - Prepends a leader to the exception
 
 =head1 Version
 
-This documents version v0.8.$Rev: 1 $
+This documents version v0.8.$Rev: 2 $
 of L<Unexpected::TraitFor::ErrorLeader>
 
 =head1 Description
