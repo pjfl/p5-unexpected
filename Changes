@@ -1,7 +1,10 @@
 Revision history for Unexpected
 
-0.8.2     2013-08-24 00:56:57
+0.9.1     2013-08-25 14:01:22
+          - Updated Build.PL template. Tests MB version
           - Improved Devel::Cover scores
+
+0.8.2     2013-08-24 00:56:57
           - Bumped version to fix mad meta data
 
 0.7.6     2013-08-16 22:45:20

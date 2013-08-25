@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-08-23 23:51 pjf ;
+# @(#)Ident: 10test_script.t 2013-08-24 09:26 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.9.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -113,6 +113,14 @@ is $lines[ 0 ], "main::test_throw line ${line1}", 'Stactrace line 1';
 is $lines[ 1 ], "main::test_throw1 line ${line2}", 'Stactrace line 2';
 
 is $lines[ 2 ], "main line ${line3}", 'Stactrace line 3';
+
+@lines = $e->stacktrace( 1 );
+
+is $lines[ 0 ], "main::test_throw1 line ${line2}", 'Stactrace can skip frames';
+
+my $lines = $e->stacktrace;
+
+like $lines, qr{ main::test_throw }mx, 'Stacktrace can return a scalar';
 
 my $level = $min_level + 1;
 
