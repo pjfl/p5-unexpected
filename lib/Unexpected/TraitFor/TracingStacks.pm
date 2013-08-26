@@ -3,7 +3,7 @@
 package Unexpected::TraitFor::TracingStacks;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.9.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Scalar::Util      qw( weaken );
 use Unexpected::Types qw( HashRef LoadableClass Tracer );
@@ -106,7 +106,7 @@ Unexpected::TraitFor::TracingStacks - Provides a minimalist stacktrace
 
 =head1 Version
 
-This documents version v0.9.$Rev: 1 $ of
+This documents version v0.10.$Rev: 1 $ of
 L<Unexpected::TraitFor::TracingStacks>
 
 =head1 Description
