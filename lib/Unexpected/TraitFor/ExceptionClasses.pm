@@ -1,9 +1,9 @@
-# @(#)Ident: ExceptionClasses.pm 2013-08-28 12:02 pjf ;
+# @(#)Ident: ExceptionClasses.pm 2013-08-28 20:32 pjf ;
 
 package Unexpected::TraitFor::ExceptionClasses;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Unexpected::Functions   qw( inflate_message );
 use Moo::Role;
@@ -26,12 +26,16 @@ sub has_exception {
 
       my $args = $args[ $i++ ] // {};
 
-      ref $args ne 'HASH' and $args = { parent => $args };
+      ref $args ne 'HASH' and $args = { parents => $args };
 
-      my $parent = $args->{parent} //= $Root;
+      my $parents = $args->{parents} //= [ $Root ];
 
-      exists $Classes->{ $parent } or
-         die "Exception class ${class} parent class ${parent} does not exist";
+      ref $parents ne 'ARRAY' and $parents = $args->{parents} = [ $parents ];
+
+      for my $parent (@{ $parents }) {
+         exists $Classes->{ $parent } or die
+            "Exception class ${class} parent class ${parent} does not exist";
+      }
 
       $Classes->{ $class } = $args;
    }
@@ -40,10 +44,18 @@ sub has_exception {
 }
 
 sub instance_of {
-   my ($self, $wanted) = @_; my $class = $self->class; $wanted or return 0;
+   my ($self, $wanted) = @_; $wanted or return 0;
 
-   do    { $class eq $wanted and return 1 }
-   while (defined ($class = $Classes->{ $class }->{parent}));
+   exists $Classes->{ $wanted }
+      or die "Exception class ${wanted} does not exist";
+
+   my @classes = ( $self->class );
+
+   while (defined (my $class = shift @classes)) {
+      $class eq $wanted and return 1;
+      exists $Classes->{ $class }->{parents}
+         and push @classes, @{ $Classes->{ $class }->{parents} };
+   }
 
    return 0;
 }
@@ -58,19 +70,43 @@ __END__
 
 =head1 Name
 
-Unexpected::TraitFor::ExceptionClasses - One-line description of the modules purpose
+Unexpected::TraitFor::ExceptionClasses - Define an exception class hierarchy
 
 =head1 Synopsis
 
+   package YourExceptionClass;
+
    use Moo;
 
-   with 'Unexpected::TraitFor::ExceptionClasses';
+   extends 'Unexpected';
+
+   __PACKAGE__->has_exception( 'A' );
+   __PACKAGE__->has_exception( 'B', { parents => 'A' } );
+   __PACKAGE__->has_exception( 'C', 'A' ); # same but shorter
+   __PACKAGE__->has_exception( 'D', [ 'B', 'C' ] ); # diamond pattern
+
+   # Then elsewhere
+   __PACKAGE__->throw( 'error message', { class => 'C' } );
+
+   # Elsewhere still
+   my $e = __PACKAGE__->caught;
+
+   $e->class eq 'C'; # true
+   $e->instance_of( 'A' ); # true
+   $e->instance_of( 'B' ); # false
+   $e->instance_of( 'C' ); # true
+   $e->instance_of( 'D' ); # false
 
 =head1 Version
 
-This documents version v0.1.$Rev: 2 $ of L<Unexpected::TraitFor::ExceptionClasses>
+This documents version v0.11.$Rev: 3 $
+of L<Unexpected::TraitFor::ExceptionClasses>
 
 =head1 Description
+
+Allows for the creation of an exception class hierarchy. Exception
+classes inherit from one or more existing classes, ultimately all
+classes inherit from the C<Unexpected> exception class
 
 =head1 Configuration and Environment
 
@@ -81,7 +117,9 @@ Defines the following attributes;
 =item C<class>
 
 Defaults to C<Unexpected>. Can be used to differentiate different
-classes of error
+classes of error. Non default values for this attribute must have been
+defined with a call to L</has_exception> otherwise an exception will
+be thrown. Oh the irony
 
 =back
 
@@ -89,7 +127,16 @@ classes of error
 
 =head2 has_exception
 
+   Unexpected->has_exception( 'new_classname', [ 'parent1', 'parent2' ] );
+
+Defines a new exception class. Parent classes must already exist. Default
+parent class is C<Unexpected>;
+
 =head2 instance_of
+
+   $bool = $exception_obj->instance_of( 'exception_classname' );
+
+Is the exception object an instance of the exception class
 
 =head1 Diagnostics
 
