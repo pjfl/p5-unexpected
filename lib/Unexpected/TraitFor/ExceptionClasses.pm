@@ -1,9 +1,9 @@
-# @(#)Ident: ExceptionClasses.pm 2013-08-28 02:21 pjf ;
+# @(#)Ident: ExceptionClasses.pm 2013-08-28 12:02 pjf ;
 
 package Unexpected::TraitFor::ExceptionClasses;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Unexpected::Functions   qw( inflate_message );
 use Moo::Role;
@@ -12,26 +12,30 @@ my $Root    = 'Unexpected';
 my $Classes = { $Root => {} };
 
 has 'class' => is => 'ro', isa => sub {
-   exists $Classes->{ $_[ 0 ] }
-      or die inflate_message( 'Exception class [_1] does not exist',
-                              $_[ 0 ] ) }, default => $Root;
+   ($_[ 0 ] and exists $Classes->{ $_[ 0 ] }) or die inflate_message
+      ( 'Exception class [_1] does not exist', $_[ 0 ] ) }, default => $Root;
 
 sub has_exception {
-   my ($self, $class, $args) = @_;
+   my ($self, @args) = @_; my $i = 0;
 
-   defined $class or die 'Exception class undefined';
+   defined $args[ 0 ] or die 'Exception class undefined';
 
-   exists $Classes->{ $class } and die inflate_message
-      ( 'Exception class [_1] already exists', $class );
+   while (defined (my $class = $args[ $i++ ])) {
+      exists $Classes->{ $class } and
+         die "Exception class ${class} already exists";
 
-   $args //= {}; ref $args ne 'HASH' and $args = { parent => $args };
+      my $args = $args[ $i++ ] // {};
 
-   my $parent = $args->{parent} //= $Root;
+      ref $args ne 'HASH' and $args = { parent => $args };
 
-   exists $Classes->{ $parent } or die inflate_message
-      ( "Exception class [_1] parent class ${parent} does not exist", $class );
+      my $parent = $args->{parent} //= $Root;
 
-   $Classes->{ $class } = $args;
+      exists $Classes->{ $parent } or
+         die "Exception class ${class} parent class ${parent} does not exist";
+
+      $Classes->{ $class } = $args;
+   }
+
    return;
 }
 
@@ -64,7 +68,7 @@ Unexpected::TraitFor::ExceptionClasses - One-line description of the modules pur
 
 =head1 Version
 
-This documents version v0.1.$Rev: 1 $ of L<Unexpected::TraitFor::ExceptionClasses>
+This documents version v0.1.$Rev: 2 $ of L<Unexpected::TraitFor::ExceptionClasses>
 
 =head1 Description
 
