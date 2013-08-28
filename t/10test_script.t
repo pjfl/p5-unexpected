@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-08-24 09:26 pjf ;
+# @(#)Ident: 10test_script.t 2013-08-28 02:59 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -139,9 +139,37 @@ $line1 = __LINE__; eval {
                   class => 'nonDefault',
                   error => 'cat: [_1] cannot open: [_2]', ) }; $e = _eval_error;
 
+eval { $e->class}; $e = _eval_error;
+
+like $e, qr{ nonDefault \s+ does \s+ not \s+ exist }mx,
+   'Non existant exception class';
+
+eval { $class->has_exception() }; $e = _eval_error;
+
+like $e, qr{ Exception \s+ class \s+ undefined }mx, 'Undefined exception class';
+
+eval { $class->has_exception( 'nonDefault', 'Unknown' ) }; $e = _eval_error;
+
+like $e, qr{ Unknown \s+ does \s+ not \s+ exist }mx,
+   'Parent class does not exist';
+
+$class->has_exception( 'nonDefault', 'Unexpected' );
+
+eval { $class->has_exception( 'nonDefault', 'Unexpected' ) }; $e = _eval_error;
+
+like $e, qr{ nonDefault \s+ already \s+ exists }mx,
+   'Exception class already exists';
+
+$line1 = __LINE__; eval {
+   $class->throw( args  => [ 'flap' ],
+                  class => 'nonDefault',
+                  error => 'cat: [_1] cannot open: [_2]', ) }; $e = _eval_error;
+
 is $e->class, 'nonDefault', 'Specific error classification';
 like $e, qr{ main\[ $line1 / \d+ \]:\scat:\sflap\scannot\sopen:\s\[\?\] }mx,
    'Placeholer substitution';
+
+$class->has_exception( 'testPrevious', { parent => 'nonDefault' } );
 
 $line1 = __LINE__; eval {
    $class->throw( args  => [ 'flap' ],
@@ -152,7 +180,13 @@ is $e->class, 'testPrevious', 'Current exception classification';
 
 is $e->previous_exception->class, 'nonDefault', 'Previous exception';
 
-$class->ignore_class( 'main' );
+is $e->instance_of(), 0, 'Null class is false';
+
+is $e->instance_of( 'nonDefault' ), 1, 'Inherits exception class';
+
+is $e->instance_of( 'nonExistant' ), 0, 'Non existant exception class is false';
+
+$class->has_exception( 'defaultClass' ); $class->ignore_class( 'main' );
 
 eval { $class->throw( 'PracticeKill' ) }; $e = _eval_error;
 

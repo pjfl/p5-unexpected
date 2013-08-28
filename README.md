@@ -42,7 +42,7 @@ Unexpected - Exception class composed from traits
 
 # Version
 
-This documents version v0.9.$Rev: 0 $ of [Unexpected](https://metacpan.org/module/Unexpected)
+This documents version v0.11.$Rev: 0 $ of [Unexpected](https://metacpan.org/module/Unexpected)
 
 # Description
 
@@ -59,13 +59,6 @@ Applies exception roles to the exception base class [Unexpected](https://metacpa
 
 Error objects are overloaded to stringify to the full error message
 plus a leader if the optional `ErrorLeader` role has been applied
-
-Defines these attributes;
-
-- `class`
-
-    Defaults to `__PACKAGE__`. Can be used to differentiate different
-    classes of error
 
 # Subroutines/Methods
 
@@ -94,10 +87,10 @@ error role since overloading is not supported in [Moo::Role](https://metacpan.or
 - [namespace::sweep](https://metacpan.org/module/namespace::sweep)
 - [overload](https://metacpan.org/module/overload)
 - [Moo](https://metacpan.org/module/Moo)
+- [Unexpected::TraitFor::Exception::Classes](https://metacpan.org/module/Unexpected::TraitFor::Exception::Classes)
 - [Unexpected::TraitFor::StringifyingError](https://metacpan.org/module/Unexpected::TraitFor::StringifyingError)
 - [Unexpected::TraitFor::Throwing](https://metacpan.org/module/Unexpected::TraitFor::Throwing)
 - [Unexpected::TraitFor::TracingStacks](https://metacpan.org/module/Unexpected::TraitFor::TracingStacks)
-- [Unexpected::Types](https://metacpan.org/module/Unexpected::Types)
 
 # Incompatibilities
 

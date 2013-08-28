@@ -1,21 +1,19 @@
-# @(#)Ident: Unexpected.pm 2013-08-23 23:56 pjf ;
+# @(#)Ident: Unexpected.pm 2013-08-28 01:00 pjf ;
 
 package Unexpected;
 
 use 5.010001;
 use namespace::sweep;
 use overload '""' => 'as_string', fallback => 1;
-use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
-use Scalar::Util      qw( blessed );
-use Unexpected::Types qw( NonEmptySimpleStr );
+use Scalar::Util qw( blessed );
 
 with q(Unexpected::TraitFor::StringifyingError);
 with q(Unexpected::TraitFor::Throwing);
 with q(Unexpected::TraitFor::TracingStacks);
-
-has 'class' => is => 'ro', isa => NonEmptySimpleStr, default => __PACKAGE__;
+with q(Unexpected::TraitFor::ExceptionClasses);
 
 sub BUILD {} # Can be modified by the applied traits
 
@@ -75,7 +73,7 @@ Unexpected - Exception class composed from traits
 
 =head1 Version
 
-This documents version v0.10.$Rev: 1 $ of L<Unexpected>
+This documents version v0.11.$Rev: 1 $ of L<Unexpected>
 
 =head1 Description
 
@@ -92,17 +90,6 @@ L</Dependencies> for the list of roles that are applied
 
 Error objects are overloaded to stringify to the full error message
 plus a leader if the optional C<ErrorLeader> role has been applied
-
-Defines these attributes;
-
-=over 3
-
-=item C<class>
-
-Defaults to C<__PACKAGE__>. Can be used to differentiate different
-classes of error
-
-=back
 
 =head1 Subroutines/Methods
 
@@ -136,13 +123,13 @@ error role since overloading is not supported in L<Moo::Role>
 
 =item L<Moo>
 
+=item L<Unexpected::TraitFor::Exception::Classes>
+
 =item L<Unexpected::TraitFor::StringifyingError>
 
 =item L<Unexpected::TraitFor::Throwing>
 
 =item L<Unexpected::TraitFor::TracingStacks>
-
-=item L<Unexpected::Types>
 
 =back
 

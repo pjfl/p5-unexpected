@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+0.11.1    2013-08-28 04:06:40
+          - Added ::TraitFor::ExceptionClasses
+
 0.10.1    2013-08-26 22:34:17
           - Terminate if MB version too low
 
