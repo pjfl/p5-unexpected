@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-08-28 19:00 pjf ;
+# @(#)Ident: 10test_script.t 2013-08-28 22:42 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 4 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -27,6 +27,7 @@ use Test::Requires { Moo => 1.002 };
 
    extends 'Unexpected';
    with    'Unexpected::TraitFor::ErrorLeader';
+   with    'Unexpected::TraitFor::ExceptionClasses';
 
    1;
 }
