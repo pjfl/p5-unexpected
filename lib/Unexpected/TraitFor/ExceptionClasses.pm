@@ -3,7 +3,7 @@
 package Unexpected::TraitFor::ExceptionClasses;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Unexpected::Functions   qw( inflate_message );
 use Moo::Role;
@@ -99,7 +99,7 @@ Unexpected::TraitFor::ExceptionClasses - Define an exception class hierarchy
 
 =head1 Version
 
-This documents version v0.11.$Rev: 3 $
+This documents version v0.12.$Rev: 1 $
 of L<Unexpected::TraitFor::ExceptionClasses>
 
 =head1 Description

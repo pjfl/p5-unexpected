@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+0.12.1    2013-09-03 11:58:21
+          - ::TF::EC requires subclasses to call has_exception
+
 0.11.4    2013-09-03 11:50:34
           - Added ::TraitFor::ExceptionClasses
 
