@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-08-28 22:42 pjf ;
+# @(#)Ident: 10test_script.t 2013-09-27 12:24 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -142,7 +142,7 @@ $line1 = __LINE__; eval {
 
 eval { $e->class}; $e = _eval_error;
 
-like $e, qr{ nonDefault \s+ does \s+ not \s+ exist }mx,
+like $e, qr{ "nonDefault" \s+ does \s+ not \s+ exist }mx,
    'Non existant exception class';
 
 eval { $class->has_exception() }; $e = _eval_error;

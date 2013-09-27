@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+0.13.1    2013-09-27 13:27:37
+          - Replaced Exporter::TypeTiny with Exporter::Tiny
+
 0.12.1    2013-09-03 11:58:21
           - ::TF::EC requires subclasses to call has_exception
 

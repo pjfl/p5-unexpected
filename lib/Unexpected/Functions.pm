@@ -1,20 +1,20 @@
-# @(#)Ident: Functions.pm 2013-06-30 23:03 pjf ;
+# @(#)Ident: Functions.pm 2013-09-27 12:14 pjf ;
 
 package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 1 $ =~ /\d+/gmx );
-use parent 'Exporter::TypeTiny';
+use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use parent                  qw( Exporter::Tiny );
 
 our @EXPORT = qw( build_attr_from inflate_message );
 
 # Public functions
 sub build_attr_from { # Coerce a hash ref from whatever was passed
-   return ($_[ 0 ] && ref $_[ 0 ] eq q(HASH)) ? { %{ $_[ 0 ] } }
-        : (   @_ % 2 == 0 && defined $_[ 1 ]) ? { @_ }
-        : (                  defined $_[ 0 ]) ? { error => @_ }
-                                              : {};
+   return ($_[ 0 ] && ref $_[ 0 ] eq 'HASH') ? { %{ $_[ 0 ] } }
+        : (  @_ % 2 == 0 && defined $_[ 1 ]) ? { @_ }
+        : (                 defined $_[ 0 ]) ? { error => @_ }
+                                             : {};
 }
 
 sub inflate_message { # Expand positional parameters of the form [_<n>]
@@ -48,7 +48,7 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.12.$Rev: 1 $ of L<Unexpected::Functions>
+This documents version v0.13.$Rev: 1 $ of L<Unexpected::Functions>
 
 =head1 Description
 
@@ -81,7 +81,7 @@ None
 
 =over 3
 
-=item L<Exporter::TypeTiny>
+=item L<Exporter::Tiny>
 
 =back
 
