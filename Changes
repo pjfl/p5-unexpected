@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+          - Updated git hooks
+          - Type::Tiny exception class renamed RT#89410
+
 0.13.1    2013-09-27 13:27:37
           - Replaced Exporter::TypeTiny with Exporter::Tiny
 
@@ -24,67 +27,4 @@ Revision history for Unexpected
           - Lowered min Perl ver to 5.8
           - Readded dependencies
           - Switched to Dist::Zilla
-
-0.6.2     2013-08-07 13:58:55
-          - Reset min perl testing to original behaviour
-          - POD Updates
-
-0.5.8     2013-08-02 20:56:06
-          - Made Moo::Role last use
-            <tobyink> Functions imported into a Moo role *after* the
-            `use Moo::Role` become part of the role's API.
-          - Reverted min Perl ver testing in toolchain
-          - New method for CPANTesting min Perl ver
-          - Added fremen and frogman to tier gruber
-          - Aborting Bingoes failed see df276fba-f57c-11e2-8c80-50d7c5c10595
-            No choice but to send this smoker to sleep 10 while 1.
-            Chris Williams, put my pause id in your stop list
-          - Abort Bingoes 1d05f0a0-f34c-11e2-8c80-50d7c5c10595
-            Exit zero from Build.PL without creating Build and
-            this smoker still files an UNKNOWN report. There's
-            nothing unknown here just a badly configured smoker
-          - ErrorLeader ignores Try::Tiny
-
-0.4.1     2013-06-22 20:42:51
-          - Added NonNumericSimpleStr to ::Types
-          - Added newline to stringified error
-          - Bumped Type::Tiny version to 0.008
-
-0.3.13    2013-06-17 22:10:03
-          - Created ::Functions
-          - Throw a list with an odd number of elements
-          - Normalized syntax in ::Types. Added inlining
-          - Better errors from ::Types. Added tests
-          - Updated POD closes RT#86121
-          - Added warning to ::Types::LoadableClass
-          - Stopped Clifford 3954afc6-d231-11e2-8b9f-bc1b31b64f85
-            Lies about installed version of Moo
-          - Fixed default error string bug
-          - Made defaults in rolls all subs
-          - Added strict warnings to ::Types
-          - Fixed overload string bug
-          - Added ::StringifyingError::message
-
-0.2.2     2013-06-08 01:17:29
-          - Mooification complete
-          - Using attribute shortcuts
-          - Updated POD
-          - Removed use Moose from test script
-          - Mooified!
-
-0.1.14    2013-05-31 21:29:02
-          - Fixed lies in stacktrace
-          - Updated prereqs in Build.PL
-          - POD updates, more tests
-          - Improved synopsis. Yak shaved trace_frame_filter
-          - Added Devel::StackTrace as a dependency
-          - Renamed Base to TraitFor::StringifyingError
-          - Moved Ignore class attr to ErrorLeader
-          - Removed apply_roles and namespace
-          - Added an ignore class test
-          - Removed recommends from Build.PL
-          - Renamed add_roles to apply_roles
-          - Added memory leak test
-          - Imported code from File:DataClass
-          - Added project files to master branch
 

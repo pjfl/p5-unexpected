@@ -1,11 +1,11 @@
-# @(#)Ident: Types.pm 2013-08-23 22:35 pjf ;
+# @(#)Ident: Types.pm 2013-10-15 20:08 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Load             qw( load_class );
 use English                 qw( -no_match_vars );
@@ -20,8 +20,8 @@ use Unexpected::Functions   qw( inflate_message );
 
 BEGIN { extends 'Types::Standard' };
 
-$Type::Exception::CarpInternal{ 'Sub::Quote' }++;
-$Type::Exception::CarpInternal{ 'Unexpected::TraitFor::Throwing' }++;
+$Error::TypeTiny::CarpInternal{ 'Sub::Quote' }++;
+$Error::TypeTiny::CarpInternal{ 'Unexpected::TraitFor::Throwing' }++;
 
 subtype NonEmptySimpleStr, as Str,
    inline_as {
@@ -107,7 +107,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.13.$Rev: 1 $ of L<Unexpected::Types>
+This documents version v0.13.$Rev: 2 $ of L<Unexpected::Types>
 
 =head1 Description
 
