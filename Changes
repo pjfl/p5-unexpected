@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+0.14.1    2013-10-19 18:31:27
           - Updated git hooks
           - Type::Tiny exception class renamed RT#89410
 
