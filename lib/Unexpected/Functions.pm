@@ -1,13 +1,20 @@
-# @(#)Ident: Functions.pm 2013-09-27 12:14 pjf ;
+# @(#)Ident: Functions.pm 2013-10-21 14:38 pjf ;
 
 package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 2 $ =~ /\d+/gmx );
 use parent                  qw( Exporter::Tiny );
 
-our @EXPORT = qw( build_attr_from inflate_message );
+our @EXPORT_OK = qw( build_attr_from inflate_message );
+
+my $Should_Quote = 1;
+
+# Package methods
+sub quote_inflated_messages {
+   defined $_[ 1 ] and $Should_Quote = $_[ 1 ]; return $Should_Quote;
+}
 
 # Public functions
 sub build_attr_from { # Coerce a hash ref from whatever was passed
@@ -18,16 +25,20 @@ sub build_attr_from { # Coerce a hash ref from whatever was passed
 }
 
 sub inflate_message { # Expand positional parameters of the form [_<n>]
-   my $msg = shift; my @args = __inflate_placeholders( \@_ );
+   my $msg = shift; my @args = __inflate_placeholders( @_ );
 
    $msg =~ s{ \[ _ (\d+) \] }{$args[ $1 - 1 ]}gmx; return $msg;
 }
 
 # Private functions
 sub __inflate_placeholders { # Substitute visible strings for null and undef
-   return map { (length) ? $_ : '[]' }
-          map { $_ // '[?]'          } @{ $_[ 0 ] },
-          map { '[?]'                } 0 .. 9;
+   return map { __quote_maybe( (length) ? $_ : '[]' ) }
+          map { $_ // '[?]' } @_,
+          map { '[?]'       } 0 .. 9;
+}
+
+sub __quote_maybe {
+   return $Should_Quote ? "'".$_[ 0 ]."'" : $_[ 0 ];
 }
 
 1;
@@ -48,7 +59,7 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.14.$Rev: 1 $ of L<Unexpected::Functions>
+This documents version v0.14.$Rev: 2 $ of L<Unexpected::Functions>
 
 =head1 Description
 
@@ -72,6 +83,14 @@ Coerces a hash ref from whatever args are passed
 
 Substitute the placeholders in the C<$template> string (e.g. [_1])
 with the corresponding argument
+
+=head2 quote_inflated_messages
+
+   $bool = Unexpected::Functions->quote_inflated_messages( $bool );
+
+Accessor / mutator package method that toggles the state on quoting
+the placeholder substitution values in C<inflate_message>. Defaults
+to true
 
 =head1 Diagnostics
 
