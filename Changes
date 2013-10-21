@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Renamed placeholder state mutator to quote_bind_values
           - Added placeholder quoting in inflate_message
 
 0.14.1    2013-10-19 18:31:27

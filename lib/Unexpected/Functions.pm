@@ -1,10 +1,10 @@
-# @(#)Ident: Functions.pm 2013-10-21 14:38 pjf ;
+# @(#)Ident: Functions.pm 2013-10-21 18:42 pjf ;
 
 package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 3 $ =~ /\d+/gmx );
 use parent                  qw( Exporter::Tiny );
 
 our @EXPORT_OK = qw( build_attr_from inflate_message );
@@ -12,7 +12,7 @@ our @EXPORT_OK = qw( build_attr_from inflate_message );
 my $Should_Quote = 1;
 
 # Package methods
-sub quote_inflated_messages {
+sub quote_bind_values {
    defined $_[ 1 ] and $Should_Quote = $_[ 1 ]; return $Should_Quote;
 }
 
@@ -34,7 +34,7 @@ sub inflate_message { # Expand positional parameters of the form [_<n>]
 sub __inflate_placeholders { # Substitute visible strings for null and undef
    return map { __quote_maybe( (length) ? $_ : '[]' ) }
           map { $_ // '[?]' } @_,
-          map { '[?]'       } 0 .. 9;
+          map {       '[?]' } 0 .. 9;
 }
 
 sub __quote_maybe {
@@ -59,7 +59,7 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.14.$Rev: 2 $ of L<Unexpected::Functions>
+This documents version v0.14.$Rev: 3 $ of L<Unexpected::Functions>
 
 =head1 Description
 
@@ -84,9 +84,9 @@ Coerces a hash ref from whatever args are passed
 Substitute the placeholders in the C<$template> string (e.g. [_1])
 with the corresponding argument
 
-=head2 quote_inflated_messages
+=head2 quote_bind_values
 
-   $bool = Unexpected::Functions->quote_inflated_messages( $bool );
+   $bool = Unexpected::Functions->quote_bind_values( $bool );
 
 Accessor / mutator package method that toggles the state on quoting
 the placeholder substitution values in C<inflate_message>. Defaults
