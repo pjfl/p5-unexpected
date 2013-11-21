@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-10-21 18:43 pjf ;
+# @(#)Ident: 10test_script.t 2013-11-20 15:09 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -21,15 +21,26 @@ BEGIN {
 use Test::Requires "${perl_ver}";
 use Test::Requires { Moo => 1.002 };
 
-{  package MyException;
+BEGIN {
+   {  package MyException;
 
-   use Moo;
+      use Moo;
 
-   extends 'Unexpected';
-   with    'Unexpected::TraitFor::ErrorLeader';
-   with    'Unexpected::TraitFor::ExceptionClasses';
+      extends 'Unexpected';
+      with    'Unexpected::TraitFor::ErrorLeader';
+      with    'Unexpected::TraitFor::ExceptionClasses';
 
-   1;
+      my $class = __PACKAGE__;
+
+      $class->has_exception( 'A' );
+      $class->has_exception( 'B', [ 'A' ] );
+      $class->has_exception( 'C', { parents => 'A' } );
+      $class->has_exception( 'D', [ qw( A B ) ] );
+      $class->has_exception( 'E', 'A' );
+
+      $INC{ 'MyException' } = 1;
+      1;
+   }
 }
 
 use English      qw( -no_match_vars );
@@ -149,12 +160,10 @@ eval { $class->has_exception() }; $e = _eval_error;
 
 like $e, qr{ Exception \s+ class \s+ undefined }mx, 'Undefined exception class';
 
-eval { $class->has_exception( 'A', 'Unknown' ) }; $e = _eval_error;
+eval { $class->has_exception( 'F', 'Unknown' ) }; $e = _eval_error;
 
 like $e, qr{ Unknown \s+ does \s+ not \s+ exist }mx,
    'Parent class does not exist';
-
-$class->has_exception( 'A' );
 
 eval { $class->has_exception( 'A', 'Unexpected' ) }; $e = _eval_error;
 
@@ -170,17 +179,23 @@ is $e->class, 'A', 'Specific error classification';
 like $e, qr{ main\[ $line1 / \d+ \]:\scat:\s'flap'\scannot\sopen:\s'\[\?\]' }mx,
    'Placeholer substitution - with quotes';
 
-is Unexpected::Functions->quote_bind_values, 1, 'Default quoting state';
+use Unexpected::Functions
+   { exception_class => 'MyException' }, qw( A inflate_message );
+
+is A(), 'A', 'Imports exception';
+
+my $qstate = Unexpected::Functions->quote_bind_values();
+
+is $qstate, 1, 'Default quoting state';
 
 Unexpected::Functions->quote_bind_values( 0 );
 
 like $e, qr{ main\[ $line1 / \d+ \]:\scat:\sflap\scannot\sopen:\s\[\?\] }mx,
    'Placeholer substitution - without quotes';
 
-$class->has_exception( 'B', [ 'A' ] );
-$class->has_exception( 'C', { parents => 'A' } );
-$class->has_exception( 'D', [ qw( A B ) ] );
-$class->has_exception( 'E', 'A' );
+ok !$class->is_exception(), 'Exception predicate - undef';
+ok $class->is_exception( 'E' ), 'Exception predicate - true';
+ok !$class->is_exception( 'F' ), 'Exception predicate - false';
 
 $line1 = __LINE__; eval {
    $class->throw( args  => [ 'flap' ],

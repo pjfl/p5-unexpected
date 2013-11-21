@@ -1,9 +1,9 @@
-# @(#)Ident: TracingStacks.pm 2013-08-28 02:51 pjf ;
+# @(#)Ident: TracingStacks.pm 2013-11-21 16:51 pjf ;
 
 package Unexpected::TraitFor::TracingStacks;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Scalar::Util      qw( weaken );
 use Unexpected::Types qw( HashRef LoadableClass Tracer );
@@ -37,12 +37,14 @@ sub stacktrace {
       my $package = $frame->package; my $l_no;
 
       unless ($l_no = $seen{ $package } and $l_no == $frame->line) {
-         my $lead = $subr || $package; $lead !~ m{ :: __ANON__ \z }mx
+         my $lead = $subr || $package; # uncoverable condition false
+
+         $lead !~ m{ :: __ANON__ \z }mx # uncoverable branch false
             and push @lines, join q( ), $lead, 'line', $frame->line;
          $seen{ $package } = $frame->line;
       }
 
-      $frame->subroutine !~ m{ :: __ANON__ \z }mx
+      $frame->subroutine !~ m{ :: __ANON__ \z }mx # uncoverable branch false
          and $subr = $frame->subroutine;
    }
 
@@ -61,10 +63,13 @@ sub trace_frame_filter { # Lifted from StackTrace::Auto
 
       if    ($found_mark == 3) { return 1 }
       elsif ($found_mark == 2) {
+         # uncoverable branch true
+         # uncoverable condition right
          $subr =~ m{ :: new \z }mx and $self->isa( $package ) and return 0;
          $found_mark++; return 1;
       }
       elsif ($found_mark == 1) {
+         # uncoverable condition right
          $subr =~ m{ :: new \z }mx and $self->isa( $package ) and $found_mark++;
          return 0;
       }
@@ -106,7 +111,7 @@ Unexpected::TraitFor::TracingStacks - Provides a minimalist stacktrace
 
 =head1 Version
 
-This documents version v0.14.$Rev: 1 $ of
+This documents version v0.15.$Rev: 1 $ of
 L<Unexpected::TraitFor::TracingStacks>
 
 =head1 Description

@@ -1,9 +1,9 @@
-# @(#)Ident: ExceptionClasses.pm 2013-10-21 14:22 pjf ;
+# @(#)Ident: ExceptionClasses.pm 2013-11-20 15:28 pjf ;
 
 package Unexpected::TraitFor::ExceptionClasses;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Unexpected::Functions   qw( inflate_message );
 use Moo::Role;
@@ -20,8 +20,8 @@ sub has_exception {
    defined $args[ 0 ] or die 'Exception class undefined';
 
    while (defined (my $class = $args[ $i++ ])) {
-      exists $Classes->{ $class } and
-         die "Exception class ${class} already exists";
+      exists $Classes->{ $class }
+         and die "Exception class ${class} already exists";
 
       my $args = $args[ $i++ ] // {};
 
@@ -59,6 +59,11 @@ sub instance_of {
    return 0;
 }
 
+sub is_exception {
+   return $_[ 1 ] && !ref $_[ 1 ] && exists $Classes->{ $_[ 1 ] } ? 1 : 0;
+}
+
+
 1;
 
 __END__
@@ -78,6 +83,7 @@ Unexpected::TraitFor::ExceptionClasses - Define an exception class hierarchy
    use Moo;
 
    extends 'Unexpected';
+   with    'Unexpected::ExceptionClasses';
 
    __PACKAGE__->has_exception( 'A' );
    __PACKAGE__->has_exception( 'B', { parents => 'A' } );
@@ -98,7 +104,7 @@ Unexpected::TraitFor::ExceptionClasses - Define an exception class hierarchy
 
 =head1 Version
 
-This documents version v0.14.$Rev: 2 $
+This documents version v0.15.$Rev: 1 $
 of L<Unexpected::TraitFor::ExceptionClasses>
 
 =head1 Description
@@ -126,7 +132,7 @@ be thrown. Oh the irony
 
 =head2 has_exception
 
-   Unexpected->has_exception( 'new_classname', [ 'parent1', 'parent2' ] );
+   YourExceptionClass->has_exception( 'new_classname', [ 'parent1', 'parent2']);
 
 Defines a new exception class. Parent classes must already exist. Default
 parent class is C<Unexpected>;
@@ -136,6 +142,13 @@ parent class is C<Unexpected>;
    $bool = $exception_obj->instance_of( 'exception_classname' );
 
 Is the exception object an instance of the exception class
+
+=head2 is_exception
+
+   $bool = YourExceptionClass->is_exception( 'exception_classname' );
+
+Returns true if the exception class exits as a result of a call to
+L</has_exception>
 
 =head1 Diagnostics
 

@@ -1,17 +1,43 @@
-# @(#)Ident: Functions.pm 2013-10-21 18:42 pjf ;
+# @(#)Ident: Functions.pm 2013-11-21 15:38 pjf ;
 
 package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use parent                  qw( Exporter::Tiny );
+
+use Sub::Install qw( install_sub );
 
 our @EXPORT_OK = qw( build_attr_from inflate_message );
 
 my $Should_Quote = 1;
 
 # Package methods
+sub import {
+   my $class       = shift;
+   my $global_opts = { $_[ 0 ] && ref $_[ 0 ] eq 'HASH' ? %{+ shift } : () };
+   my $ex_class    = delete $global_opts->{exception_class};
+   # uncoverable condition false
+   # uncoverable condition left
+   my $target      = $global_opts->{into} ||= caller;
+   my $ex_subr     = $target->can( 'EXCEPTION_CLASS' );
+   my @want        = @_;
+   my @args        = ();
+
+   $ex_subr and $ex_class = $ex_subr->();
+
+   for my $sym (@want) {
+      if ($ex_class and $ex_class->is_exception( $sym )) {
+         install_sub { as => $sym, code => sub { $sym }, into => $target, };
+      }
+      else { push @args, $sym }
+   }
+
+   $class->SUPER::import( $global_opts, @args );
+   return;
+}
+
 sub quote_bind_values {
    defined $_[ 1 ] and $Should_Quote = $_[ 1 ]; return $Should_Quote;
 }
@@ -59,11 +85,16 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.14.$Rev: 3 $ of L<Unexpected::Functions>
+This documents version v0.15.$Rev: 1 $ of L<Unexpected::Functions>
 
 =head1 Description
 
 A collection of functions used in this distribution
+
+Also exports any exceptions defined by the caller's C<EXCEPTION_CLASS>
+as subroutines that return the subroutines name as a string. The calling
+package can then throw exceptions with a class attribute that takes these
+subroutines return values
 
 =head1 Configuration and Environment
 

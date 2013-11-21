@@ -1,9 +1,9 @@
-# @(#)Ident: Throwing.pm 2013-08-23 19:48 pjf ;
+# @(#)Ident: Throwing.pm 2013-11-20 14:59 pjf ;
 
 package Unexpected::TraitFor::Throwing;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Carp                      ( );
 use English                 qw( -no_match_vars );
@@ -66,6 +66,7 @@ sub _is_object_ref {
 
 # Private functions
 sub __cache_key {
+   # uncoverable branch true
    return $PID.'-'.(exists $INC{ 'threads.pm' } ? threads->tid() : 0);
 }
 
@@ -89,7 +90,7 @@ Unexpected::TraitFor::Throwing - Detects and throws exceptions
 
 =head1 Version
 
-This documents version v0.14.$Rev: 1 $ of
+This documents version v0.15.$Rev: 1 $ of
 L<Unexpected::TraitFor::Throwing>
 
 =head1 Description
