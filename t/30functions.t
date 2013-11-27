@@ -1,8 +1,8 @@
-# @(#)Ident: 30functions.t 2013-11-21 16:59 pjf ;
+# @(#)Ident: 30functions.t 2013-11-27 11:18 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -39,8 +39,7 @@ BEGIN {
       $class->has_exception( 'D', [ qw( A B ) ] );
       $class->has_exception( 'E', 'A' );
 
-      $INC{ 'MyException' } = 1;
-      1;
+      $INC{ 'MyException.pm' } = __FILE__;
    }
 }
 

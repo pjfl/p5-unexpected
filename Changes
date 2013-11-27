@@ -1,5 +1,9 @@
 Revision history for Unexpected
 
+0.16.1    2013-11-27 12:15:44
+          - Replaced Class::Load wit Module::Runtime
+          - Dropped DZ::P::MarkdownInRoot from dist.ini
+
 0.15.1    2013-11-21 16:59:45
           - Added exception class function export
           - Renamed placeholder state mutator to quote_bind_values

@@ -1,8 +1,8 @@
-# @(#)Ident: 20types.t 2013-08-23 22:35 pjf ;
+# @(#)Ident: 20types.t 2013-11-27 12:12 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -119,6 +119,12 @@ eval { MyLoadableClass->new( test_class => 'Not::Bloody::Likely' ) };
 my $e = Unexpected->caught;
 
 like $e, qr{ not \s+ a \s+ loadable }mx, 'Unloadable class';
+
+eval { MyLoadableClass->new( test_class => '------' ) };
+
+$e = Unexpected->caught;
+
+like $e, qr{ not \s+ a \s+ loadable }mx, 'Invalid class name';
 
 {  package MyTracer;
 
