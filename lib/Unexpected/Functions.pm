@@ -1,10 +1,10 @@
-# @(#)Ident: Functions.pm 2013-11-30 14:50 pjf ;
+# @(#)Ident: Functions.pm 2013-11-30 15:23 pjf ;
 
 package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use parent                  qw( Exporter::Tiny );
 
 use Package::Stash;
@@ -29,7 +29,8 @@ sub import {
    $ex_subr and $ex_class = $ex_subr->();
 
    for my $sym (@want) {
-      if ($ex_class and $ex_class->is_exception( $sym )) {
+      if ($ex_class and $ex_class->can( 'is_exception' )
+          and $ex_class->is_exception( $sym )) {
          install_sub { as => $sym, code => sub { $sym }, into => $target, };
       }
       else { push @args, $sym }
@@ -108,7 +109,7 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.17.$Rev: 1 $ of L<Unexpected::Functions>
+This documents version v0.18.$Rev: 1 $ of L<Unexpected::Functions>
 
 =head1 Description
 

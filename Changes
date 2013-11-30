@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+0.18.1    2013-11-30 15:52:42
+          - ::F::import test exception_class for is_exception
+
 0.17.1    2013-11-30 15:09:48
           - Added ::Functions::is_class_loaded
 
