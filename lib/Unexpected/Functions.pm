@@ -1,15 +1,17 @@
-# @(#)Ident: Functions.pm 2013-11-21 15:38 pjf ;
+# @(#)Ident: Functions.pm 2013-11-30 14:50 pjf ;
 
 package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use parent                  qw( Exporter::Tiny );
 
-use Sub::Install qw( install_sub );
+use Package::Stash;
+use Scalar::Util            qw( blessed reftype );
+use Sub::Install            qw( install_sub );
 
-our @EXPORT_OK = qw( build_attr_from inflate_message );
+our @EXPORT_OK = qw( build_attr_from inflate_message is_class_loaded );
 
 my $Should_Quote = 1;
 
@@ -19,7 +21,6 @@ sub import {
    my $global_opts = { $_[ 0 ] && ref $_[ 0 ] eq 'HASH' ? %{+ shift } : () };
    my $ex_class    = delete $global_opts->{exception_class};
    # uncoverable condition false
-   # uncoverable condition left
    my $target      = $global_opts->{into} ||= caller;
    my $ex_subr     = $target->can( 'EXCEPTION_CLASS' );
    my @want        = @_;
@@ -56,6 +57,28 @@ sub inflate_message { # Expand positional parameters of the form [_<n>]
    $msg =~ s{ \[ _ (\d+) \] }{$args[ $1 - 1 ]}gmx; return $msg;
 }
 
+sub is_class_loaded { # Lifted from Class::Load
+   my $class = shift; my $stash = Package::Stash->new( $class );
+
+   if ($stash->has_symbol( '$VERSION' )) {
+      my $version = ${ $stash->get_symbol( '$VERSION' ) };
+
+      if (defined $version) {
+         not ref $version and return 1;
+         # Sometimes $VERSION ends up as a reference to undef (weird)
+         ref $version and reftype $version eq 'SCALAR'
+            and defined ${ $version } and return 1;
+         blessed $version and return 1; # A version object
+      }
+   }
+
+   $stash->has_symbol( '@ISA' ) and @{ $stash->get_symbol( '@ISA' ) }
+      and return 1;
+
+   # Check for any method
+   return $stash->list_all_symbols( 'CODE' ) ? 1 : 0;
+}
+
 # Private functions
 sub __inflate_placeholders { # Substitute visible strings for null and undef
    return map { __quote_maybe( (length) ? $_ : '[]' ) }
@@ -85,7 +108,7 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.16.$Rev: 1 $ of L<Unexpected::Functions>
+This documents version v0.17.$Rev: 1 $ of L<Unexpected::Functions>
 
 =head1 Description
 
@@ -114,6 +137,12 @@ Coerces a hash ref from whatever args are passed
 
 Substitute the placeholders in the C<$template> string (e.g. [_1])
 with the corresponding argument
+
+=head2 is_class_loaded
+
+   $bool = is_class_loaded $classname;
+
+Returns true is the classname as already loaded and compiled
 
 =head2 quote_bind_values
 

@@ -1,8 +1,8 @@
-# @(#)Ident: 30functions.t 2013-11-27 11:18 pjf ;
+# @(#)Ident: 30functions.t 2013-11-30 15:01 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -45,10 +45,126 @@ BEGIN {
 
 use Unexpected::Functions;
 
-use Unexpected::Functions qw( build_attr_from inflate_message );
+use Unexpected::Functions { into => 'main' };
+
+use Unexpected::Functions qw( :all );
 
 ok( (main->can( 'build_attr_from' )), 'Imports build_attr_from' );
 ok( (main->can( 'inflate_message' )), 'Imports inflate_message' );
+
+# Lifted from Class::Load
+ok(  is_class_loaded( 'MyException' ), 'MyException is loaded' );
+ok( !is_class_loaded( 'MyException::NOEXIST' ), 'Nonexistent class NOT loaded');
+
+do {
+   package MyException::ISA;
+   our @ISA = 'MyException';
+};
+
+ok(  is_class_loaded( 'MyException::ISA' ), 'Defines \@ISA loaded' );
+
+do {
+   package MyException::ScalarISA;
+   our $ISA = 'MyException';
+};
+
+ok( !is_class_loaded( 'MyException::ScalarISA' ), 'Defines $ISA not loaded' );
+
+do {
+   package MyException::UndefVers;
+   our $VERSION;
+};
+
+ok( !is_class_loaded( 'MyException::UndefVers' ), 'Undef version not loaded' );
+
+do {
+   package MyException::UndefScalar;
+   my $version; our $VERSION = \$version;
+};
+
+ok( !is_class_loaded( 'MyException::UndefScalar' ), 'Undef scalar not loaded' );
+
+do {
+   package MyException::DefScalar;
+   my $version = 1; our $VERSION = \$version;
+};
+
+ok(  is_class_loaded( 'MyException::DefScalar' ), 'Defined scalar ref loaded' );
+
+do {
+   package MyException::VERSION;
+   our $VERSION = '1.0';
+};
+
+ok(  is_class_loaded( 'MyException::VERSION' ), 'Defines $VERSION is loaded' );
+
+do {
+   package MyException::VersionObj;
+   our $VERSION = version->new( 1 );
+};
+
+ok(  is_class_loaded( 'MyException::VersionObj' ), 'Version obj returns true' );
+
+do {
+   package MyException::WithMethod;
+   sub foo { }
+};
+
+ok(  is_class_loaded( 'MyException::WithMethod' ), 'Defines a method loaded' );
+
+do {
+   package MyException::WithScalar;
+   our $FOO = 1;
+};
+
+ok( !is_class_loaded( 'MyException::WithScalar' ), 'Defines scalar not loaded');
+
+do {
+   package MyException::Foo::Bar;
+   sub bar {}
+};
+
+ok( !is_class_loaded( 'MyException::Foo' ), 'If Foo::Bar is loaded Foo is not');
+
+do {
+   package MyException::Quuxquux;
+   sub quux {}
+};
+
+ok( !is_class_loaded( 'MyException::Quux' ),
+    'Quuxquux does not imply the existence of Quux' );
+
+do {
+   package MyException::WithConstant;
+   use constant PI => 3;
+};
+
+ok(  is_class_loaded( 'MyException::WithConstant' ),
+     'Defining a constant means the class is loaded' );
+
+do {
+   package MyException::WithRefConstant;
+   use constant PI => \3;
+};
+
+ok(  is_class_loaded( 'MyException::WithRefConstant' ),
+     'Defining a constant as a reference means the class is loaded' );
+
+do {
+   package MyException::WithStub;
+   sub foo;
+};
+
+ok(  is_class_loaded( 'MyException::WithStub' ),
+     'Defining a stub means the class is loaded' );
+
+do {
+   package MyException::WithPrototypedStub;
+   sub foo (&);
+};
+
+ok(  is_class_loaded( 'MyException::WithPrototypedStub' ),
+     'Defining a stub with a prototype means the class is loaded' );
 
 done_testing;
 

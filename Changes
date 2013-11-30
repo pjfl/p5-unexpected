@@ -1,7 +1,10 @@
 Revision history for Unexpected
 
+0.17.1    2013-11-30 15:09:48
+          - Added ::Functions::is_class_loaded
+
 0.16.1    2013-11-27 12:15:44
-          - Replaced Class::Load wit Module::Runtime
+          - Replaced Class::Load with Module::Runtime
           - Dropped DZ::P::MarkdownInRoot from dist.ini
 
 0.15.1    2013-11-21 16:59:45
