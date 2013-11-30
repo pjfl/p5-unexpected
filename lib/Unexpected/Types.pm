@@ -1,11 +1,11 @@
-# @(#)Ident: Types.pm 2013-11-27 12:04 pjf ;
+# @(#)Ident: Types.pm 2013-11-27 12:23 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use English                 qw( -no_match_vars );
 use Module::Runtime         qw( is_module_name require_module );
@@ -107,7 +107,7 @@ Unexpected::Types - Defines type constraints
 
 =head1 Version
 
-This documents version v0.16.$Rev: 1 $ of L<Unexpected::Types>
+This documents version v0.16.$Rev: 2 $ of L<Unexpected::Types>
 
 =head1 Description
 
@@ -126,7 +126,8 @@ Defines the following type constraints;
 
 =item C<LoadableClass>
 
-A classname that is loaded using L<Class::Load>
+A classname that is loaded and compiled using
+L<require_module|Module::Runtime/require_module>
 
 =item C<NonEmptySimpleStr>
 
@@ -167,7 +168,7 @@ None
 
 =item L<namespace::clean>
 
-=item L<Class::Load>
+=item L<Module::Runtime>
 
 =item L<Type::Tiny>
 
