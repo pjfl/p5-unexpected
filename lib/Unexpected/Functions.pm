@@ -1,10 +1,10 @@
-# @(#)Ident: Functions.pm 2013-11-30 15:23 pjf ;
+# @(#)Ident: Functions.pm 2013-11-30 20:51 pjf ;
 
 package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 2 $ =~ /\d+/gmx );
 use parent                  qw( Exporter::Tiny );
 
 use Package::Stash;
@@ -45,20 +45,20 @@ sub quote_bind_values {
 }
 
 # Public functions
-sub build_attr_from { # Coerce a hash ref from whatever was passed
+sub build_attr_from (;@) { # Coerce a hash ref from whatever was passed
    return ($_[ 0 ] && ref $_[ 0 ] eq 'HASH') ? { %{ $_[ 0 ] } }
         : (  @_ % 2 == 0 && defined $_[ 1 ]) ? { @_ }
         : (                 defined $_[ 0 ]) ? { error => @_ }
                                              : {};
 }
 
-sub inflate_message { # Expand positional parameters of the form [_<n>]
+sub inflate_message ($;@) { # Expand positional parameters of the form [_<n>]
    my $msg = shift; my @args = __inflate_placeholders( @_ );
 
    $msg =~ s{ \[ _ (\d+) \] }{$args[ $1 - 1 ]}gmx; return $msg;
 }
 
-sub is_class_loaded { # Lifted from Class::Load
+sub is_class_loaded ($) { # Lifted from Class::Load
    my $class = shift; my $stash = Package::Stash->new( $class );
 
    if ($stash->has_symbol( '$VERSION' )) {
@@ -109,7 +109,7 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.18.$Rev: 1 $ of L<Unexpected::Functions>
+This documents version v0.18.$Rev: 2 $ of L<Unexpected::Functions>
 
 =head1 Description
 
@@ -162,6 +162,10 @@ None
 =over 3
 
 =item L<Exporter::Tiny>
+
+=item L<Package::Stash>
+
+=item L<Sub::Install>
 
 =back
 

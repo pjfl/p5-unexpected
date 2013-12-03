@@ -1,5 +1,9 @@
 Revision history for Unexpected
 
+          - Using DZ::P::AbstractFromPOD
+          - Using DZ::P::LicenseFromModule
+          - Added prototypes to ::Functions
+
 0.18.1    2013-11-30 15:52:42
           - ::F::import test exception_class for is_exception
 
