@@ -1,14 +1,15 @@
-# @(#)Ident: 30functions.t 2013-11-30 15:01 pjf ;
+# @(#)Ident: 30functions.t 2013-12-05 19:31 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
 
-use Module::Build;
 use Test::More;
+use Test::Requires { version => 0.88 };
+use Module::Build;
 
 my $notes = {}; my $perl_ver;
 

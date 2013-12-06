@@ -4,7 +4,7 @@ package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use parent                  qw( Exporter::Tiny );
 
 use Package::Stash;
@@ -109,7 +109,7 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.18.$Rev: 2 $ of L<Unexpected::Functions>
+This documents version v0.19.$Rev: 1 $ of L<Unexpected::Functions>
 
 =head1 Description
 
