@@ -1,19 +1,36 @@
-# @(#)Ident: ExceptionClasses.pm 2013-11-20 15:28 pjf ;
+# @(#)Ident: ExceptionClasses.pm 2013-12-31 18:28 pjf ;
 
 package Unexpected::TraitFor::ExceptionClasses;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Unexpected::Functions   qw( inflate_message );
 use Moo::Role;
 
 my $Root = 'Unexpected'; my $Classes = { $Root => {} };
 
+__PACKAGE__->has_exception( 'Unspecified' => {
+   parents => [ $Root ], error => '[_1] not specified' } );
+
+# Public attributes
 has 'class' => is => 'ro', isa => sub {
    ($_[ 0 ] and exists $Classes->{ $_[ 0 ] }) or die inflate_message
       ( 'Exception class [_1] does not exist', $_[ 0 ] ) }, default => $Root;
 
+# Construction
+around 'BUILDARGS' => sub {
+   my ($orig, $self, @args) = @_; my $attr = $orig->( $self, @args );
+
+   my $class; exists $attr->{class} and $attr->{class}
+      and exists $Classes->{ $attr->{class} }
+      and $class = $Classes->{ $attr->{class} }
+      and $attr->{error} //= $class->{error};
+
+   return $attr;
+};
+
+# Public methods
 sub has_exception {
    my ($self, @args) = @_; my $i = 0;
 
@@ -104,7 +121,7 @@ Unexpected::TraitFor::ExceptionClasses - Define an exception class hierarchy
 
 =head1 Version
 
-This documents version v0.19.$Rev: 1 $
+This documents version v0.20.$Rev: 1 $
 of L<Unexpected::TraitFor::ExceptionClasses>
 
 =head1 Description
@@ -128,7 +145,14 @@ be thrown. Oh the irony
 
 =back
 
+Defines the C<Unspecified> exception class with a default error message
+
 =head1 Subroutines/Methods
+
+=head2 BUILDARGS
+
+Applies the default error message if one exists and the attributes for the
+soon to be constructed exception lacks one
 
 =head2 has_exception
 
@@ -136,6 +160,11 @@ be thrown. Oh the irony
 
 Defines a new exception class. Parent classes must already exist. Default
 parent class is C<Unexpected>;
+
+   $class->has_exception( 'new_classname' => {
+      parents => [ 'parent1' ], error => 'Default error message [_1]' } );
+
+Sets the default error message for the exception class
 
 =head2 instance_of
 
@@ -182,7 +211,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2013 Peter Flanigan. All rights reserved
+Copyright (c) 2014 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

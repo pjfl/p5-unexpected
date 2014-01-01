@@ -1,5 +1,10 @@
 Revision history for Unexpected
 
+0.20.1    2014-01-01 01:20:15
+          - Defined the Unspecified exception class
+          - Added default error message to ::ExceptionClasses
+          - Updated Build.PL. Remove prereqs below min_perl_ver
+
 0.19.1    2013-12-06 12:33:21
           - CPAN Testing failure 073a6592-5dc5-11e3-8778-8bb49a6ffe4e
             Sebastian Woetzel openbsd.my.domain. We require version.pm 0.88

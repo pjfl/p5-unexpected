@@ -1,10 +1,10 @@
-# @(#)Ident: Functions.pm 2013-11-30 20:51 pjf ;
+# @(#)Ident: Functions.pm 2013-12-31 18:01 pjf ;
 
 package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use parent                  qw( Exporter::Tiny );
 
 use Package::Stash;
@@ -30,7 +30,7 @@ sub import {
 
    for my $sym (@want) {
       if ($ex_class and $ex_class->can( 'is_exception' )
-          and $ex_class->is_exception( $sym )) {
+                    and $ex_class->is_exception( $sym )) {
          install_sub { as => $sym, code => sub { $sym }, into => $target, };
       }
       else { push @args, $sym }
@@ -41,7 +41,7 @@ sub import {
 }
 
 sub quote_bind_values {
-   defined $_[ 1 ] and $Should_Quote = $_[ 1 ]; return $Should_Quote;
+   defined $_[ 1 ] and $Should_Quote = !!$_[ 1 ]; return $Should_Quote;
 }
 
 # Public functions
@@ -75,7 +75,6 @@ sub is_class_loaded ($) { # Lifted from Class::Load
 
    $stash->has_symbol( '@ISA' ) and @{ $stash->get_symbol( '@ISA' ) }
       and return 1;
-
    # Check for any method
    return $stash->list_all_symbols( 'CODE' ) ? 1 : 0;
 }
@@ -109,7 +108,7 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Version
 
-This documents version v0.19.$Rev: 1 $ of L<Unexpected::Functions>
+This documents version v0.20.$Rev: 1 $ of L<Unexpected::Functions>
 
 =head1 Description
 
@@ -189,7 +188,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2013 Peter Flanigan. All rights reserved
+Copyright (c) 2014 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

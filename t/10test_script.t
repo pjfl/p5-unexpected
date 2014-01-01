@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-12-05 19:30 pjf ;
+# @(#)Ident: 10test_script.t 2013-12-31 17:51 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -21,6 +21,8 @@ BEGIN {
 
 use Test::Requires "${perl_ver}";
 use Test::Requires { Moo => 1.002 };
+use English      qw( -no_match_vars );
+use Scalar::Util qw( blessed refaddr );
 
 BEGIN {
    {  package MyException;
@@ -43,9 +45,6 @@ BEGIN {
    }
 }
 
-use English      qw( -no_match_vars );
-use Scalar::Util qw( blessed refaddr );
-
 sub _eval_error () { my $e = $EVAL_ERROR; $EVAL_ERROR = undef; return $e }
 
 my $class = 'MyException'; my $e = _eval_error;
@@ -62,7 +61,7 @@ ok ! _eval_error, 'No throw without error';
 
 eval { eval { die 'In a pit of fire' }; $class->throw_on_error };
 
-like _eval_error, qr{ In \s a \s pit \s of \s fire }mx , 'Throws on error';
+like _eval_error, qr{ \QIn a pit of fire\E }mx , 'Throws on error';
 
 eval { $class->throw( 'PracticeKill' ) }; $e = _eval_error;
 
@@ -70,7 +69,7 @@ can_ok $e, 'message';
 
 like $e->message, qr{ PracticeKill }mx, 'Message contains known string';
 
-is ref $e, $class, 'Good class'; my $min_level = $e->level;
+is blessed $e, $class, 'Good class'; my $min_level = $e->level;
 
 like $e, qr{ \A main \[ \d+ / $min_level \] }mx, 'Package and default level';
 
@@ -107,6 +106,12 @@ like $e, qr{ Test \s+ firing }mx, 'Derefernces coderef as error string';
 eval { $class->throw( args => {} ) }; $e = _eval_error;
 
 like $e, qr{ not \s+ pass \s+ type \s+ constraint }mx, 'Attribute type error';
+
+eval { $class->throw( class => 'Unspecified', args => [ 'Parameter' ] ) };
+
+$e = _eval_error;
+
+like $e, qr{ \Q'Parameter' not specified\E }mx, 'Error string from class';
 
 my ($line1, $line2, $line3);
 

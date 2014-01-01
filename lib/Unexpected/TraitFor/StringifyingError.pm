@@ -1,9 +1,9 @@
-# @(#)$Ident: StringifyingError.pm 2013-08-23 23:01 pjf ;
+# @(#)$Ident: StringifyingError.pm 2014-01-01 00:59 pjf ;
 
 package Unexpected::TraitFor::StringifyingError;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Unexpected::Functions   qw( build_attr_from inflate_message );
 use Unexpected::Types       qw( ArrayRef Str );
@@ -16,9 +16,9 @@ has 'error' => is => 'ro', isa => Str,      default => 'Unknown error';
 
 # Construction
 around 'BUILDARGS' => sub {
-   my ($orig, $self, @args) = @_;
+   my ($orig, $self, @args) = @_; my $attr = build_attr_from( @args );
 
-   my $attr = build_attr_from( @args ); my $e = delete $attr->{error};
+   my $e = delete $attr->{error};
 
    $e and ref $e eq 'CODE' and $e = $e->( $self, $attr );
    $e and $e .= q() and chomp $e;
@@ -39,13 +39,9 @@ after 'BUILD' => sub {
 sub as_string { # Stringifies the error and inflates the placeholders
    my $self = shift; my $error = $self->error;
 
-   0 > index $error, '[_' and return $error."\n";
+   0 > index $error, '[_' and return "${error}\n";
 
    return inflate_message( $error, @{ $self->args } )."\n";
-}
-
-sub message { # Stringify self and a full stack trace
-   my $self = shift; return $self."\n".$self->trace->as_string."\n";
 }
 
 1;
@@ -60,7 +56,7 @@ Unexpected::TraitFor::StringifyingError - Base role for exception handling
 
 =head1 Version
 
-This documents version v0.19.$Rev: 1 $ of
+This documents version v0.20.$Rev: 1 $ of
 L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis
@@ -102,12 +98,6 @@ used as the error string
 
 This is what the object stringifies to
 
-=head2 message
-
-   $error_text_and_stack_trace = $self->message;
-
-Returns the stringified object and a full stack trace
-
 =head2 __build_attr_from
 
    $hash_ref = __build_attr_from( @args );
@@ -146,7 +136,7 @@ Peter Flanigan C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2013 Peter Flanigan. All rights reserved
+Copyright (c) 2014 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

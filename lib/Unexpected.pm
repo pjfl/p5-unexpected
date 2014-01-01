@@ -5,7 +5,7 @@ package Unexpected;
 use 5.010001;
 use namespace::sweep;
 use overload '""' => 'as_string', fallback => 1;
-use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 use Scalar::Util qw( blessed );
@@ -72,7 +72,7 @@ Unexpected - Exception class composed from traits
 
 =head1 Version
 
-This documents version v0.19.$Rev: 1 $ of L<Unexpected>
+This documents version v0.20.$Rev: 1 $ of L<Unexpected>
 
 =head1 Description
 
@@ -160,7 +160,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2013 Peter Flanigan. All rights reserved
+Copyright (c) 2014 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

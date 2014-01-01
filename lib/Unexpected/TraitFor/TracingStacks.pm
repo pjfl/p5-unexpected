@@ -1,9 +1,9 @@
-# @(#)Ident: TracingStacks.pm 2013-11-21 16:51 pjf ;
+# @(#)Ident: TracingStacks.pm 2014-01-01 01:06 pjf ;
 
 package Unexpected::TraitFor::TracingStacks;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.19.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Scalar::Util      qw( weaken );
 use Unexpected::Types qw( HashRef LoadableClass Tracer );
@@ -12,13 +12,18 @@ use Moo::Role;
 requires qw( BUILD );
 
 # Object attributes (public)
-has 'trace'       => is => 'lazy', isa => Tracer,
-   handles        => [ qw( frames ) ], init_arg => undef;
+has 'trace'         => is => 'lazy', isa => Tracer, builder => sub {
+   $_[ 0 ]->trace_class->new( %{ $_[ 0 ]->trace_args } ) },
+   handles          => [ qw( frames ) ], init_arg => undef;
 
-has 'trace_args'  => is => 'lazy', isa => HashRef;
+has 'trace_args'    => is => 'lazy', isa => HashRef, builder => sub { {
+   no_refs          => 1,
+   respect_overload => 0,
+   max_arg_length   => 0,
+   frame_filter     => $_[ 0 ]->trace_frame_filter, } };
 
-has 'trace_class' => is => 'ro',   isa => LoadableClass,
-   default        => 'Devel::StackTrace';
+has 'trace_class'   => is => 'ro',   isa => LoadableClass,
+   default          => 'Devel::StackTrace';
 
 # Construction
 before 'BUILD' => sub {
@@ -28,6 +33,10 @@ before 'BUILD' => sub {
 # Public methods
 sub filtered_frames {
    return grep { $_->subroutine !~ m{ :: __ANON__ \z }mx } $_[ 0 ]->frames;
+}
+
+sub message { # Stringify self and a full stack trace
+   my $self = shift; return "${self}\n".$self->trace->as_string."\n";
 }
 
 sub stacktrace {
@@ -79,18 +88,6 @@ sub trace_frame_filter { # Lifted from StackTrace::Auto
    }
 }
 
-# Private methods
-sub _build_trace {
-   return $_[ 0 ]->trace_class->new( %{ $_[ 0 ]->trace_args } );
-}
-
-sub _build_trace_args {
-   return { no_refs          => 1,
-            respect_overload => 0,
-            max_arg_length   => 0,
-            frame_filter     => $_[ 0 ]->trace_frame_filter, };
-}
-
 1;
 
 __END__
@@ -111,7 +108,7 @@ Unexpected::TraitFor::TracingStacks - Provides a minimalist stacktrace
 
 =head1 Version
 
-This documents version v0.19.$Rev: 1 $ of
+This documents version v0.20.$Rev: 1 $ of
 L<Unexpected::TraitFor::TracingStacks>
 
 =head1 Description
@@ -150,6 +147,12 @@ A loadable class which defaults to L<Devel::StackTrace>
 
 Currently frames with subroutine names matching C<__ANON__> are
 filtered out
+
+=head2 message
+
+   $error_text_and_stack_trace = $self->message;
+
+Returns the stringified object and a full stack trace
 
 =head2 stacktrace
 
@@ -199,7 +202,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2013 Peter Flanigan. All rights reserved
+Copyright (c) 2014 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>
