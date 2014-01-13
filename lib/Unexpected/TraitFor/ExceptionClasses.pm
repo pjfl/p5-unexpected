@@ -1,9 +1,9 @@
-# @(#)Ident: ExceptionClasses.pm 2013-12-31 18:28 pjf ;
+# @(#)Ident: ExceptionClasses.pm 2014-01-09 14:17 pjf ;
 
 package Unexpected::TraitFor::ExceptionClasses;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Unexpected::Functions   qw( inflate_message );
 use Moo::Role;
@@ -11,7 +11,7 @@ use Moo::Role;
 my $Root = 'Unexpected'; my $Classes = { $Root => {} };
 
 __PACKAGE__->has_exception( 'Unspecified' => {
-   parents => [ $Root ], error => '[_1] not specified' } );
+   parents => [ $Root ], error => 'Parameter [_1] not specified' } );
 
 # Public attributes
 has 'class' => is => 'ro', isa => sub {
@@ -30,7 +30,7 @@ around 'BUILDARGS' => sub {
    return $attr;
 };
 
-# Public methods
+# Public class methods
 sub has_exception {
    my ($self, @args) = @_; my $i = 0;
 
@@ -59,6 +59,11 @@ sub has_exception {
    return;
 }
 
+sub is_exception {
+   return $_[ 1 ] && !ref $_[ 1 ] && exists $Classes->{ $_[ 1 ] } ? 1 : 0;
+}
+
+# Public object methods
 sub instance_of {
    my ($self, $wanted) = @_; $wanted or return 0;
 
@@ -75,11 +80,6 @@ sub instance_of {
 
    return 0;
 }
-
-sub is_exception {
-   return $_[ 1 ] && !ref $_[ 1 ] && exists $Classes->{ $_[ 1 ] } ? 1 : 0;
-}
-
 
 1;
 
@@ -121,7 +121,7 @@ Unexpected::TraitFor::ExceptionClasses - Define an exception class hierarchy
 
 =head1 Version
 
-This documents version v0.20.$Rev: 1 $
+This documents version v0.20.$Rev: 2 $
 of L<Unexpected::TraitFor::ExceptionClasses>
 
 =head1 Description
