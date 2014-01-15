@@ -1,5 +1,9 @@
 Revision history for Unexpected
 
+0.21.1    2014-01-15 17:13:43
+          - Added ::Functions::has_exception. Exception descriptor DSL
+          - Renamed ::EC::has_exception to add_exception
+
 0.20.1    2014-01-01 01:20:15
           - Defined the Unspecified exception class
           - Added default error message to ::ExceptionClasses

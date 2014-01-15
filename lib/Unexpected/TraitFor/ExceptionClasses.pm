@@ -1,16 +1,16 @@
-# @(#)Ident: ExceptionClasses.pm 2014-01-09 14:17 pjf ;
+# @(#)Ident: ExceptionClasses.pm 2014-01-15 15:11 pjf ;
 
 package Unexpected::TraitFor::ExceptionClasses;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Unexpected::Functions   qw( inflate_message );
 use Moo::Role;
 
 my $Root = 'Unexpected'; my $Classes = { $Root => {} };
 
-__PACKAGE__->has_exception( 'Unspecified' => {
+__PACKAGE__->add_exception( 'Unspecified' => {
    parents => [ $Root ], error => 'Parameter [_1] not specified' } );
 
 # Public attributes
@@ -31,7 +31,7 @@ around 'BUILDARGS' => sub {
 };
 
 # Public class methods
-sub has_exception {
+sub add_exception {
    my ($self, @args) = @_; my $i = 0;
 
    defined $args[ 0 ] or die 'Exception class undefined';
@@ -102,10 +102,10 @@ Unexpected::TraitFor::ExceptionClasses - Define an exception class hierarchy
    extends 'Unexpected';
    with    'Unexpected::ExceptionClasses';
 
-   __PACKAGE__->has_exception( 'A' );
-   __PACKAGE__->has_exception( 'B', { parents => 'A' } );
-   __PACKAGE__->has_exception( 'C', 'A' ); # same but shorter
-   __PACKAGE__->has_exception( 'D', [ 'B', 'C' ] ); # diamond pattern
+   __PACKAGE__->add_exception( 'A' );
+   __PACKAGE__->add_exception( 'B', { parents => 'A' } );
+   __PACKAGE__->add_exception( 'C', 'A' ); # same but shorter
+   __PACKAGE__->add_exception( 'D', [ 'B', 'C' ] ); # diamond pattern
 
    # Then elsewhere
    __PACKAGE__->throw( 'error message', { class => 'C' } );
@@ -121,7 +121,7 @@ Unexpected::TraitFor::ExceptionClasses - Define an exception class hierarchy
 
 =head1 Version
 
-This documents version v0.20.$Rev: 2 $
+This documents version v0.21.$Rev: 1 $
 of L<Unexpected::TraitFor::ExceptionClasses>
 
 =head1 Description
@@ -140,7 +140,7 @@ Defines the following attributes;
 
 Defaults to C<Unexpected>. Can be used to differentiate different
 classes of error. Non default values for this attribute must have been
-defined with a call to L</has_exception> otherwise an exception will
+defined with a call to L</add_exception> otherwise an exception will
 be thrown. Oh the irony
 
 =back
@@ -154,14 +154,14 @@ Defines the C<Unspecified> exception class with a default error message
 Applies the default error message if one exists and the attributes for the
 soon to be constructed exception lacks one
 
-=head2 has_exception
+=head2 add_exception
 
-   YourExceptionClass->has_exception( 'new_classname', [ 'parent1', 'parent2']);
+   YourExceptionClass->add_exception( 'new_classname', [ 'parent1', 'parent2']);
 
 Defines a new exception class. Parent classes must already exist. Default
 parent class is C<Unexpected>;
 
-   $class->has_exception( 'new_classname' => {
+   $class->add_exception( 'new_classname' => {
       parents => [ 'parent1' ], error => 'Default error message [_1]' } );
 
 Sets the default error message for the exception class
@@ -177,7 +177,7 @@ Is the exception object an instance of the exception class
    $bool = YourExceptionClass->is_exception( 'exception_classname' );
 
 Returns true if the exception class exits as a result of a call to
-L</has_exception>
+L</add_exception>
 
 =head1 Diagnostics
 

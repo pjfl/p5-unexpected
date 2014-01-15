@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-12-31 17:51 pjf ;
+# @(#)Ident: 10test_script.t 2014-01-15 15:21 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -35,11 +35,11 @@ BEGIN {
 
       my $class = __PACKAGE__;
 
-      $class->has_exception( 'A' );
-      $class->has_exception( 'B', [ 'A' ] );
-      $class->has_exception( 'C', { parents => 'A' } );
-      $class->has_exception( 'D', [ qw( A B ) ] );
-      $class->has_exception( 'E', 'A' );
+      $class->add_exception( 'A' );
+      $class->add_exception( 'B', [ 'A' ] );
+      $class->add_exception( 'C', { parents => 'A' } );
+      $class->add_exception( 'D', [ qw( A B ) ] );
+      $class->add_exception( 'E', 'A' );
 
       $INC{ 'MyException.pm' } = __FILE__;
    }
@@ -161,16 +161,16 @@ eval { $e->class}; $e = _eval_error;
 like $e, qr{ 'nonDefault' \s+ does \s+ not \s+ exist }mx,
    'Non existant exception class';
 
-eval { $class->has_exception() }; $e = _eval_error;
+eval { $class->add_exception() }; $e = _eval_error;
 
 like $e, qr{ Exception \s+ class \s+ undefined }mx, 'Undefined exception class';
 
-eval { $class->has_exception( 'F', 'Unknown' ) }; $e = _eval_error;
+eval { $class->add_exception( 'F', 'Unknown' ) }; $e = _eval_error;
 
 like $e, qr{ Unknown \s+ does \s+ not \s+ exist }mx,
    'Parent class does not exist';
 
-eval { $class->has_exception( 'A', 'Unexpected' ) }; $e = _eval_error;
+eval { $class->add_exception( 'A', 'Unexpected' ) }; $e = _eval_error;
 
 like $e, qr{ A \s+ already \s+ exists }mx,
    'Exception class already exists';
