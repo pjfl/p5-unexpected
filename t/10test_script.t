@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2014-01-15 15:21 pjf ;
+# @(#)Ident: 10test_script.t 2014-01-15 21:56 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 2 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -163,7 +163,8 @@ like $e, qr{ 'nonDefault' \s+ does \s+ not \s+ exist }mx,
 
 eval { $class->add_exception() }; $e = _eval_error;
 
-like $e, qr{ Exception \s+ class \s+ undefined }mx, 'Undefined exception class';
+like $e, qr{ \QParameter 'exception class' not specified\E }mx,
+   'Undefined exception class';
 
 eval { $class->add_exception( 'F', 'Unknown' ) }; $e = _eval_error;
 

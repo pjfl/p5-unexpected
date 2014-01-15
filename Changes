@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Method add_exception now only adds one exception at a time
+
 0.21.1    2014-01-15 17:13:43
           - Added ::Functions::has_exception. Exception descriptor DSL
           - Renamed ::EC::has_exception to add_exception

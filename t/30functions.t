@@ -1,8 +1,8 @@
-# @(#)Ident: 30functions.t 2014-01-15 15:21 pjf ;
+# @(#)Ident: 30functions.t 2014-01-15 22:05 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 2 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -27,6 +27,7 @@ BEGIN {
    {  package MyException;
 
       use Moo;
+      use Unexpected::Functions qw( has_exception );
 
       extends 'Unexpected';
       with    'Unexpected::TraitFor::ErrorLeader';
@@ -34,11 +35,11 @@ BEGIN {
 
       my $class = __PACKAGE__;
 
-      $class->add_exception( 'A' );
-      $class->add_exception( 'B', [ 'A' ] );
-      $class->add_exception( 'C', { parents => 'A' } );
-      $class->add_exception( 'D', [ qw( A B ) ] );
-      $class->add_exception( 'E', 'A' );
+      has_exception 'A';
+      has_exception 'B', parents => [ 'A' ];
+      has_exception 'C', parents => 'A';
+      has_exception 'D', parents => [ qw( A B ) ];
+      has_exception 'E', parents => 'A';
 
       $INC{ 'MyException.pm' } = __FILE__;
    }
