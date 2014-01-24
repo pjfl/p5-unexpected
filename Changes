@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+0.22.1    2014-01-24 20:30:06
+          - Removed VERSION from all but main module
+          - Updated git pre commit hook
           - Method add_exception now only adds one exception at a time
 
 0.21.1    2014-01-15 17:13:43

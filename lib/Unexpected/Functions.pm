@@ -1,15 +1,14 @@
-# @(#)Ident: Functions.pm 2014-01-15 17:12 pjf ;
+# @(#)Ident: Functions.pm 2014-01-24 20:18 pjf ;
 
 package Unexpected::Functions;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
-use parent                  qw( Exporter::Tiny );
+use parent 'Exporter::Tiny';
 
 use Package::Stash;
-use Scalar::Util            qw( blessed reftype );
-use Sub::Install            qw( install_sub );
+use Scalar::Util qw( blessed reftype );
+use Sub::Install qw( install_sub );
 
 our @EXPORT_OK = qw( build_attr_from has_exception inflate_message
                      is_class_loaded );
@@ -112,10 +111,6 @@ Unexpected::Functions - A collection of functions used in this distribution
 =head1 Synopsis
 
    use Unexpected::Functions qw( build_attr_from );
-
-=head1 Version
-
-This documents version v0.21.$Rev: 1 $ of L<Unexpected::Functions>
 
 =head1 Description
 

@@ -1,22 +1,21 @@
-# @(#)Ident: Types.pm 2013-11-27 12:23 pjf ;
+# @(#)Ident: Types.pm 2014-01-24 20:20 pjf ;
 
 package Unexpected::Types;
 
 use strict;
 use warnings;
 use namespace::clean -except => 'meta';
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use English                 qw( -no_match_vars );
-use Module::Runtime         qw( is_module_name require_module );
-use Scalar::Util            qw( blessed );
-use Type::Library               -base, -declare =>
-                            qw( LoadableClass NonEmptySimpleStr
-                                NonNumericSimpleStr NonZeroPositiveInt
-                                PositiveInt SimpleStr Tracer );
-use Type::Utils             qw( as coerce extends from
-                                inline_as message subtype via where );
-use Unexpected::Functions   qw( inflate_message );
+use English               qw( -no_match_vars );
+use Module::Runtime       qw( is_module_name require_module );
+use Scalar::Util          qw( blessed );
+use Type::Library             -base, -declare =>
+                          qw( LoadableClass NonEmptySimpleStr
+                              NonNumericSimpleStr NonZeroPositiveInt
+                              PositiveInt SimpleStr Tracer );
+use Type::Utils           qw( as coerce extends from
+                              inline_as message subtype via where );
+use Unexpected::Functions qw( inflate_message );
 
 BEGIN { extends 'Types::Standard' };
 
@@ -104,10 +103,6 @@ Unexpected::Types - Defines type constraints
 =head1 Synopsis
 
    use Unexpected::Types qw(ArrayRef SimplStr);
-
-=head1 Version
-
-This documents version v0.21.$Rev: 1 $ of L<Unexpected::Types>
 
 =head1 Description
 

@@ -1,11 +1,10 @@
-# @(#)Ident: ExceptionClasses.pm 2014-01-15 18:41 pjf ;
+# @(#)Ident: ExceptionClasses.pm 2014-01-24 20:18 pjf ;
 
 package Unexpected::TraitFor::ExceptionClasses;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
-use Unexpected::Functions   qw( inflate_message );
+use Unexpected::Functions qw( inflate_message );
 use Moo::Role;
 
 my $ROOT = 'Unexpected'; my $Classes = { $ROOT => {} };
@@ -113,11 +112,6 @@ Unexpected::TraitFor::ExceptionClasses - Define an exception class hierarchy
    $e->instance_of( 'B' ); # false
    $e->instance_of( 'C' ); # true
    $e->instance_of( 'D' ); # false
-
-=head1 Version
-
-This documents version v0.21.$Rev: 2 $
-of L<Unexpected::TraitFor::ExceptionClasses>
 
 =head1 Description
 

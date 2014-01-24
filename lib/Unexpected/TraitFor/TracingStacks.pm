@@ -1,9 +1,8 @@
-# @(#)Ident: TracingStacks.pm 2014-01-01 01:06 pjf ;
+# @(#)Ident: TracingStacks.pm 2014-01-24 20:20 pjf ;
 
 package Unexpected::TraitFor::TracingStacks;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Scalar::Util      qw( weaken );
 use Unexpected::Types qw( HashRef LoadableClass Tracer );
@@ -105,11 +104,6 @@ Unexpected::TraitFor::TracingStacks - Provides a minimalist stacktrace
    use Moo;
 
    with 'Unexpected::TraitFor::TracingStacks';
-
-=head1 Version
-
-This documents version v0.21.$Rev: 1 $ of
-L<Unexpected::TraitFor::TracingStacks>
 
 =head1 Description
 

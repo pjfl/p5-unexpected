@@ -1,15 +1,14 @@
-# @(#)Ident: Throwing.pm 2013-11-20 14:59 pjf ;
+# @(#)Ident: Throwing.pm 2014-01-24 20:19 pjf ;
 
 package Unexpected::TraitFor::Throwing;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use Carp                      ( );
-use English                 qw( -no_match_vars );
-use Scalar::Util            qw( blessed );
-use Unexpected::Functions   qw( build_attr_from );
-use Unexpected::Types       qw( Maybe Object );
+use Carp                    ( );
+use English               qw( -no_match_vars );
+use Scalar::Util          qw( blessed );
+use Unexpected::Functions qw( build_attr_from );
+use Unexpected::Types     qw( Maybe Object );
 use Moo::Role;
 
 requires qw( BUILD is_one_of_us );
@@ -87,11 +86,6 @@ Unexpected::TraitFor::Throwing - Detects and throws exceptions
    use Moo;
 
    with 'Unexpected::TraitFor::Throwing';
-
-=head1 Version
-
-This documents version v0.21.$Rev: 1 $ of
-L<Unexpected::TraitFor::Throwing>
 
 =head1 Description
 

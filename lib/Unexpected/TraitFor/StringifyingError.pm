@@ -1,12 +1,11 @@
-# @(#)$Ident: StringifyingError.pm 2014-01-01 00:59 pjf ;
+# @(#)$Ident: StringifyingError.pm 2014-01-24 20:19 pjf ;
 
 package Unexpected::TraitFor::StringifyingError;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use Unexpected::Functions   qw( build_attr_from inflate_message );
-use Unexpected::Types       qw( ArrayRef Str );
+use Unexpected::Functions qw( build_attr_from inflate_message );
+use Unexpected::Types     qw( ArrayRef Str );
 use Moo::Role;
 
 # Object attributes (public)
@@ -53,11 +52,6 @@ __END__
 =head1 Name
 
 Unexpected::TraitFor::StringifyingError - Base role for exception handling
-
-=head1 Version
-
-This documents version v0.21.$Rev: 1 $ of
-L<Unexpected::TraitFor::StringifyingError>
 
 =head1 Synopsis
 
