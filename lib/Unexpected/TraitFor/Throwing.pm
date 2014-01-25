@@ -1,5 +1,3 @@
-# @(#)Ident: Throwing.pm 2014-01-24 20:19 pjf ;
-
 package Unexpected::TraitFor::Throwing;
 
 use namespace::sweep;

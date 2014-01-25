@@ -1,5 +1,3 @@
-# @(#)Ident: 10test_script.t 2014-01-24 20:16 pjf ;
-
 use strict;
 use warnings;
 use File::Spec::Functions qw( catdir updir );

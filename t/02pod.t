@@ -1,5 +1,3 @@
-# @(#)Ident: 02pod.t 2014-01-24 20:23 pjf ;
-
 use strict;
 use warnings;
 use File::Spec::Functions qw( catdir updir );

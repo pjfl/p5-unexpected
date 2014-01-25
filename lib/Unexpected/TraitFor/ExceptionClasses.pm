@@ -1,5 +1,3 @@
-# @(#)Ident: ExceptionClasses.pm 2014-01-24 20:18 pjf ;
-
 package Unexpected::TraitFor::ExceptionClasses;
 
 use namespace::sweep;

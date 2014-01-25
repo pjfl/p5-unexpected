@@ -1,5 +1,3 @@
-# @(#)Ident: TracingStacks.pm 2014-01-24 20:20 pjf ;
-
 package Unexpected::TraitFor::TracingStacks;
 
 use namespace::sweep;

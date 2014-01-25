@@ -1,5 +1,3 @@
-# @(#)Ident: ErrorLeader.pm 2014-01-24 20:17 pjf ;
-
 package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::sweep;

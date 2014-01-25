@@ -1,5 +1,3 @@
-# @(#)$Ident: StringifyingError.pm 2014-01-24 20:19 pjf ;
-
 package Unexpected::TraitFor::StringifyingError;
 
 use namespace::sweep;

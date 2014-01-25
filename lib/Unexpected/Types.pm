@@ -1,5 +1,3 @@
-# @(#)Ident: Types.pm 2014-01-24 20:20 pjf ;
-
 package Unexpected::Types;
 
 use strict;

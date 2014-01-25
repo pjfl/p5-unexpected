@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Removed Ident: lines
+
 0.22.1    2014-01-24 20:30:06
           - Removed VERSION from all but main module
           - Updated git pre commit hook

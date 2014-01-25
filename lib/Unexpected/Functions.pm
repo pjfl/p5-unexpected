@@ -1,5 +1,3 @@
-# @(#)Ident: Functions.pm 2014-01-24 20:18 pjf ;
-
 package Unexpected::Functions;
 
 use strict;
