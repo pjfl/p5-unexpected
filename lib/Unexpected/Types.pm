@@ -17,6 +17,8 @@ use Unexpected::Functions qw( inflate_message );
 
 BEGIN { extends 'Types::Standard' };
 
+my $LOADABLE_CLASS_ERROR;
+
 $Error::TypeTiny::CarpInternal{ 'Sub::Quote' }++;
 $Error::TypeTiny::CarpInternal{ 'Unexpected::TraitFor::Throwing' }++;
 
@@ -56,7 +58,8 @@ subtype Tracer, as Object,
 
 
 subtype LoadableClass, as NonEmptySimpleStr,
-   message   { inflate_message( 'String [_1] is not a loadable class', $_ ) },
+   message   { inflate_message( 'String [_1] is not a loadable class: [_2]',
+                                $_, $LOADABLE_CLASS_ERROR ) },
    where     { __constraint_for_loadable_class( $_ ) };
 
 subtype NonNumericSimpleStr, as SimpleStr,
@@ -71,6 +74,8 @@ sub __constraint_for_loadable_class {
    my $class = shift; is_module_name( $class ) or return 0;
 
    local $EVAL_ERROR; eval { require_module( $class ) };
+
+   $LOADABLE_CLASS_ERROR = $EVAL_ERROR;
 
    return $EVAL_ERROR ? 0 : 1;
 }

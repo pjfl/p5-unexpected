@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Made LoadableClass TC output require_module error
           - Removed Ident: lines
 
 0.22.1    2014-01-24 20:30:06
