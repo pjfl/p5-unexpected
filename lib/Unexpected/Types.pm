@@ -2,7 +2,6 @@ package Unexpected::Types;
 
 use strict;
 use warnings;
-use namespace::clean -except => 'meta';
 
 use English               qw( -no_match_vars );
 use Module::Runtime       qw( is_module_name require_module );
@@ -14,6 +13,8 @@ use Type::Library             -base, -declare =>
 use Type::Utils           qw( as coerce extends from
                               inline_as message subtype via where );
 use Unexpected::Functions qw( inflate_message );
+
+use namespace::clean -except => 'meta';
 
 BEGIN { extends 'Types::Standard' };
 

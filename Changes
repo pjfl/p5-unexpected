@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Moved location of namespace::clean calls. Yuck
           - Made LoadableClass TC output require_module error
           - Removed Ident: lines
 
