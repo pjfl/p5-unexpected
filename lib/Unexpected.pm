@@ -2,8 +2,8 @@ package Unexpected;
 
 use 5.010001;
 use namespace::sweep;
-use overload '""' => 'as_string', fallback => 1;
-use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 4 $ =~ /\d+/gmx );
+use overload '""' => sub { $_[ 0 ]->as_string }, fallback => 1;
+use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 5 $ =~ /\d+/gmx );
 
 use Moo;
 use Scalar::Util qw( blessed );
@@ -70,7 +70,7 @@ Unexpected - Exception class composed from traits
 
 =head1 Version
 
-This documents version v0.22.$Rev: 4 $ of L<Unexpected>
+This documents version v0.22.$Rev: 5 $ of L<Unexpected>
 
 =head1 Description
 

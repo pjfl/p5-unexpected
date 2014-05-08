@@ -230,6 +230,8 @@ eval { $class->throw( 'PracticeKill' ) }; $e = _eval_error;
 
 is $e->leader, q(), 'No leader';
 
+is "${e}", "PracticeKill\n", 'Stringifies';
+
 done_testing;
 
 # Local Variables:
