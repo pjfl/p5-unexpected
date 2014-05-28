@@ -100,7 +100,7 @@ eval { $class->throw( error => sub { 'Test firing' } ) }; $e = _eval_error;
 
 like $e, qr{ Test \s+ firing }mx, 'Derefernces coderef as error string';
 
-eval { $class->throw( args => {} ) }; $e = _eval_error;
+eval { $class->throw( 'error', args => {} ) }; $e = _eval_error;
 
 like $e, qr{ not \s+ pass \s+ type \s+ constraint }mx, 'Attribute type error';
 

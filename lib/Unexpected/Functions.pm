@@ -45,6 +45,7 @@ sub quote_bind_values {
 # Public functions
 sub build_attr_from (;@) { # Coerce a hash ref from whatever was passed
    return ($_[ 0 ] && ref $_[ 0 ] eq 'HASH') ? { %{ $_[ 0 ] } }
+        : ($_[ 1 ] && ref $_[ 1 ] eq 'HASH') ? { error => $_[ 0 ], %{ $_[ 1 ] }}
         : (  @_ % 2 == 0 && defined $_[ 1 ]) ? { @_ }
         : (                 defined $_[ 0 ]) ? { error => @_ }
                                              : {};
