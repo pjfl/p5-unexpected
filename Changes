@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+          - CPAN Testing failure 20ba3f5a-f94d-11e3-82c2-bc3ea1235623
+            Seifer Cross unknown host. Undefined install paths
+
 0.23.1    2014-05-28 11:24:47
           - Added new construction signature, <error>, <hash_ref>
           - Added stringification test
