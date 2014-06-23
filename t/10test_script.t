@@ -1,5 +1,4 @@
-use strict;
-use warnings;
+use strictures;
 use File::Spec::Functions qw( catdir updir );
 use FindBin               qw( $Bin );
 use lib               catdir( $Bin, updir, 'lib' );

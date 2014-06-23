@@ -1,6 +1,6 @@
 package Unexpected::TraitFor::Throwing;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Carp                    ( );
 use English               qw( -no_match_vars );
@@ -142,7 +142,7 @@ None
 
 =over 3
 
-=item L<namespace::sweep>
+=item L<namespace::autoclean>
 
 =item L<Moo::Role>
 

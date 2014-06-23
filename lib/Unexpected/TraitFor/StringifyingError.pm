@@ -1,6 +1,6 @@
 package Unexpected::TraitFor::StringifyingError;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Unexpected::Functions qw( build_attr_from inflate_message );
 use Unexpected::Types     qw( ArrayRef Str );
@@ -104,7 +104,7 @@ None
 
 =over 3
 
-=item L<namespace::sweep>
+=item L<namespace::autoclean>
 
 =item L<Moo::Role>
 

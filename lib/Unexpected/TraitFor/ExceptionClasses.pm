@@ -1,6 +1,6 @@
 package Unexpected::TraitFor::ExceptionClasses;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Unexpected::Functions qw( inflate_message );
 use Moo::Role;

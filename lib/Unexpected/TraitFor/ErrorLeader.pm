@@ -1,6 +1,6 @@
 package Unexpected::TraitFor::ErrorLeader;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use List::Util        qw( first );
 use Unexpected::Types qw( NonZeroPositiveInt SimpleStr );
@@ -131,7 +131,7 @@ None
 
 =over 3
 
-=item L<namespace::sweep>
+=item L<namespace::autoclean>
 
 =item L<Moo::Role>
 

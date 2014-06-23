@@ -1,7 +1,6 @@
 package Unexpected::Functions;
 
-use strict;
-use warnings;
+use strictures;
 use parent 'Exporter::Tiny';
 
 use Package::Stash;

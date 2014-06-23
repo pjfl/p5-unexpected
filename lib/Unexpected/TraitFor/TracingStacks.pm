@@ -1,6 +1,6 @@
 package Unexpected::TraitFor::TracingStacks;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Scalar::Util      qw( weaken );
 use Unexpected::Types qw( HashRef LoadableClass Tracer );
@@ -166,7 +166,7 @@ None
 
 =over 3
 
-=item L<namespace::sweep>
+=item L<namespace::autoclean>
 
 =item L<Moo::Role>
 
