@@ -19,6 +19,7 @@ use Test::Requires "${perl_ver}";
 use Test::Requires { Moo => 1.002 };
 use English      qw( -no_match_vars );
 use Scalar::Util qw( blessed refaddr );
+use Try::Tiny;
 
 BEGIN {
    {  package MyException;
@@ -33,7 +34,7 @@ BEGIN {
 
       $class->add_exception( 'A' );
       $class->add_exception( 'B', [ 'A' ] );
-      $class->add_exception( 'C', { parents => 'A' } );
+      $class->add_exception( 'C', { error => 'Class C', parents => 'A' } );
       $class->add_exception( 'D', [ qw( A B ) ] );
       $class->add_exception( 'E', 'A' );
 
@@ -182,7 +183,7 @@ like $e, qr{ main\[ $line1 / \d+ \]:\scat:\s'flap'\scannot\sopen:\s'\[\?\]' }mx,
    'Placeholer substitution - with quotes';
 
 use Unexpected::Functions
-   { exception_class => 'MyException' }, qw( A inflate_message );
+   { exception_class => 'MyException' }, qw( A catch_class inflate_message );
 
 is A(), 'A', 'Imports exception';
 
@@ -230,6 +231,41 @@ eval { $class->throw( 'PracticeKill' ) }; $e = _eval_error;
 is $e->leader, q(), 'No leader';
 
 is "${e}", "PracticeKill\n", 'Stringifies';
+
+my $v = try { $class->throw( class => 'C' ) } catch_class [ C => sub { 42 } ];
+
+is $v, 42, 'Catch class';
+
+eval { try { $class->throw( class => 'C' ) } catch_class [ D => sub { 42 } ]; };
+
+$e = _eval_error;
+
+is "${e}", "Class C\n", 'Catch class - default throws';
+
+eval { try { die 'string' } catch_class [ C => sub { 42 } ]; };
+
+$e = _eval_error;
+
+like "${e}", qr{ \A string }mx, 'Catch class - ignores strings';
+
+$v = try { die 'string' } catch_class [ ':str' => sub { 42 } ];
+
+is $v, 42, 'Catch class - string exceptions';
+
+$v = try { die [] } catch_class [ 'ARRAY' => sub { 42 } ];
+
+is $v, 42, 'Catch class - references';
+
+$v = try         { $class->throw( class => 'C' ) }
+     catch_class [ Unexpected => sub { 42 } ];
+
+is $v, 42, 'Catch class - real class names';
+
+eval { try { die } catch_class []; };
+
+$e = _eval_error;
+
+like "${e}", qr{ \A Died }mx, 'Catch class - undefined keys';
 
 done_testing;
 

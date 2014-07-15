@@ -3,11 +3,12 @@ package Unexpected::Functions;
 use strictures;
 use parent 'Exporter::Tiny';
 
+use Carp         qw( croak );
 use Package::Stash;
 use Scalar::Util qw( blessed reftype );
 use Sub::Install qw( install_sub );
 
-our @EXPORT_OK = qw( build_attr_from has_exception inflate_message
+our @EXPORT_OK = qw( build_attr_from catch_class has_exception inflate_message
                      is_class_loaded );
 
 my $Should_Quote = 1;
@@ -50,6 +51,14 @@ sub build_attr_from (;@) { # Coerce a hash ref from whatever was passed
                                              : {};
 }
 
+sub catch_class ($@) {
+   my $checker = __gen_checker( @{+ shift }, '*' => sub { die $_[ 0 ] } );
+
+   wantarray or croak 'Useless bare catch_class()';
+
+   return __catch( sub { ($checker->( $_[ 0 ] ) || return)->( $_[ 0 ] ) }, @_ );
+}
+
 sub has_exception ($;@) {
    my ($name, %args) = @_; my $exception_class = caller;
 
@@ -84,10 +93,44 @@ sub is_class_loaded ($) { # Lifted from Class::Load
 }
 
 # Private functions
+sub __catch {
+   my $block = shift; return ((bless \$block, 'Try::Tiny::Catch'), @_);
+}
+
+sub __gen_checker {
+   my @prototable = @_;
+
+   return sub {
+      my $x       = shift;
+      my $ref     = ref $x;
+      my $blessed = blessed $x;
+      my $does    = ($blessed && $x->can( 'DOES' )) || 'isa';
+      my @table   = @prototable;
+
+      while (my ($key, $value) = splice @table, 0, 2) {
+         __match_class( $x, $ref, $blessed, $does, $key ) and return $value
+      }
+
+      return;
+   }
+}
+
 sub __inflate_placeholders { # Substitute visible strings for null and undef
    return map { __quote_maybe( (length) ? $_ : '[]' ) }
           map { $_ // '[?]' } @_,
           map {       '[?]' } 0 .. 9;
+}
+
+sub __match_class {
+   my ($x, $ref, $blessed, $does, $key) = @_;
+
+   return !defined $key                                       ? !defined $x
+        : $key eq '*'                                         ? 1
+        : $key eq ':str'                                      ? !$ref
+        : $key eq $ref                                        ? 1
+        : $blessed && $x->can( 'class' ) && $x->class eq $key ? 1
+        : $blessed && $x->$does( $key )                       ? 1
+                                                              : 0;
 }
 
 sub __quote_maybe {
@@ -131,9 +174,23 @@ Defines no attributes
 
 Coerces a hash ref from whatever args are passed
 
+=head2 catch_class
+
+   use Try::Tiny;
+
+   try         { die $exception_object }
+   catch_class [ 'exception_class' => sub { # handle exception }, ... ],
+   finally     { # always do this };
+
+See L<Try::Tiny::ByClass>. Checks the exception object's C<class> attribute
+against the list of exception class names passed to C<catch_class>. If there
+is a match, call the subroutine provided to handle that exception. Re-throws
+the exception if there is no match of if the exception object has no C<class>
+attribute
+
 =head2 has_exception
 
-   has_exception 'exception_mame' => parents => [ 'parent_exception' ],
+   has_exception 'exception_name' => parents => [ 'parent_exception' ],
       error => 'Error message for the exception with placeholders';
 
 Calls L<Unexpected::TraitFor::ExceptionClasses/add_exception> via the
