@@ -1,4 +1,5 @@
-use strictures;
+use strict;
+use warnings;
 use File::Spec::Functions qw( catdir updir );
 use FindBin               qw( $Bin );
 use lib               catdir( $Bin, updir, 'lib' );
@@ -68,7 +69,13 @@ like $e->message, qr{ PracticeKill }mx, 'Message contains known string';
 
 is blessed $e, $class, 'Good class'; my $min_level = $e->level;
 
-like $e, qr{ \A main \[ \d+ / $min_level \] }mx, 'Package and default level';
+my $can_trace = $e =~ m{ \A main }mx ? 1 : 0;
+
+SKIP: {
+   $can_trace or skip 'Stacktrace broken', 1;
+
+   like $e, qr{ \A main \[ \d+ / $min_level \] }mx, 'Package and default level';
+};
 
 like $e, qr{ PracticeKill \s* \z   }mx, 'Throws error message';
 
@@ -112,29 +119,34 @@ like $e, qr{ \Q'Parameter' not specified\E }mx, 'Error string from class';
 
 my ($line1, $line2, $line3);
 
-sub test_throw { $class->throw( 'PracticeKill' ) }; $line1 = __LINE__;
+SKIP: {
+   $can_trace or skip 'Stacktrace broken', 1;
 
-sub test_throw1 { test_throw() }; $line2 = __LINE__;
+   sub test_throw { $class->throw( 'PracticeKill' ) }; $line1 = __LINE__;
 
-eval { test_throw1() }; $line3 = __LINE__; $e = _eval_error;
+   sub test_throw1 { test_throw() }; $line2 = __LINE__;
 
-my @lines = $e->stacktrace;
+   eval { test_throw1() }; $line3 = __LINE__; $e = _eval_error;
 
-like $e, qr{ \A main \[ $line2 / \d+ \] }mx, 'Package and line number';
+   my @lines = $e->stacktrace;
 
-is $lines[ 0 ], "main::test_throw line ${line1}", 'Stactrace line 1';
+   like $e, qr{ \A main \[ $line2 / \d+ \] }mx, 'Package and line number';
 
-is $lines[ 1 ], "main::test_throw1 line ${line2}", 'Stactrace line 2';
+   is $lines[ 0 ], "main::test_throw line ${line1}", 'Stactrace line 1';
 
-is $lines[ 2 ], "main line ${line3}", 'Stactrace line 3';
+   is $lines[ 1 ], "main::test_throw1 line ${line2}", 'Stactrace line 2';
 
-@lines = $e->stacktrace( 1 );
+   is $lines[ 2 ], "main line ${line3}", 'Stactrace line 3';
 
-is $lines[ 0 ], "main::test_throw1 line ${line2}", 'Stactrace can skip frames';
+   @lines = $e->stacktrace( 1 );
 
-my $lines = $e->stacktrace;
+   is $lines[ 0 ], "main::test_throw1 line ${line2}",
+      'Stactrace can skip frames';
 
-like $lines, qr{ main::test_throw }mx, 'Stacktrace can return a scalar';
+   my $lines = $e->stacktrace;
+
+   like $lines, qr{ main::test_throw }mx, 'Stacktrace can return a scalar';
+};
 
 my $level = $min_level + 1;
 
@@ -146,7 +158,11 @@ sub test_throw4 { test_throw3() }; $line1 = __LINE__;
 
 eval { test_throw4() }; $e = _eval_error;
 
-like $e, qr{ \A main \[ $line1 / $level \] }mx, 'Specific leader level';
+SKIP: {
+   $can_trace or skip 'Stacktrace broken', 1;
+
+   like $e, qr{ \A main \[ $line1 / $level \] }mx, 'Specific leader level';
+};
 
 $line1 = __LINE__; eval {
    $class->throw( args  => [ 'flap' ],
@@ -179,8 +195,14 @@ $line1 = __LINE__; eval {
                   error => 'cat: [_1] cannot open: [_2]', ) }; $e = _eval_error;
 
 is $e->class, 'A', 'Specific error classification';
-like $e, qr{ main\[ $line1 / \d+ \]:\scat:\s'flap'\scannot\sopen:\s'\[\?\]' }mx,
-   'Placeholer substitution - with quotes';
+
+SKIP: {
+   $can_trace or skip 'Stacktrace broken', 1;
+
+   like $e,
+      qr{ main\[ $line1 / \d+ \]:\scat:\s'flap'\scannot\sopen:\s'\[\?\]' }mx,
+      'Placeholer substitution - with quotes';
+};
 
 use Unexpected::Functions
    { exception_class => 'MyException' }, qw( A catch_class inflate_message );
@@ -193,8 +215,12 @@ is $qstate, 1, 'Default quoting state';
 
 Unexpected::Functions->quote_bind_values( 0 );
 
-like $e, qr{ main\[ $line1 / \d+ \]:\scat:\sflap\scannot\sopen:\s\[\?\] }mx,
-   'Placeholer substitution - without quotes';
+SKIP: {
+   $can_trace or skip 'Stacktrace broken', 1;
+
+   like $e, qr{ main\[ $line1 / \d+ \]:\scat:\sflap\scannot\sopen:\s\[\?\] }mx,
+      'Placeholer substitution - without quotes';
+};
 
 ok !$class->is_exception(), 'Exception predicate - undef';
 ok $class->is_exception( 'E' ), 'Exception predicate - true';
@@ -222,7 +248,11 @@ like $e, qr{ nonExistant \s+ does \s+ not \s+ exist }mx,
 
 eval { $class->throw( error => 'PracticeKill', level => 99 )}; $e = _eval_error;
 
-like $e, qr{ /1 }mx, 'Level greater than number of frames';
+SKIP: {
+   $can_trace or skip 'Stacktrace broken', 1;
+
+   like $e, qr{ /1 }mx, 'Level greater than number of frames';
+};
 
 $class->ignore_class( 'main' );
 

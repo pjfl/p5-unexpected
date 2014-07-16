@@ -14,6 +14,7 @@ has 'trace'         => is => 'lazy', isa => Tracer, builder => sub {
    handles          => [ qw( frames ) ], init_arg => undef;
 
 has 'trace_args'    => is => 'lazy', isa => HashRef, builder => sub { {
+   filter_frames_early => 1,
    no_refs          => 1,
    respect_overload => 0,
    max_arg_length   => 0,

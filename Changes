@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+0.25.1    2014-07-16 06:26:37
+          - Stack trace broken on some bsd smokers
+
 0.24.1    2014-07-15 22:09:12
           - Releasing
           - Added catch_class to ::Functions
