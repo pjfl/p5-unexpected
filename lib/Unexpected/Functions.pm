@@ -1,6 +1,7 @@
 package Unexpected::Functions;
 
-use strictures;
+use strict;
+use warnings;
 use parent 'Exporter::Tiny';
 
 use Carp         qw( croak );

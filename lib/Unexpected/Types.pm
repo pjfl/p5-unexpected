@@ -1,6 +1,7 @@
 package Unexpected::Types;
 
-use strictures;
+use strict;
+use warnings;
 
 use English               qw( -no_match_vars );
 use Module::Runtime       qw( is_module_name require_module );
