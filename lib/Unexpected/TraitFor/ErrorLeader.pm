@@ -6,7 +6,7 @@ use List::Util        qw( first );
 use Unexpected::Types qw( NonZeroPositiveInt SimpleStr );
 use Moo::Role;
 
-requires qw( as_string filtered_frames );
+requires qw( as_string frames );
 
 my $Ignore = [ 'Try::Tiny' ];
 
@@ -35,7 +35,7 @@ sub ignore_class {
 sub _build_leader {
    my $self = shift; my $level = $self->level; my $leader = q();
 
-   my @frames = $self->filtered_frames; my ($line, $package);
+   my @frames = $self->frames; my ($line, $package);
 
    $level >= scalar @frames and $level = scalar @frames - 1;
 
@@ -86,7 +86,7 @@ Prepends a one line stack summary to the exception error message
 =head1 Configuration and Environment
 
 Requires the C<as_string> method in the consuming class, as well as
-C<filtered_frames> from the stack trace role
+C<frames> from the stack trace role
 
 Defines the following attributes;
 

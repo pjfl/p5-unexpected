@@ -1,5 +1,10 @@
 Revision history for Unexpected
 
+0.26.1    2014-07-16 08:07:00
+          - Skipping Type::Tiny 0.44. Doesn't install with Moo 1.005
+          - Tests set ENV variable when stack trace broken. More debug op
+          - Removed filtered frames
+
 0.25.1    2014-07-16 06:26:37
           - Stack trace broken on some bsd smokers
 

@@ -69,14 +69,6 @@ like $e->message, qr{ PracticeKill }mx, 'Message contains known string';
 
 is blessed $e, $class, 'Good class'; my $min_level = $e->level;
 
-my $can_trace = $e =~ m{ \A main }mx ? 1 : 0;
-
-SKIP: {
-   $can_trace or skip 'Stacktrace broken', 1;
-
-   like $e, qr{ \A main \[ \d+ / $min_level \] }mx, 'Package and default level';
-};
-
 like $e, qr{ PracticeKill \s* \z   }mx, 'Throws error message';
 
 is $e->class, 'Unexpected', 'Default error classification';
@@ -86,6 +78,16 @@ my $addr = refaddr $e;
 is refaddr $e->caught(), $addr, 'Catches self';
 
 is refaddr $class->caught( $e ), $addr, 'Catches own objects';
+
+my $can_trace = $e =~ m{ \A main }mx ? 1 : 0;
+
+$can_trace or $ENV{UNEXPECTED_TRACE_BROKEN} = 1;
+
+SKIP: {
+   $can_trace or skip 'Stacktrace broken', 1;
+
+   like $e, qr{ \A main \[ \d+ / $min_level \] }mx, 'Package and default level';
+};
 
 eval { $e->throw() }; $e = _eval_error;
 

@@ -29,10 +29,6 @@ before 'BUILD' => sub {
 };
 
 # Public methods
-sub filtered_frames {
-   return grep { $_->subroutine !~ m{ :: __ANON__ \z }mx } $_[ 0 ]->frames;
-}
-
 sub message { # Stringify self and a full stack trace
    my $self = shift; return "${self}\n".$self->trace->as_string."\n";
 }
@@ -67,6 +63,8 @@ sub trace_frame_filter { # Lifted from StackTrace::Auto
       my ($raw)    = @_;
       my  $subr    = $raw->{caller}->[ 3 ];
      (my  $package = $subr) =~ s{ :: \w+ \z }{}mx;
+
+      $ENV{UNEXPECTED_TRACE_BROKEN} and warn "$subr\n";
 
       if    ($found_mark == 3) { return 1 }
       elsif ($found_mark == 2) {
@@ -133,13 +131,6 @@ A loadable class which defaults to L<Devel::StackTrace>
 =back
 
 =head1 Subroutines/Methods
-
-=head2 filtered_frames
-
-   @frames = $self->filtered_frames;
-
-Currently frames with subroutine names matching C<__ANON__> are
-filtered out
 
 =head2 message
 
