@@ -81,7 +81,7 @@ is refaddr $class->caught( $e ), $addr, 'Catches own objects';
 
 my $can_trace = $e =~ m{ \A main }mx ? 1 : 0;
 
-$can_trace or $ENV{UNEXPECTED_TRACE_BROKEN} = 1;
+$can_trace or $ENV{UNEXPECTED_SHOW_RAW_TRACE} = 1;
 
 SKIP: {
    $can_trace or skip 'Stacktrace broken', 1;

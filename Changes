@@ -1,5 +1,11 @@
 Revision history for Unexpected
 
+0.27.1    2014-07-16 15:51:37
+          - Fixed frame skipping sub in stack tracing role
+            Something in the way Moo constructs attributes if different
+            between most systems and some BSD smokers. The
+            Unexpected::TraitFor::TracingStacks::_build_trace frame is
+            reported as __ANON__
           - Removed dependency on strictures
 
 0.26.1    2014-07-16 08:07:00

@@ -29,9 +29,7 @@ $ENV{TEST_MEMORY}
 
 eval { MyError->throw( 'the error' ) }; my $e = $EVAL_ERROR;
 
-ok $e, 'Exception was thrown';
-
-$e->stacktrace; $e->message;
+$e->previous_exception; $e->stacktrace; $e->message;
 
 memory_cycle_ok( $e, 'Exception has no memory cycles' );
 

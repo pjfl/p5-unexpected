@@ -64,22 +64,18 @@ sub trace_frame_filter { # Lifted from StackTrace::Auto
       my  $subr    = $raw->{caller}->[ 3 ];
      (my  $package = $subr) =~ s{ :: \w+ \z }{}mx;
 
-      $ENV{UNEXPECTED_TRACE_BROKEN} and warn "$subr\n";
+      $ENV{UNEXPECTED_SHOW_RAW_TRACE} and warn "$subr\n";
 
-      if    ($found_mark == 3) { return 1 }
-      elsif ($found_mark == 2) {
+      if    ($found_mark == 2) { return 1 }
+      elsif ($found_mark == 1) {
          # uncoverable branch true
          # uncoverable condition right
          $subr =~ m{ :: new \z }mx and $self->isa( $package ) and return 0;
          $found_mark++; return 1;
       }
-      elsif ($found_mark == 1) {
-         # uncoverable condition right
-         $subr =~ m{ :: new \z }mx and $self->isa( $package ) and $found_mark++;
-         return 0;
-      }
 
-      $subr =~ m{ :: _build_trace \z }mx and $found_mark++;
+      # uncoverable condition right
+      $subr =~ m{ :: new \z }mx and $self->isa( $package ) and $found_mark++;
       return 0;
    }
 }
