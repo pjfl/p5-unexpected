@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Added Travis and Coverall badges to POD
+
 0.27.1    2014-07-16 15:51:37
           - Fixed frame skipping sub in stack tracing role
             Something in the way Moo constructs attributes if different

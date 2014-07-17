@@ -3,7 +3,7 @@ package Unexpected;
 use 5.010001;
 use namespace::autoclean;
 use overload '""' => sub { $_[ 0 ]->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 4 $ =~ /\d+/gmx );
 
 use Moo;
 use Scalar::Util qw( blessed );
@@ -70,7 +70,15 @@ Unexpected - Exception class composed from traits
 
 =head1 Version
 
-This documents version v0.27.$Rev: 3 $ of L<Unexpected>
+This documents version v0.27.$Rev: 4 $ of L<Unexpected>
+
+=begin markdown
+
+[![Build Status](https://travis-ci.org/pjfl/p5-unexpected.svg?branch=master)](https://travis-ci.org/pjfl/p5-unexpected)
+
+[![Coverage Status](https://coveralls.io/repos/pjfl/p5-unexpected/badge.png)](https://coveralls.io/r/pjfl/p5-unexpected)
+
+=end markdown
 
 =head1 Description
 
