@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Added Coverall instructions to tavis.yml
           - Added Travis and Coverall badges to POD
 
 0.27.1    2014-07-16 15:51:37

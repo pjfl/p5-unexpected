@@ -42,7 +42,7 @@ Unexpected - Exception class composed from traits
 
 # Version
 
-This documents version v0.27.$Rev: 4 $ of [Unexpected](https://metacpan.org/pod/Unexpected)
+This documents version v0.27.$Rev: 6 $ of [Unexpected](https://metacpan.org/pod/Unexpected)
 
 [![Build Status](https://travis-ci.org/pjfl/p5-unexpected.svg?branch=master)](https://travis-ci.org/pjfl/p5-unexpected)
 
