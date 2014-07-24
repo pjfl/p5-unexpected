@@ -4,7 +4,7 @@ requires "Module::Runtime" => "0.014";
 requires "Moo" => "1.005000";
 requires "Package::Stash" => "0.36";
 requires "Sub::Install" => "0.928";
-requires "Type::Tiny" => ">= 0.042, != 0.44";
+requires "Type::Tiny" => "0.046";
 requires "namespace::autoclean" => "0.19";
 requires "namespace::clean" => "0.25";
 requires "perl" => "5.010001";
