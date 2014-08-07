@@ -113,11 +113,19 @@ eval { $class->throw( 'error', args => {} ) }; $e = _eval_error;
 
 like $e, qr{ not \s+ pass \s+ type \s+ constraint }mx, 'Attribute type error';
 
+eval { $class->throw( 'error', { args => [] } ) }; $e = _eval_error;
+
+is $e->error, 'error', 'Constructs from string and hash';
+
 eval { $class->throw( class => 'Unspecified', args => [ 'Parameter' ] ) };
 
 $e = _eval_error;
 
 like $e, qr{ \Q'Parameter' not specified\E }mx, 'Error string from class';
+
+$e = $class->caught( $e, { leader => 'different' } );
+
+is $e->leader, 'different', 'Constructs from self plus mutation';
 
 my ($line1, $line2, $line3);
 
@@ -298,6 +306,12 @@ eval { try { die } catch_class []; };
 $e = _eval_error;
 
 like "${e}", qr{ \A Died }mx, 'Catch class - undefined keys';
+
+eval { catch_class []; };
+
+$e = _eval_error;
+
+like "${e}", qr{ \Qbare catch_class\E }mx, 'Catch class - bare catch_class';
 
 done_testing;
 

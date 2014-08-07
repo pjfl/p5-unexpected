@@ -45,11 +45,15 @@ sub quote_bind_values {
 
 # Public functions
 sub build_attr_from (;@) { # Coerce a hash ref from whatever was passed
-   return ($_[ 0 ] && ref $_[ 0 ] eq 'HASH') ? { %{ $_[ 0 ] } }
+   my $n = 0; $n++ while (defined $_[ $n ]);
+
+   return (                         $n == 0) ? {}
+        : (       __is_one_of_us( $_[ 0 ] )) ? __clone_one_of_us( @_ )
+        : ($_[ 0 ] && ref $_[ 0 ] eq 'HASH') ? { %{ $_[ 0 ] } }
+        : (                         $n == 1) ? { error => $_[ 0 ] }
         : ($_[ 1 ] && ref $_[ 1 ] eq 'HASH') ? { error => $_[ 0 ], %{ $_[ 1 ] }}
-        : (  @_ % 2 == 0 && defined $_[ 1 ]) ? { @_ }
-        : (                 defined $_[ 0 ]) ? { error => @_ }
-                                             : {};
+        : (                     $n % 2 == 1) ? { error => @_ }
+                                             : { @_ };
 }
 
 sub catch_class ($@) {
@@ -98,6 +102,10 @@ sub __catch {
    my $block = shift; return ((bless \$block, 'Try::Tiny::Catch'), @_);
 }
 
+sub __clone_one_of_us {
+   return $_[ 1 ] ? { %{ $_[ 0 ] }, %{ $_[ 1 ] } } : { error => $_[ 0 ] };
+}
+
 sub __gen_checker {
    my @prototable = @_;
 
@@ -120,6 +128,10 @@ sub __inflate_placeholders { # Substitute visible strings for null and undef
    return map { __quote_maybe( (length) ? $_ : '[]' ) }
           map { $_ // '[?]' } @_,
           map {       '[?]' } 0 .. 9;
+}
+
+sub __is_one_of_us {
+   return $_[ 0 ] && (blessed $_[ 0 ]) && $_[ 0 ]->isa( 'Unexpected' );
 }
 
 sub __match_class {

@@ -64,6 +64,8 @@ sub trace_frame_filter { # Lifted from StackTrace::Auto
       my  $subr    = $raw->{caller}->[ 3 ];
      (my  $package = $subr) =~ s{ :: \w+ \z }{}mx;
 
+      # uncoverable branch true
+      # uncoverable condition right
       $ENV{UNEXPECTED_SHOW_RAW_TRACE} and warn "$subr\n";
 
       if    ($found_mark == 2) { return 1 }

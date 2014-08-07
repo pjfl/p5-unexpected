@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+0.28.1    2014-08-07 16:37:55
+          - Added another constructor method signature
           - Added Coverall instructions to tavis.yml
           - Added Travis and Coverall badges to POD
 

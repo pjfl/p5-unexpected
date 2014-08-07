@@ -11,7 +11,7 @@ requires qw( as_string frames );
 my $Ignore = [ 'Try::Tiny' ];
 
 # Object attributes (public)
-has 'leader' => is => 'lazy', isa => SimpleStr, init_arg => undef;
+has 'leader' => is => 'lazy', isa => SimpleStr;
 
 has 'level'  => is => 'ro',   isa => NonZeroPositiveInt, default => 1;
 
