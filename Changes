@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+          - Added strictures::defanged to tests because
+            160dd1a2-1ebe-11e4-ae61-5739e0bfc7aa
+
 0.28.1    2014-08-07 16:37:55
           - Added another constructor method signature
           - Added Coverall instructions to tavis.yml

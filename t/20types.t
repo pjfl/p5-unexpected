@@ -2,7 +2,8 @@ use strict;
 use warnings;
 use File::Spec::Functions qw( catdir updir );
 use FindBin               qw( $Bin );
-use lib               catdir( $Bin, updir, 'lib' );
+use lib               catdir( $Bin, updir, 'lib' ), catdir( $Bin, 'lib' );
+use strictures::defanged;
 
 use Test::More;
 use Test::Requires { version => 0.88 };
@@ -15,6 +16,10 @@ BEGIN {
       $builder and $notes = $builder->notes;
       $perl_ver = $notes->{min_perl_version} || 5.008;
 }
+
+# 160dd1a2-1ebe-11e4-ae61-5739e0bfc7aa
+my $d = \&warning::bits; defined $d
+   or plan skip_all => 'Broken installation of Perl / TAP';
 
 use Test::Requires "${perl_ver}";
 use Test::Requires { Moo => 1.002 };
