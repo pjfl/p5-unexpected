@@ -3,7 +3,6 @@ use warnings;
 use File::Spec::Functions qw( catdir updir );
 use FindBin               qw( $Bin );
 use lib               catdir( $Bin, updir, 'lib' ), catdir( $Bin, 'lib' );
-use strictures::defanged;
 
 use Test::More;
 use Test::Requires { version => 0.88 };
@@ -21,6 +20,9 @@ use Test::Requires "${perl_ver}";
 use Test::Requires { Moo => 1.002 };
 use English      qw( -no_match_vars );
 use Scalar::Util qw( blessed refaddr );
+
+use strictures::defanged;
+
 use Try::Tiny;
 
 BEGIN {

@@ -3,7 +3,6 @@ use warnings;
 use File::Spec::Functions qw( catdir updir );
 use FindBin               qw( $Bin );
 use lib               catdir( $Bin, updir, 'lib' ), catdir( $Bin, 'lib' );
-use strictures::defanged;
 
 use Test::More;
 use Test::Requires { version => 0.88 };
@@ -18,6 +17,8 @@ BEGIN {
 }
 
 use Test::Requires "${perl_ver}";
+
+use strictures::defanged;
 
 sub EXCEPTION_CLASS { 'MyException' }
 

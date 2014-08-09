@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Moved s::d calls til after min perl ver tests
           - Added strictures::defanged to tests because
             160dd1a2-1ebe-11e4-ae61-5739e0bfc7aa
 
