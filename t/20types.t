@@ -2,7 +2,7 @@ use t::boilerplate;
 
 use Test::More;
 use Test::Requires { Moo => 1.002 };
-use English qw( -no_match_vars );
+use English      qw( -no_match_vars );
 
 # 160dd1a2-1ebe-11e4-ae61-5739e0bfc7aa
 my $d = \&warning::bits; defined $d

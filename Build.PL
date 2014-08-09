@@ -13,8 +13,9 @@ my $paths    = {};
 my $prereqs  = {
   'build_requires' => {
     'Module::Build' => '0.4004',
-    'Test::Requires' => '0.06',
-    'Try::Tiny' => '0.18',
+    'Test::Requires' => '0.08',
+    'Try::Tiny' => '0.22',
+    'strictures' => '1.005004',
     'version' => '0.88'
   },
   'configure_requires' => {
