@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/pjfl/p5-unexpected.svg?branch=master)](https://travis-ci.org/pjfl/p5-unexpected)
 [![Coverage Status](https://coveralls.io/repos/pjfl/p5-unexpected/badge.png)](https://coveralls.io/r/pjfl/p5-unexpected)
+[![CPAN version](https://badge.fury.io/pl/Unexpected.svg)](http://badge.fury.io/pl/Unexpected)
 
 # Name
 

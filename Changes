@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Added fury badge
           - Updated build_requires dependencies
           - Split out boilerplate from test scripts
           - Moved s::d calls til after min perl ver tests
