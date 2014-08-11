@@ -14,7 +14,8 @@ use Type::Utils           qw( as coerce extends from
                               inline_as message subtype via where );
 use Unexpected::Functions qw( inflate_message );
 
-use namespace::clean -except => 'meta';
+# TODO: Is this causing the &warnings::bits undefined error?
+#use namespace::clean -except => 'meta';
 
 BEGIN { extends 'Types::Standard' };
 

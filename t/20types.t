@@ -3,11 +3,6 @@ use t::boilerplate;
 use Test::More;
 use Test::Requires { Moo => 1.002 };
 use English      qw( -no_match_vars );
-
-# 160dd1a2-1ebe-11e4-ae61-5739e0bfc7aa
-my $d = \&warning::bits; defined $d
-   or plan skip_all => 'Broken installation of Perl / TAP';
-
 use Unexpected;
 
 {  package MyNESS;
@@ -18,9 +13,21 @@ use Unexpected;
    has 'test_ness'  => is => 'ro', isa => NonEmptySimpleStr, default => sub {};
 }
 
+# 160dd1a2-1ebe-11e4-ae61-5739e0bfc7aa
+# 494fe6de-2168-11e4-b0d1-f6bc4915a708
+my $ref = warnings->can( 'bits' );
+
+$ref or warn 'Broken installation of Type::Tiny - 1';
+$ref or plan skip_all => 'Broken installation of Type::Tiny - 1';
+
 my $myness; eval { $myness = MyNESS->new };
 
 like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non empty simple str - undef';
+
+SKIP: {
+   $ref = warnings->can( 'bits' );
+   $ref or warn 'Broken installation of Type::Tiny - 2';
+   $ref or skip 'Broken installation of Type::Tiny - 2', 1;
 
 eval { $myness = MyNESS->new( test_ness => '' ) };
 
@@ -143,6 +150,7 @@ like $EVAL_ERROR, qr{ missing \s+ a \s+ frames }mx, 'Tracer - missing method';
 eval { $mytracer = MyTracer->new( test_tracer => $trace ) };
 
 is $EVAL_ERROR, q(), 'Tracer - passes';
+}
 
 done_testing;
 

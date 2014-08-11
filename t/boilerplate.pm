@@ -17,9 +17,18 @@ BEGIN {
 }
 
 use Test::Requires "${perl_ver}";
+use Test::More;
 
 sub import {
-   strictures::defanged->import; return;
+   strictures::defanged->import;
+# 160dd1a2-1ebe-11e4-ae61-5739e0bfc7aa
+# 494fe6de-2168-11e4-b0d1-f6bc4915a708
+   my $ref = warnings->can( 'bits' );
+
+   $ref or warn 'Broken installation of Perl / TAP';
+   $ref or plan skip_all => 'Broken installation of Perl / TAP';
+
+   return;
 }
 
 1;
