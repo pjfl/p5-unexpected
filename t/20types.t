@@ -11,6 +11,8 @@ use Unexpected;
    use Unexpected::Types qw( NonEmptySimpleStr );
 
    has 'test_ness'  => is => 'ro', isa => NonEmptySimpleStr, default => sub {};
+
+   $INC{ 'MyNESS.pm' } = __FILE__;
 }
 
 # 160dd1a2-1ebe-11e4-ae61-5739e0bfc7aa
@@ -47,6 +49,8 @@ is $EVAL_ERROR, q(), 'Non empty simple str - passes';
    use Unexpected::Types qw( NonZeroPositiveInt );
 
    has 'test_nzpi'  => is => 'ro', isa => NonZeroPositiveInt, default => sub {};
+
+   $INC{ 'MyNZPI.pm' } = __FILE__;
 }
 
 my $mynzpi; eval { $mynzpi = MyNZPI->new };
@@ -76,6 +80,8 @@ is $EVAL_ERROR, q(), 'Non zero positive int - passes';
 
    has 'test_nnss'  => is => 'ro', isa => NonNumericSimpleStr,
    default          => sub {};
+
+   $INC{ 'MyNNSS.pm' } = __FILE__;
 }
 
 my $mynnss; eval { $mynnss = MyNNSS->new };
@@ -101,6 +107,8 @@ is $EVAL_ERROR, q(), 'Non numeric simple str - string passes';
 
    has 'test_class' => is => 'ro', isa => LoadableClass,
       coerce        => LoadableClass->coercion;
+
+   $INC{ 'MyLoadableClass.pm' } = __FILE__;
 }
 
 my $mylc  = MyLoadableClass->new( test_class => 'Unexpected' );
@@ -126,6 +134,8 @@ like $e, qr{ not \s+ a \s+ loadable }mx, 'Invalid class name';
    use Unexpected::Types qw( Tracer );
 
    has 'test_tracer'  => is => 'ro', isa => Tracer, default => sub {};
+
+   $INC{ 'MyTracer.pm' } = __FILE__;
 }
 
 my $mytracer; eval { $mytracer = MyTracer->new };
@@ -138,7 +148,12 @@ like $EVAL_ERROR, qr{ not \s+ an \s+ object }mx, 'Tracer - not an object ref';
 
 {  package NoFrames;
 
+   use strict;
+   use warnings;
+
    sub new { bless {}, __PACKAGE__ }
+
+   $INC{ 'NoFrames.pm' } = __FILE__;
 }
 
 my $noframes = NoFrames->new;
