@@ -1,8 +1,10 @@
 Revision history for Unexpected
 
+          - Removed strictures::defanged unnecessary
+            warnings::bits is going undefined. Something in the test suite
+            since first occurance was on 02pod.t
           - Corrected inline package definition in type tests
           - More breakage 494fe6de-2168-11e4-b0d1-f6bc4915a708
-            warnings::bits is going undefined
           - Added fury badge
           - Updated build_requires dependencies
           - Split out boilerplate from test scripts

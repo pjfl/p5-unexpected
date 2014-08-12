@@ -25,4 +25,3 @@ t/10test_script.t
 t/20types.t
 t/30functions.t
 t/boilerplate.pm
-t/lib/strictures/defanged.pm
