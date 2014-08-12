@@ -44,10 +44,6 @@ Unexpected - Exception class composed from traits
     try   { $self->some_method() }
     catch { warn $_->message };
 
-# Version
-
-This documents version v0.28.$Rev: 11 $ of [Unexpected](https://metacpan.org/pod/Unexpected)
-
 # Description
 
 An exception class that supports error messages with placeholders, a

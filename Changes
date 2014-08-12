@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Removed version from POD
           - Removed strictures::defanged unnecessary
             warnings::bits is going undefined. Something in the test suite
             since first occurance was on 02pod.t
