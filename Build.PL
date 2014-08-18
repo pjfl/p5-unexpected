@@ -29,7 +29,7 @@ my $prereqs  = {
     'Moo' => '1.006000',
     'Package::Stash' => '0.36',
     'Sub::Install' => '0.928',
-    'Type::Tiny' => '1.000003',
+    'Type::Tiny' => '1.000002',
     'namespace::autoclean' => '0.19',
     'perl' => '5.010001'
   },
