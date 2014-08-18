@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+0.29.1    2014-08-18 23:47:56
+          - Bumped Type:Tiny version RT#98113
           - Removed version from POD
           - Removed strictures::defanged unnecessary
             warnings::bits is going undefined. Something in the test suite

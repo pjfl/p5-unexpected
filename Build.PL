@@ -26,12 +26,11 @@ my $prereqs  = {
     'Devel::StackTrace' => '1.34',
     'Exporter::Tiny' => '0.038',
     'Module::Runtime' => '0.014',
-    'Moo' => '1.005000',
+    'Moo' => '1.006000',
     'Package::Stash' => '0.36',
     'Sub::Install' => '0.928',
-    'Type::Tiny' => '0.046',
+    'Type::Tiny' => '1.000003',
     'namespace::autoclean' => '0.19',
-    'namespace::clean' => '0.25',
     'perl' => '5.010001'
   },
 };
