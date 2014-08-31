@@ -87,7 +87,7 @@ error role since overloading is not supported in [Moo::Role](https://metacpan.or
 - [namespace::autoclean](https://metacpan.org/pod/namespace::autoclean)
 - [overload](https://metacpan.org/pod/overload)
 - [Moo](https://metacpan.org/pod/Moo)
-- [Unexpected::TraitFor::Exception::Classes](https://metacpan.org/pod/Unexpected::TraitFor::Exception::Classes)
+- [Unexpected::TraitFor::ExceptionClasses](https://metacpan.org/pod/Unexpected::TraitFor::ExceptionClasses)
 - [Unexpected::TraitFor::StringifyingError](https://metacpan.org/pod/Unexpected::TraitFor::StringifyingError)
 - [Unexpected::TraitFor::Throwing](https://metacpan.org/pod/Unexpected::TraitFor::Throwing)
 - [Unexpected::TraitFor::TracingStacks](https://metacpan.org/pod/Unexpected::TraitFor::TracingStacks)

@@ -3,7 +3,7 @@ package Unexpected;
 use 5.010001;
 use namespace::autoclean;
 use overload '""' => sub { $_[ 0 ]->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.30.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.30.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo;
 use Scalar::Util qw( blessed );
@@ -124,7 +124,7 @@ error role since overloading is not supported in L<Moo::Role>
 
 =item L<Moo>
 
-=item L<Unexpected::TraitFor::Exception::Classes>
+=item L<Unexpected::TraitFor::ExceptionClasses>
 
 =item L<Unexpected::TraitFor::StringifyingError>
 

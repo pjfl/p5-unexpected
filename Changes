@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Added two colons test skip line to t/boilerplate.t
+
 0.30.1    2014-08-19 00:02:19
           - Bumped Type:Tiny version RT#98113
           - Removed version from POD
