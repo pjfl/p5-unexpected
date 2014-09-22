@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Added coderef and list constructor signature
           - Added two colons test skip line to t/boilerplate.t
 
 0.30.1    2014-08-19 00:02:19

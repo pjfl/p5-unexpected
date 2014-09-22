@@ -13,7 +13,9 @@ __PACKAGE__->add_exception( 'Unspecified' => {
 # Public attributes
 has 'class' => is => 'ro', isa => sub {
    ($_[ 0 ] and exists $Classes->{ $_[ 0 ] }) or die inflate_message
-      ( 'Exception class [_1] does not exist', $_[ 0 ] ) }, default => $ROOT;
+      ( 'Exception class [_1] does not exist', $_[ 0 ] ) }, coerce => sub {
+         $_[ 0 ] and ref $_[ 0 ] eq 'CODE' ? $_[ 0 ]->() : $_[ 0 ];
+      }, default => $ROOT;
 
 # Construction
 around 'BUILDARGS' => sub {

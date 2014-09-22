@@ -27,6 +27,10 @@ BEGIN {
    }
 }
 
+sub EXCEPTION_CLASS { 'MyException' }
+
+use Unexpected::Functions 'Unspecified';
+
 sub _eval_error () { my $e = $EVAL_ERROR; $EVAL_ERROR = undef; return $e }
 
 my $class = 'MyException'; my $e = _eval_error;
@@ -106,6 +110,12 @@ eval { $class->throw( class => 'Unspecified', args => [ 'Parameter' ] ) };
 $e = _eval_error;
 
 like $e, qr{ \Q'Parameter' not specified\E }mx, 'Error string from class';
+
+eval { $class->throw( Unspecified, args => [ 'Parameter' ] ) };
+
+$e = _eval_error;
+
+like $e, qr{ \Q'Parameter' not specified\E }mx, 'Error string from coderef';
 
 $e = $class->caught( $e, { leader => 'different' } );
 
@@ -201,7 +211,7 @@ SKIP: {
 use Unexpected::Functions
    { exception_class => 'MyException' }, qw( A catch_class inflate_message );
 
-is A(), 'A', 'Imports exception';
+is A()->(), 'A', 'Imports exception';
 
 my $qstate = Unexpected::Functions->quote_bind_values();
 

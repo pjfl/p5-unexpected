@@ -41,6 +41,8 @@ peter
 flanigan
 buildargs
 classname
+instantiation
+merchantability
 namespace
 prepends
 stacktrace

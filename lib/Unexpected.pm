@@ -3,7 +3,7 @@ package Unexpected;
 use 5.010001;
 use namespace::autoclean;
 use overload '""' => sub { $_[ 0 ]->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.30.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.30.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Moo;
 use Scalar::Util qw( blessed );
@@ -89,6 +89,9 @@ with full stack trace
 Applies exception roles to the exception base class L<Unexpected>. See
 L</Dependencies> for the list of roles that are applied
 
+The list of constructor methods signatures is described in
+L<build_attr_from|Unexpected::Functions/build_attr_from>
+
 Error objects are overloaded to stringify to the full error message
 plus a leader if the optional C<ErrorLeader> role has been applied
 
@@ -96,7 +99,7 @@ plus a leader if the optional C<ErrorLeader> role has been applied
 
 =head2 BUILDARGS
 
-Customizes the constructor. Accepts either a coderef, an object ref,
+Customises the constructor. Accepts either a coderef, an object ref,
 a hashref, a scalar, or a list of key / value pairs
 
 =head2 BUILD

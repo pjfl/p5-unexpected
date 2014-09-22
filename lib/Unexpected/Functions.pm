@@ -30,7 +30,9 @@ sub import {
    for my $sym (@want) {
       if ($ex_class and $ex_class->can( 'is_exception' )
                     and $ex_class->is_exception( $sym )) {
-         install_sub { as => $sym, code => sub { $sym }, into => $target, };
+         my $code = sub { sub { $sym } };
+
+         install_sub { as => $sym, code => $code, into => $target, };
       }
       else { push @args, $sym }
    }
@@ -47,13 +49,14 @@ sub quote_bind_values {
 sub build_attr_from (;@) { # Coerce a hash ref from whatever was passed
    my $n = 0; $n++ while (defined $_[ $n ]);
 
-   return (                         $n == 0) ? {}
-        : (       __is_one_of_us( $_[ 0 ] )) ? __clone_one_of_us( @_ )
-        : ($_[ 0 ] && ref $_[ 0 ] eq 'HASH') ? { %{ $_[ 0 ] } }
-        : (                         $n == 1) ? { error => $_[ 0 ] }
-        : ($_[ 1 ] && ref $_[ 1 ] eq 'HASH') ? { error => $_[ 0 ], %{ $_[ 1 ] }}
-        : (                     $n % 2 == 1) ? { error => @_ }
-                                             : { @_ };
+   return (                  $n == 0) ? {}
+        : (__is_one_of_us( $_[ 0 ] )) ? __clone_one_of_us( @_ )
+        : (    ref $_[ 0 ] eq 'CODE') ? __dereference_code( @_ )
+        : (    ref $_[ 0 ] eq 'HASH') ? { %{ $_[ 0 ] } }
+        : (                  $n == 1) ? { error => $_[ 0 ] }
+        : (    ref $_[ 1 ] eq 'HASH') ? { error => $_[ 0 ], %{ $_[ 1 ] } }
+        : (              $n % 2 == 1) ? { error => @_ }
+                                      : { @_ };
 }
 
 sub catch_class ($@) {
@@ -104,6 +107,10 @@ sub __catch {
 
 sub __clone_one_of_us {
    return $_[ 1 ] ? { %{ $_[ 0 ] }, %{ $_[ 1 ] } } : { error => $_[ 0 ] };
+}
+
+sub __dereference_code {
+   my $code = shift; return { class => $code->(), @_ };
 }
 
 sub __gen_checker {
@@ -164,16 +171,31 @@ Unexpected::Functions - A collection of functions used in this distribution
 
 =head1 Synopsis
 
-   use Unexpected::Functions qw( build_attr_from );
+   package YourApp::Exception;
+
+   use Moo;
+
+   extends 'Unexpected';
+   with    'Unexpected::TraitFor::ExceptionClasses';
+
+   package YourApp;
+
+   use Unexpected::Functions 'Unspecified';
+
+   sub EXCEPTION_CLASS { 'YourApp::Exception' }
+
+   sub throw { EXCEPTION_CLASS->throw( @_ ) }
+
+   throw Unspecified, args => [ 'parameter name' ];
 
 =head1 Description
 
 A collection of functions used in this distribution
 
-Also exports any exceptions defined by the caller's C<EXCEPTION_CLASS>
-as subroutines that return the subroutines name as a string. The calling
-package can then throw exceptions with a class attribute that takes these
-subroutines return values
+Also exports any exceptions defined by the caller's C<EXCEPTION_CLASS> as
+subroutines that return a subroutine that returns the subroutines name as a
+string. The calling package can then throw exceptions with a class attribute
+that takes these subroutines return values
 
 =head1 Configuration and Environment
 
@@ -185,7 +207,39 @@ Defines no attributes
 
    $hash_ref = build_attr_from( <whatever> );
 
-Coerces a hash ref from whatever args are passed
+Coerces a hash ref from whatever args are passed. This subroutine is
+responsible for parsing the arguments passed to the constructor. Supports
+the following signatures
+
+   # no defined arguments - returns and empty hash reference
+   Unexpected->new();
+
+   # first argument is one if our own objects - clone it
+   Unexpected->new( $unexpected_object_ref );
+
+   # first argument is one if our own objects, second is a hash reference
+   # - clone the object but mutate it using the hash reference
+   Unexpected->new( $unexpected_object_ref, { key => 'value', ... } );
+
+   # first argument is a code reference - the code reference returns the
+   # exception class and the remaining arguents are treated as a list of
+   # keys and values
+   Unexpected->new( Unspecified, args => [ 'parameter name' ] );
+
+   # first argmentt is a hash reference - clone it
+   Unexpected->new( { key => 'value', ... } );
+
+   # only one scalar argement - the error string
+   Unexpected->new( $error_string );
+
+   # second argement is a hash reference, first argument is the error
+   Unexpected->new( $error_string, { key => 'value', ... } );
+
+   # odd numbered list of arguments is the error followed by keys and values
+   Unexpected->new( $error_string, key => 'value', ... );
+
+   arguments are a list of keys and values
+   Unexpected->new( key => 'value', ... );
 
 =head2 catch_class
 

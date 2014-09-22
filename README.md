@@ -57,6 +57,9 @@ with full stack trace
 Applies exception roles to the exception base class [Unexpected](https://metacpan.org/pod/Unexpected). See
 ["Dependencies"](#dependencies) for the list of roles that are applied
 
+The list of constructor methods signatures is described in
+[build\_attr\_from](https://metacpan.org/pod/Unexpected::Functions#build_attr_from)
+
 Error objects are overloaded to stringify to the full error message
 plus a leader if the optional `ErrorLeader` role has been applied
 
@@ -64,7 +67,7 @@ plus a leader if the optional `ErrorLeader` role has been applied
 
 ## BUILDARGS
 
-Customizes the constructor. Accepts either a coderef, an object ref,
+Customises the constructor. Accepts either a coderef, an object ref,
 a hashref, a scalar, or a list of key / value pairs
 
 ## BUILD
