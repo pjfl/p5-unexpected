@@ -3,7 +3,7 @@ package Unexpected;
 use 5.010001;
 use namespace::autoclean;
 use overload '""' => sub { $_[ 0 ]->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.30.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.30.%d', q$Rev: 4 $ =~ /\d+/gmx );
 
 use Moo;
 use Scalar::Util qw( blessed );
@@ -25,6 +25,13 @@ __END__
 =pod
 
 =encoding utf8
+
+=begin html
+
+<a href="https://travis-ci.org/pjfl/p5-unexpected"><img src="https://travis-ci.org/pjfl/p5-unexpected.png" alt="p5-unexpected"></a>
+<a href="https://coveralls.io/r/pjfl/p5-unexpected?branch=master"><img src="https://coveralls.io/repos/pjfl/p5-unexpected/badge.png" alt="p5-unexpected"></a>
+
+=end html
 
 =begin markdown
 
