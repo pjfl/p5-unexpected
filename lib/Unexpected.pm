@@ -3,7 +3,7 @@ package Unexpected;
 use 5.010001;
 use namespace::autoclean;
 use overload '""' => sub { $_[ 0 ]->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.30.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 use Scalar::Util qw( blessed );
@@ -30,16 +30,9 @@ __END__
 
 <a href="https://travis-ci.org/pjfl/p5-unexpected"><img src="https://travis-ci.org/pjfl/p5-unexpected.png" alt="p5-unexpected"></a>
 <a href="https://coveralls.io/r/pjfl/p5-unexpected?branch=master"><img src="https://coveralls.io/repos/pjfl/p5-unexpected/badge.png" alt="p5-unexpected"></a>
+<a href="http://badge.fury.io/pl/Unexpected"><img src="https://badge.fury.io/pl/Unexpected.svg" alt="p5-unexpected"></a>
 
 =end html
-
-=begin markdown
-
-[![Build Status](https://travis-ci.org/pjfl/p5-unexpected.svg?branch=master)](https://travis-ci.org/pjfl/p5-unexpected)
-[![Coverage Status](https://coveralls.io/repos/pjfl/p5-unexpected/badge.png)](https://coveralls.io/r/pjfl/p5-unexpected)
-[![CPAN version](https://badge.fury.io/pl/Unexpected.svg)](http://badge.fury.io/pl/Unexpected)
-
-=end markdown
 
 =head1 Name
 

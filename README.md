@@ -1,11 +1,8 @@
 <div>
     <a href="https://travis-ci.org/pjfl/p5-unexpected"><img src="https://travis-ci.org/pjfl/p5-unexpected.png" alt="p5-unexpected"></a>
     <a href="https://coveralls.io/r/pjfl/p5-unexpected?branch=master"><img src="https://coveralls.io/repos/pjfl/p5-unexpected/badge.png" alt="p5-unexpected"></a>
+    <a href="http://badge.fury.io/pl/Unexpected"><img src="https://badge.fury.io/pl/Unexpected.svg" alt="p5-unexpected"></a>
 </div>
-
-[![Build Status](https://travis-ci.org/pjfl/p5-unexpected.svg?branch=master)](https://travis-ci.org/pjfl/p5-unexpected)
-[![Coverage Status](https://coveralls.io/repos/pjfl/p5-unexpected/badge.png)](https://coveralls.io/r/pjfl/p5-unexpected)
-[![CPAN version](https://badge.fury.io/pl/Unexpected.svg)](http://badge.fury.io/pl/Unexpected)
 
 # Name
 
