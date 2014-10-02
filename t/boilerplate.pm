@@ -8,6 +8,7 @@ use lib               catdir( $Bin, updir, 'lib' ), catdir( $Bin, 'lib' );
 
 use Test::More;
 use Test::Requires { version => 0.88 };
+use Test::Requires { 'Exporter::Tiny' => 0.042 };
 use Module::Build;
 
 my $notes = {}; my $perl_ver;
