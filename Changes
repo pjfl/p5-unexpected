@@ -1,5 +1,8 @@
 Revision history for Unexpected
 
+0.33.1    2014-10-02 18:31:16
+          - Fixed class coderef dereferencing bug
+
 0.32.1    2014-10-02 01:38:57
           - Made tests skip broken dev releases of Exporter::Tiny
             7b202d3a-49be-11e4-8c55-4b712c6f0924 and RT#99263

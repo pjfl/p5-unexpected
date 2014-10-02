@@ -13,18 +13,17 @@ __PACKAGE__->add_exception( 'Unspecified' => {
 # Public attributes
 has 'class' => is => 'ro', isa => sub {
    ($_[ 0 ] and exists $Classes->{ $_[ 0 ] }) or die inflate_message
-      ( 'Exception class [_1] does not exist', $_[ 0 ] ) }, coerce => sub {
-         $_[ 0 ] and ref $_[ 0 ] eq 'CODE' ? $_[ 0 ]->() : $_[ 0 ];
-      }, default => $ROOT;
+      ( 'Exception class [_1] does not exist', $_[ 0 ] ) }, default => $ROOT;
 
 # Construction
 around 'BUILDARGS' => sub {
    my ($orig, $self, @args) = @_; my $attr = $orig->( $self, @args );
 
-   my $class; exists $attr->{class} and $attr->{class}
-      and exists $Classes->{ $attr->{class} }
-      and $class = $Classes->{ $attr->{class} }
-      and $attr->{error} //= $class->{error};
+   if (exists $attr->{class} and my $class = $attr->{class}) {
+      ref $class eq 'CODE' and $class = $attr->{class} = $class->();
+      exists $Classes->{ $class }
+         and $attr->{error} //= $Classes->{ $class }->{error};
+   }
 
    return $attr;
 };
