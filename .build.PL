@@ -26,7 +26,7 @@ testing and $paths->{install_path} = { bindoc => 'none', libdoc => 'none' };
 
 Module::Build->new(
    'module_name' => $name,
-   'notes'       => { min_perl_version => $perl_ver },
+   'notes'       => { min_perl_version => $perl_ver, testing => testing },
    %{ $paths },
    %{ $prereqs },
 ##{ $plugin->get_default('share_dir') ##}
