@@ -24,7 +24,7 @@ my $prereqs  = {
   },
   'requires' => {
     'Devel::StackTrace' => '1.34',
-    'Exporter::Tiny' => '0.041_02',
+    'Exporter::Tiny' => '0.040',
     'Module::Runtime' => '0.014',
     'Moo' => '1.006000',
     'Package::Stash' => '0.36',

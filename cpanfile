@@ -1,5 +1,5 @@
 requires "Devel::StackTrace" => "1.34";
-requires "Exporter::Tiny" => "0.041_02";
+requires "Exporter::Tiny" => "0.040";
 requires "Module::Runtime" => "0.014";
 requires "Moo" => "1.006000";
 requires "Package::Stash" => "0.36";
