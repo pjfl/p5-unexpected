@@ -3,6 +3,6 @@ branches:
   only:
     - master
 before_install:
-  cpanm -n Alt::Devel::Cover::Report::Coveralls::usingfurl
+  cpanm -n Devel::Cover::Report::Coveralls
 script:
   perl Build.PL && ./Build build && cover -test -report coveralls
