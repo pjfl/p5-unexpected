@@ -21,7 +21,7 @@ around 'BUILDARGS' => sub {
 
    if (exists $attr->{class} and my $class = $attr->{class}) {
       ref $class eq 'CODE' and $class = $attr->{class} = $class->();
-      exists $Classes->{ $class }
+      defined $class and exists $Classes->{ $class }
          and $attr->{error} //= $Classes->{ $class }->{error};
    }
 

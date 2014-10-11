@@ -301,6 +301,11 @@ $e = _eval_error;
 
 like "${e}", qr{ \A Died }mx, 'Catch class - undefined keys';
 
+$v = try { $class->throw( class => 'Unspecified' ) }
+     catch_class [ undef, sub { 1 }, 'Unspecified' => sub { 1 } ];
+
+is $v, 1, 'Catch class - undefined catch_class keys';
+
 eval { catch_class []; };
 
 $e = _eval_error;

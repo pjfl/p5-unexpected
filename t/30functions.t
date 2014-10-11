@@ -35,6 +35,9 @@ use Unexpected::Functions qw( :all );
 ok( (main->can( 'build_attr_from' )), 'Imports build_attr_from' );
 ok( (main->can( 'inflate_message' )), 'Imports inflate_message' );
 
+is build_attr_from( bless { error => 'fooled_you' }, 'HASH' )->{error},
+   'fooled_you', 'Ignores blessed if not one of us';
+
 # Lifted from Class::Load
 ok(  is_class_loaded( 'MyException' ), 'MyException is loaded' );
 ok( !is_class_loaded( 'MyException::NOEXIST' ), 'Nonexistent class NOT loaded');
