@@ -10,7 +10,7 @@ use Scalar::Util qw( blessed reftype );
 use Sub::Install qw( install_sub );
 
 our @EXPORT_OK = qw( build_attr_from catch_class has_exception inflate_message
-                     is_class_loaded );
+                     is_class_loaded is_one_of_us );
 
 my $Should_Quote = 1;
 
@@ -49,14 +49,14 @@ sub quote_bind_values {
 sub build_attr_from (;@) { # Coerce a hash ref from whatever was passed
    my $n = 0; $n++ while (defined $_[ $n ]);
 
-   return (                  $n == 0) ? {}
-        : (__is_one_of_us( $_[ 0 ] )) ? __clone_one_of_us( @_ )
-        : (    ref $_[ 0 ] eq 'CODE') ? __dereference_code( @_ )
-        : (    ref $_[ 0 ] eq 'HASH') ? { %{ $_[ 0 ] } }
-        : (                  $n == 1) ? { error => $_[ 0 ] }
-        : (    ref $_[ 1 ] eq 'HASH') ? { error => $_[ 0 ], %{ $_[ 1 ] } }
-        : (              $n % 2 == 1) ? { error => @_ }
-                                      : { @_ };
+   return (                $n == 0) ? {}
+        : (is_one_of_us( $_[ 0 ] )) ? __clone_one_of_us( @_ )
+        : (  ref $_[ 0 ] eq 'CODE') ? __dereference_code( @_ )
+        : (  ref $_[ 0 ] eq 'HASH') ? { %{ $_[ 0 ] } }
+        : (                $n == 1) ? { error => $_[ 0 ] }
+        : (  ref $_[ 1 ] eq 'HASH') ? { error => $_[ 0 ], %{ $_[ 1 ] } }
+        : (            $n % 2 == 1) ? { error => @_ }
+                                    : { @_ };
 }
 
 sub catch_class ($@) {
@@ -100,6 +100,10 @@ sub is_class_loaded ($) { # Lifted from Class::Load
    return $stash->list_all_symbols( 'CODE' ) ? 1 : 0;
 }
 
+sub is_one_of_us ($) {
+   return $_[ 0 ] && (blessed $_[ 0 ]) && $_[ 0 ]->isa( 'Unexpected' );
+}
+
 # Private functions
 sub __catch {
    my $block = shift; return ((bless \$block, 'Try::Tiny::Catch'), @_);
@@ -135,10 +139,6 @@ sub __inflate_placeholders { # Substitute visible strings for null and undef
    return map { __quote_maybe( (length) ? $_ : '[]' ) }
           map { $_ // '[?]' } @_,
           map {       '[?]' } 0 .. 9;
-}
-
-sub __is_one_of_us {
-   return $_[ 0 ] && (blessed $_[ 0 ]) && $_[ 0 ]->isa( 'Unexpected' );
 }
 
 sub __match_class {
@@ -276,6 +276,12 @@ with the corresponding argument
    $bool = is_class_loaded $classname;
 
 Returns true is the classname as already loaded and compiled
+
+=head2 is_one_of_us
+
+   $bool = is_one_of_us $string_or_exception_object_ref;
+
+Function which detects instances of this exception class
 
 =head2 quote_bind_values
 

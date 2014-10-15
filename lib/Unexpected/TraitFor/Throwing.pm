@@ -5,11 +5,11 @@ use namespace::autoclean;
 use Carp                    ( );
 use English               qw( -no_match_vars );
 use Scalar::Util          qw( blessed );
-use Unexpected::Functions qw( build_attr_from );
+use Unexpected::Functions qw( build_attr_from is_one_of_us );
 use Unexpected::Types     qw( Maybe Object );
 use Moo::Role;
 
-requires qw( BUILD is_one_of_us );
+requires qw( BUILD );
 
 my %Cache;
 
@@ -29,15 +29,15 @@ sub caught {
    my $attr  = build_attr_from( @args );
    my $error = $attr->{error} ||= $EVAL_ERROR; $error or return;
 
-   return $self->is_one_of_us( $error ) ? $error : $self->new( $attr );
+   return (is_one_of_us $error) ? $error : $self->new( $attr );
 }
 
 sub throw {
    my ($self, @args) = @_;
 
-   $self->_is_object_ref( @args )    and die $self;
-   $self->is_one_of_us( $args[ 0 ] ) and die $args[ 0 ];
-                                         die $self->new( @args );
+   $self->_is_object_ref( @args ) and die $self;
+   is_one_of_us $args[ 0 ]        and die $args[ 0 ];
+                                      die $self->new( @args );
 }
 
 sub throw_on_error {
@@ -107,6 +107,11 @@ May hold a reference to the previous exception in this thread
 =back
 
 =head1 Subroutines/Methods
+
+=head2 BUILD
+
+After construction the current exception is cached so that it can become
+the previous exception the next time an exception is thrown
 
 =head2 caught
 

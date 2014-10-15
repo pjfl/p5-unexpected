@@ -6,7 +6,7 @@
 
 # Name
 
-Unexpected - Exception class composed from traits
+Unexpected - Localised exception classes composed from roles
 
 # Synopsis
 
@@ -67,20 +67,13 @@ plus a leader if the optional `ErrorLeader` role has been applied
 
 # Subroutines/Methods
 
-## BUILDARGS
-
-Customises the constructor. Accepts either a coderef, an object ref,
-a hashref, a scalar, or a list of key / value pairs
-
 ## BUILD
 
-Does nothing placeholder that allows the applied roles to modify it
+Dummy subroutine which is modified by the applied roles
 
-## is\_one\_of\_us
+## BUILDARGS
 
-    $bool = $class->is_one_of_us( $string_or_exception_object_ref );
-
-Class method which detects instances of this exception class
+Differentiates different constructor method signatures
 
 # Diagnostics
 

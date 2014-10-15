@@ -3,20 +3,15 @@ package Unexpected;
 use 5.010001;
 use namespace::autoclean;
 use overload '""' => sub { $_[ 0 ]->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.34.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.34.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Moo;
-use Scalar::Util qw( blessed );
 
 with q(Unexpected::TraitFor::StringifyingError);
 with q(Unexpected::TraitFor::Throwing);
 with q(Unexpected::TraitFor::TracingStacks);
 
-sub BUILD {} # Can be modified by the applied traits
-
-sub is_one_of_us {
-   return $_[ 1 ] && blessed $_[ 1 ] && $_[ 1 ]->isa( __PACKAGE__ );
-}
+sub BUILD {} # Modified by the applied roles
 
 1;
 
@@ -36,7 +31,7 @@ __END__
 
 =head1 Name
 
-Unexpected - Exception class composed from traits
+Unexpected - Localised exception classes composed from roles
 
 =head1 Synopsis
 
@@ -97,20 +92,13 @@ plus a leader if the optional C<ErrorLeader> role has been applied
 
 =head1 Subroutines/Methods
 
-=head2 BUILDARGS
-
-Customises the constructor. Accepts either a coderef, an object ref,
-a hashref, a scalar, or a list of key / value pairs
-
 =head2 BUILD
 
-Does nothing placeholder that allows the applied roles to modify it
+Dummy subroutine which is modified by the applied roles
 
-=head2 is_one_of_us
+=head2 BUILDARGS
 
-   $bool = $class->is_one_of_us( $string_or_exception_object_ref );
-
-Class method which detects instances of this exception class
+Differentiates different constructor method signatures
 
 =head1 Diagnostics
 

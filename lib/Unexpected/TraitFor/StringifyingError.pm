@@ -6,6 +6,8 @@ use Unexpected::Functions qw( build_attr_from inflate_message );
 use Unexpected::Types     qw( ArrayRef Str );
 use Moo::Role;
 
+requires qw( BUILD );
+
 # Object attributes (public)
 has 'args'  => is => 'ro', isa => ArrayRef, default => sub { [] };
 
@@ -83,6 +85,16 @@ used as the error string
 =back
 
 =head1 Subroutines/Methods
+
+=head2 BUILD
+
+After construction call the L</as_string> method to work around a bug in
+L<Moo>
+
+=head2 BUILDARGS
+
+Customises the constructor. Accepts either a coderef, an object ref,
+a hashref, a scalar, or a list of key / value pairs
 
 =head2 as_string
 
