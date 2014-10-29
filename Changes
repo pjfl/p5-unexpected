@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Added exception, throw and throw_on_error functions
           - Made is_one_of_us an exported function
 
 0.34.1    2014-10-07 17:21:03

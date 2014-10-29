@@ -1,5 +1,7 @@
 use t::boilerplate;
 
+use English      qw( -no_match_vars );
+use Scalar::Util qw( blessed );
 use Test::More;
 
 sub EXCEPTION_CLASS { 'MyException' }
@@ -37,6 +39,12 @@ ok( (main->can( 'inflate_message' )), 'Imports inflate_message' );
 
 is build_attr_from( bless { error => 'fooled_you' }, 'HASH' )->{error},
    'fooled_you', 'Ignores blessed if not one of us';
+
+is( (exception 'Bite Me')->error, 'Bite Me', 'Exception function' );
+eval { throw 'Bite Me' }; is $EVAL_ERROR->error, 'Bite Me', 'Throw function';
+eval { eval { throw 'Bite Me' }; throw_on_error }; my $e = $EVAL_ERROR;
+is $e->error, 'Bite Me', 'Throw_on_error function';
+is blessed $e, 'MyException', 'Function throw correct class';
 
 # Lifted from Class::Load
 ok(  is_class_loaded( 'MyException' ), 'MyException is loaded' );

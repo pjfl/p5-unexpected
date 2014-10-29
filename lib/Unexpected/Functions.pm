@@ -9,10 +9,12 @@ use Package::Stash;
 use Scalar::Util qw( blessed reftype );
 use Sub::Install qw( install_sub );
 
-our @EXPORT_OK = qw( build_attr_from catch_class has_exception inflate_message
-                     is_class_loaded is_one_of_us );
+our @EXPORT_OK = qw( build_attr_from catch_class exception has_exception
+                     inflate_message is_class_loaded is_one_of_us throw
+                     throw_on_error );
 
-my $Should_Quote = 1;
+my $Should_Quote    = 1;
+my $Exception_Class = 'Unexpected';
 
 # Package methods
 sub import {
@@ -67,6 +69,10 @@ sub catch_class ($@) {
    return __catch( sub { ($checker->( $_[ 0 ] ) || return)->( $_[ 0 ] ) }, @_ );
 }
 
+sub exception (;@) {
+   return __exception_class( caller )->caught( @_ );
+}
+
 sub has_exception ($;@) {
    my ($name, %args) = @_; my $exception_class = caller;
 
@@ -101,7 +107,15 @@ sub is_class_loaded ($) { # Lifted from Class::Load
 }
 
 sub is_one_of_us ($) {
-   return $_[ 0 ] && (blessed $_[ 0 ]) && $_[ 0 ]->isa( 'Unexpected' );
+   return $_[ 0 ] && (blessed $_[ 0 ]) && $_[ 0 ]->isa( $Exception_Class );
+}
+
+sub throw (;@) {
+   __exception_class( caller )->throw( @_ );
+}
+
+sub throw_on_error (;@) {
+   return __exception_class( caller )->throw_on_error( @_ );
 }
 
 # Private functions
@@ -115,6 +129,12 @@ sub __clone_one_of_us {
 
 sub __dereference_code {
    my $code = shift; return { class => $code->(), @_ };
+}
+
+sub __exception_class {
+   my $caller = shift; my $code = $caller->can( 'EXCEPTION_CLASS' );
+
+   return $code ? $code->() : $Exception_Class;
 }
 
 sub __gen_checker {
@@ -207,7 +227,7 @@ Defines no attributes
 
    $hash_ref = build_attr_from( <whatever> );
 
-Coerces a hash ref from whatever args are passed. This subroutine is
+Coerces a hash ref from whatever args are passed. This function is
 responsible for parsing the arguments passed to the constructor. Supports
 the following signatures
 
@@ -252,16 +272,23 @@ the following signatures
 See L<Try::Tiny::ByClass>. Checks the exception object's C<class> attribute
 against the list of exception class names passed to C<catch_class>. If there
 is a match, call the subroutine provided to handle that exception. Re-throws
-the exception if there is no match of if the exception object has no C<class>
+the exception if there is no match or if the exception object has no C<class>
 attribute
+
+=head2 exception;
+
+   $exception_object_ref = exception $optional_error;
+
+A function which calls the L<caught|Unexpected::TraitFor::Throwing/caught>
+class method
 
 =head2 has_exception
 
    has_exception 'exception_name' => parents => [ 'parent_exception' ],
       error => 'Error message for the exception with placeholders';
 
-Calls L<Unexpected::TraitFor::ExceptionClasses/add_exception> via the
-calling class which is assumed to inherit from a class that consumes
+A function which calls L<Unexpected::TraitFor::ExceptionClasses/add_exception>
+via the calling class which is assumed to inherit from a class that consumes
 the L<Unexpected::TraitFor::ExceptionClasses> role
 
 =head2 inflate_message
@@ -287,9 +314,23 @@ Function which detects instances of this exception class
 
    $bool = Unexpected::Functions->quote_bind_values( $bool );
 
-Accessor / mutator package method that toggles the state on quoting
+Accessor / mutator class method that toggles the state on quoting
 the placeholder substitution values in C<inflate_message>. Defaults
 to true
+
+=head2 throw
+
+   throw 'Path [_1] not found', args => [ 'pathname' ];
+
+A function which calls the L<throw|Unexpected::TraitFor::Throwing/throw> class
+method
+
+=head2 throw_on_error
+
+   throw_on_error @optional_args;
+
+A function which calls the
+L<throw_on_error|Unexpected::TraitFor::Throwing/throw_on_error> class method
 
 =head1 Diagnostics
 

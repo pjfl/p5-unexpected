@@ -115,14 +115,14 @@ the previous exception the next time an exception is thrown
 
 =head2 caught
 
-   $self = $class->caught( [ @args ] );
+   $exception_object_ref = Unexpected->caught( @optional_args );
 
 Catches and returns a thrown exception or generates a new exception if
 C<$EVAL_ERROR> has been set. Returns either an exception object or undef
 
 =head2 throw
 
-   $class->throw error => 'Path [_1] not found', args => [ 'pathname' ];
+   Unexpected->throw 'Path [_1] not found', args => [ 'pathname' ];
 
 Create (or re-throw) an exception. If the passed parameter is a
 blessed reference it is re-thrown. If a single scalar is passed it is
@@ -134,7 +134,7 @@ in this case
 
 =head2 throw_on_error
 
-   $class->throw_on_error( [ @args ] );
+   Unexpected->throw_on_error( @optional_args );
 
 Calls L</caught> passing in the options C<@args> and if there was an
 exception L</throw>s it
