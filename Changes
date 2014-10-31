@@ -1,5 +1,9 @@
 Revision history for Unexpected
 
+          - Switched back to alternate D::C::R::Coveralls
+            The alternate version uses Furl and works the official
+            version uses HTTP::Tiny and fails to validate the host cert
+            https://travis-ci.org/pjfl/p5-unexpected/builds/39405067#L152
           - Added exception, throw and throw_on_error functions
           - Made is_one_of_us an exported function
 
