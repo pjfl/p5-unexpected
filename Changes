@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Added coderef|error, arrayref to constructor method signature
           - Switched back to alternate D::C::R::Coveralls
             The alternate version uses Furl and works the official
             version uses HTTP::Tiny and fails to validate the host cert

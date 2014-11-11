@@ -13,8 +13,7 @@ our @EXPORT_OK = qw( build_attr_from catch_class exception has_exception
                      inflate_message is_class_loaded is_one_of_us throw
                      throw_on_error );
 
-my $Should_Quote    = 1;
-my $Exception_Class = 'Unexpected';
+my $Exception_Class = 'Unexpected'; my $Should_Quote = 1;
 
 # Package methods
 sub import {
@@ -53,10 +52,11 @@ sub build_attr_from (;@) { # Coerce a hash ref from whatever was passed
 
    return (                $n == 0) ? {}
         : (is_one_of_us( $_[ 0 ] )) ? __clone_one_of_us( @_ )
-        : (  ref $_[ 0 ] eq 'CODE') ? __dereference_code( @_ )
-        : (  ref $_[ 0 ] eq 'HASH') ? { %{ $_[ 0 ] } }
+        : ( ref $_[ 0 ] eq  'CODE') ? __dereference_code( @_ )
+        : ( ref $_[ 0 ] eq  'HASH') ? { %{ $_[ 0 ] } }
         : (                $n == 1) ? { error => $_[ 0 ] }
-        : (  ref $_[ 1 ] eq 'HASH') ? { error => $_[ 0 ], %{ $_[ 1 ] } }
+        : ( ref $_[ 1 ] eq 'ARRAY') ? { error => (shift), args => @_ }
+        : ( ref $_[ 1 ] eq  'HASH') ? { error => $_[ 0 ], %{ $_[ 1 ] } }
         : (            $n % 2 == 1) ? { error => @_ }
                                     : { @_ };
 }
@@ -128,7 +128,11 @@ sub __clone_one_of_us {
 }
 
 sub __dereference_code {
-   my $code = shift; return { class => $code->(), @_ };
+   my ($code, @args) = @_;
+
+   $args[ 0 ] and ref $args[ 0 ] eq 'ARRAY' and unshift @args, 'args';
+
+   return { class => $code->(), @args };
 }
 
 sub __exception_class {
@@ -245,6 +249,7 @@ the following signatures
    # exception class and the remaining arguents are treated as a list of
    # keys and values
    Unexpected->new( Unspecified, args => [ 'parameter name' ] );
+   Unexpected->new( Unspecified, [ 'parameter name' ] ); # Shortcut
 
    # first argmentt is a hash reference - clone it
    Unexpected->new( { key => 'value', ... } );
@@ -257,6 +262,8 @@ the following signatures
 
    # odd numbered list of arguments is the error followed by keys and values
    Unexpected->new( $error_string, key => 'value', ... );
+   Unexecpted->new( 'File [_1] not found', args => [ $filename ] );
+   Unexecpted->new( 'File [_1] not found', [ $filename ] ); # Shortcut
 
    arguments are a list of keys and values
    Unexpected->new( key => 'value', ... );
