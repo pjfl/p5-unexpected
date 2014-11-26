@@ -15,6 +15,69 @@ our @EXPORT_OK = qw( build_attr_from catch_class exception has_exception
 
 my $Exception_Class = 'Unexpected'; my $Should_Quote = 1;
 
+# Private functions
+my $_catch = sub {
+   my $block = shift; return ((bless \$block, 'Try::Tiny::Catch'), @_);
+};
+
+my $_clone_one_of_us = sub {
+   return $_[ 1 ] ? { %{ $_[ 0 ] }, %{ $_[ 1 ] } } : { error => $_[ 0 ] };
+};
+
+my $_dereference_code = sub {
+   my ($code, @args) = @_;
+
+   $args[ 0 ] and ref $args[ 0 ] eq 'ARRAY' and unshift @args, 'args';
+
+   return { class => $code->(), @args };
+};
+
+my $_exception_class = sub {
+   my $caller = shift; my $code = $caller->can( 'EXCEPTION_CLASS' );
+
+   return $code ? $code->() : $Exception_Class;
+};
+
+my $_match_class = sub {
+   my ($x, $ref, $blessed, $does, $key) = @_;
+
+   return !defined $key                                       ? !defined $x
+        : $key eq '*'                                         ? 1
+        : $key eq ':str'                                      ? !$ref
+        : $key eq $ref                                        ? 1
+        : $blessed && $x->can( 'class' ) && $x->class eq $key ? 1
+        : $blessed && $x->$does( $key )                       ? 1
+                                                              : 0;
+};
+
+my $_quote_maybe = sub {
+   return $Should_Quote ? "'".$_[ 0 ]."'" : $_[ 0 ];
+};
+
+my $_gen_checker = sub {
+   my @prototable = @_;
+
+   return sub {
+      my $x       = shift;
+      my $ref     = ref $x;
+      my $blessed = blessed $x;
+      my $does    = ($blessed && $x->can( 'DOES' )) || 'isa';
+      my @table   = @prototable;
+
+      while (my ($key, $value) = splice @table, 0, 2) {
+         $_match_class->( $x, $ref, $blessed, $does, $key ) and return $value
+      }
+
+      return;
+   }
+};
+
+my $_inflate_placeholders = sub { # Sub visible strings for null and undef
+   return map { $_quote_maybe->( (length) ? $_ : '[]' ) }
+          map { $_ // '[?]' } @_,
+          map {       '[?]' } 0 .. 9;
+};
+
 # Package methods
 sub import {
    my $class       = shift;
@@ -51,8 +114,8 @@ sub build_attr_from (;@) { # Coerce a hash ref from whatever was passed
    my $n = 0; $n++ while (defined $_[ $n ]);
 
    return (                $n == 0) ? {}
-        : (is_one_of_us( $_[ 0 ] )) ? __clone_one_of_us( @_ )
-        : ( ref $_[ 0 ] eq  'CODE') ? __dereference_code( @_ )
+        : (is_one_of_us( $_[ 0 ] )) ? $_clone_one_of_us->( @_ )
+        : ( ref $_[ 0 ] eq  'CODE') ? $_dereference_code->( @_ )
         : ( ref $_[ 0 ] eq  'HASH') ? { %{ $_[ 0 ] } }
         : (                $n == 1) ? { error => $_[ 0 ] }
         : ( ref $_[ 1 ] eq 'ARRAY') ? { error => (shift), args => @_ }
@@ -62,15 +125,15 @@ sub build_attr_from (;@) { # Coerce a hash ref from whatever was passed
 }
 
 sub catch_class ($@) {
-   my $checker = __gen_checker( @{+ shift }, '*' => sub { die $_[ 0 ] } );
+   my $check = $_gen_checker->( @{+ shift }, '*' => sub { die $_[ 0 ] } );
 
    wantarray or croak 'Useless bare catch_class()';
 
-   return __catch( sub { ($checker->( $_[ 0 ] ) || return)->( $_[ 0 ] ) }, @_ );
+   return $_catch->( sub { ($check->( $_[ 0 ] ) || return)->( $_[ 0 ] ) }, @_ );
 }
 
 sub exception (;@) {
-   return __exception_class( caller )->caught( @_ );
+   return $_exception_class->( caller )->caught( @_ );
 }
 
 sub has_exception ($;@) {
@@ -80,7 +143,7 @@ sub has_exception ($;@) {
 }
 
 sub inflate_message ($;@) { # Expand positional parameters of the form [_<n>]
-   my $msg = shift; my @args = __inflate_placeholders( @_ );
+   my $msg = shift; my @args = $_inflate_placeholders->( @_ );
 
    $msg =~ s{ \[ _ (\d+) \] }{$args[ $1 - 1 ]}gmx; return $msg;
 }
@@ -111,74 +174,11 @@ sub is_one_of_us ($) {
 }
 
 sub throw (;@) {
-   __exception_class( caller )->throw( @_ );
+   $_exception_class->( caller )->throw( @_ );
 }
 
 sub throw_on_error (;@) {
-   return __exception_class( caller )->throw_on_error( @_ );
-}
-
-# Private functions
-sub __catch {
-   my $block = shift; return ((bless \$block, 'Try::Tiny::Catch'), @_);
-}
-
-sub __clone_one_of_us {
-   return $_[ 1 ] ? { %{ $_[ 0 ] }, %{ $_[ 1 ] } } : { error => $_[ 0 ] };
-}
-
-sub __dereference_code {
-   my ($code, @args) = @_;
-
-   $args[ 0 ] and ref $args[ 0 ] eq 'ARRAY' and unshift @args, 'args';
-
-   return { class => $code->(), @args };
-}
-
-sub __exception_class {
-   my $caller = shift; my $code = $caller->can( 'EXCEPTION_CLASS' );
-
-   return $code ? $code->() : $Exception_Class;
-}
-
-sub __gen_checker {
-   my @prototable = @_;
-
-   return sub {
-      my $x       = shift;
-      my $ref     = ref $x;
-      my $blessed = blessed $x;
-      my $does    = ($blessed && $x->can( 'DOES' )) || 'isa';
-      my @table   = @prototable;
-
-      while (my ($key, $value) = splice @table, 0, 2) {
-         __match_class( $x, $ref, $blessed, $does, $key ) and return $value
-      }
-
-      return;
-   }
-}
-
-sub __inflate_placeholders { # Substitute visible strings for null and undef
-   return map { __quote_maybe( (length) ? $_ : '[]' ) }
-          map { $_ // '[?]' } @_,
-          map {       '[?]' } 0 .. 9;
-}
-
-sub __match_class {
-   my ($x, $ref, $blessed, $does, $key) = @_;
-
-   return !defined $key                                       ? !defined $x
-        : $key eq '*'                                         ? 1
-        : $key eq ':str'                                      ? !$ref
-        : $key eq $ref                                        ? 1
-        : $blessed && $x->can( 'class' ) && $x->class eq $key ? 1
-        : $blessed && $x->$does( $key )                       ? 1
-                                                              : 0;
-}
-
-sub __quote_maybe {
-   return $Should_Quote ? "'".$_[ 0 ]."'" : $_[ 0 ];
+   return $_exception_class->( caller )->throw_on_error( @_ );
 }
 
 1;

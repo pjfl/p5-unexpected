@@ -15,6 +15,11 @@ has 'leader' => is => 'lazy', isa => SimpleStr;
 
 has 'level'  => is => 'ro',   isa => NonZeroPositiveInt, default => 1;
 
+# Private functions
+my $_is_member = sub {
+   my $wanted = shift; return (first { $_ eq $wanted } @{ $_[ 0 ] }) ? 1 : 0;
+};
+
 # Construction
 around 'as_string' => sub {
    my ($orig, $self, @args) = @_; my $str = $orig->( $self, @args );
@@ -22,16 +27,6 @@ around 'as_string' => sub {
    return $str ? $self->leader.$str : $str;
 };
 
-# Public methods
-sub ignore {
-   return $Ignore;
-}
-
-sub ignore_class {
-   shift; return push @{ $Ignore }, @_;
-}
-
-# Private methods
 sub _build_leader {
    my $self = shift; my $level = $self->level; my $leader = q();
 
@@ -48,14 +43,18 @@ sub _build_leader {
       }
       else { $leader = $package = q() }
    }
-   while ($package and __is_member( $package, $self->ignore ));
+   while ($package and $_is_member->( $package, $self->ignore ));
 
    return $leader;
 }
 
-# Private functions
-sub __is_member {
-   my $wanted = shift; return (first { $_ eq $wanted } @{ $_[ 0 ] }) ? 1 : 0;
+# Public methods
+sub ignore {
+   return $Ignore;
+}
+
+sub ignore_class {
+   shift; return push @{ $Ignore }, @_;
 }
 
 1;

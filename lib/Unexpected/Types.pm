@@ -21,6 +21,29 @@ my $LOADABLE_CLASS_ERROR;
 $Error::TypeTiny::CarpInternal{ 'Sub::Quote' }++;
 $Error::TypeTiny::CarpInternal{ 'Unexpected::TraitFor::Throwing' }++;
 
+# Private functions
+my $_constraint_for_loadable_class = sub {
+   my $class = shift; is_module_name( $class ) or return 0;
+
+   local $EVAL_ERROR; eval { require_module( $class ) };
+
+   $LOADABLE_CLASS_ERROR = $EVAL_ERROR;
+
+   return $EVAL_ERROR ? 0 : 1;
+};
+
+my $_exception_message_for_object_reference = sub {
+   return inflate_message( 'String [_1] is not an object reference', $_[ 0 ] );
+};
+
+my $_exception_message_for_tracer = sub {
+   blessed $_[ 0 ] and return inflate_message
+      ( 'Object [_1] is missing a frames method', blessed $_[ 0 ] );
+
+   return $_exception_message_for_object_reference->( $_[ 0 ] );
+};
+
+# Types
 subtype NonEmptySimpleStr, as Str,
    inline_as {
       $_[ 0 ]->parent->inline_check( $_ )
@@ -52,14 +75,14 @@ subtype SimpleStr, as Str,
 
 subtype Tracer, as Object,
    inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_->can( 'frames' )" },
-   message   { __exception_message_for_tracer( $_ ) },
+   message   { $_exception_message_for_tracer->( $_ ) },
    where     { $_->can( 'frames' ) };
 
 
 subtype LoadableClass, as NonEmptySimpleStr,
    message   { inflate_message( 'String [_1] is not a loadable class: [_2]',
                                 $_, $LOADABLE_CLASS_ERROR ) },
-   where     { __constraint_for_loadable_class( $_ ) };
+   where     { $_constraint_for_loadable_class->( $_ ) };
 
 subtype NonNumericSimpleStr, as SimpleStr,
    inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_ !~ m{ \\d+ }mx" },
@@ -67,28 +90,6 @@ subtype NonNumericSimpleStr, as SimpleStr,
       inflate_message
          ( 'Attribute value [_1] is not a non numeric simple string', $_ ) },
    where     { $_ !~ m{ \d+ }mx };
-
-# Private functions
-sub __constraint_for_loadable_class {
-   my $class = shift; is_module_name( $class ) or return 0;
-
-   local $EVAL_ERROR; eval { require_module( $class ) };
-
-   $LOADABLE_CLASS_ERROR = $EVAL_ERROR;
-
-   return $EVAL_ERROR ? 0 : 1;
-}
-
-sub __exception_message_for_object_reference {
-   return inflate_message( 'String [_1] is not an object reference', $_[ 0 ] );
-}
-
-sub __exception_message_for_tracer {
-   blessed $_[ 0 ] and return inflate_message
-      ( 'Object [_1] is missing a frames method', blessed $_[ 0 ] );
-
-   return __exception_message_for_object_reference( $_[ 0 ] );
-}
 
 1;
 

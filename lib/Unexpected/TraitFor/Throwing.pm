@@ -13,18 +13,41 @@ requires qw( BUILD );
 
 my %Cache;
 
+# Private functions
+my $_cache_key = sub {
+   # uncoverable branch true
+   return $PID.'-'.(exists $INC{ 'threads.pm' } ? threads->tid() : 0);
+};
+
 # Lifted from Throwable
 has 'previous_exception' => is => 'ro', isa => Maybe[Object],
-   default               => sub { $Cache{ __cache_key() } };
+   default               => sub { $Cache{ $_cache_key->() } };
+
+# Private methods
+my $_cache_exception = sub {
+   my $self = shift; my $e = bless { %{ $self } }, blessed $self;
+
+   delete $e->{previous_exception}; $Cache{ $_cache_key->() } = $e;
+
+   return;
+};
+
+my $_is_object_ref = sub {
+   my ($self, @args) = @_; blessed $self or return 0;
+
+   scalar @args and Carp::confess
+      'Trying to throw an Exception object with arguments';
+   return 1;
+};
 
 # Construction
 after 'BUILD' => sub {
-   my $self = shift; $self->_cache_exception; return;
+   my $self = shift; $self->$_cache_exception; return;
 };
 
 # Public methods
 sub caught {
-   my ($self, @args) = @_; $self->_is_object_ref( @args ) and return $self;
+   my ($self, @args) = @_; $self->$_is_object_ref( @args ) and return $self;
 
    my $attr  = build_attr_from( @args );
    my $error = $attr->{error} ||= $EVAL_ERROR; $error or return;
@@ -35,36 +58,13 @@ sub caught {
 sub throw {
    my ($self, @args) = @_;
 
-   $self->_is_object_ref( @args ) and die $self;
-   is_one_of_us $args[ 0 ]        and die $args[ 0 ];
-                                      die $self->new( @args );
+   $self->$_is_object_ref( @args ) and die $self;
+   is_one_of_us $args[ 0 ]         and die $args[ 0 ];
+                                       die $self->new( @args );
 }
 
 sub throw_on_error {
    my $e; $e = shift->caught( @_ ) and die $e; return;
-}
-
-# Private methods
-sub _cache_exception {
-   my $self = shift; my $e = bless { %{ $self } }, blessed $self;
-
-   delete $e->{previous_exception}; $Cache{ __cache_key() } = $e;
-
-   return;
-}
-
-sub _is_object_ref {
-   my ($self, @args) = @_; blessed $self or return 0;
-
-   scalar @args and Carp::confess
-      'Trying to throw an Exception object with arguments';
-   return 1;
-}
-
-# Private functions
-sub __cache_key {
-   # uncoverable branch true
-   return $PID.'-'.(exists $INC{ 'threads.pm' } ? threads->tid() : 0);
 }
 
 1;
