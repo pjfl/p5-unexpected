@@ -27,10 +27,10 @@ my $prereqs  = {
     'Exporter::Tiny' => '0.042',
     'Module::Runtime' => '0.014',
     'Moo' => '1.006000',
-    'Package::Stash' => '0.36',
+    'Package::Stash' => '0.37',
     'Sub::Install' => '0.928',
     'Type::Tiny' => '1.000002',
-    'namespace::autoclean' => '0.20',
+    'namespace::autoclean' => '0.22',
     'perl' => '5.010001'
   },
 };

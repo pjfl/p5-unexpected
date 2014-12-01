@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Updated prereqs
+
 0.35.1    2014-12-01 17:18:12
           - Switched to lexical subroutines
           - Added coderef|error, arrayref to constructor method signature

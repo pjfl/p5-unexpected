@@ -2,10 +2,10 @@ requires "Devel::StackTrace" => "1.34";
 requires "Exporter::Tiny" => "0.042";
 requires "Module::Runtime" => "0.014";
 requires "Moo" => "1.006000";
-requires "Package::Stash" => "0.36";
+requires "Package::Stash" => "0.37";
 requires "Sub::Install" => "0.928";
 requires "Type::Tiny" => "1.000002";
-requires "namespace::autoclean" => "0.20";
+requires "namespace::autoclean" => "0.22";
 requires "perl" => "5.010001";
 
 on 'build' => sub {
