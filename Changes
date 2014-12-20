@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Broken smoker a54c1c84-6bf5-1014-b4f9-dcd54300afcd
+            added to skip list
           - Updated prereqs
 
 0.35.1    2014-12-01 17:18:12

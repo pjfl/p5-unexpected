@@ -18,6 +18,8 @@ BEGIN {
    $builder and $notes = $builder->notes;
    $perl_ver  = $notes->{min_perl_version} || 5.008;
    $Bin =~ m{ : .+ : }mx and plan skip_all => 'Two colons in $Bin path';
+   $notes->{testing} and lc hostname eq 'digitalis'
+      and plan skip_all => 'Broken smoker a54c1c84-6bf5-1014-b4f9-dcd54300afcd';
 }
 
 use Test::Requires "${perl_ver}";
