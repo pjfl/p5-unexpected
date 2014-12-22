@@ -2,8 +2,10 @@ package Unexpected;
 
 use 5.010001;
 use namespace::autoclean;
-use overload '""' => sub { $_[ 0 ]->as_string }, fallback => 1;
-use version; our $VERSION = qv( sprintf '0.35.%d', q$Rev: 4 $ =~ /\d+/gmx );
+use overload '""'     => sub { $_[ 0 ]->as_string },
+             bool     => sub { 1 },
+             fallback => 1;
+use version; our $VERSION = qv( sprintf '0.36.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 

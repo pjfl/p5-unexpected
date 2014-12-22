@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+0.36.1    2014-12-22 01:02:53
+          - Added explicite bool overload
           - Broken smoker a54c1c84-6bf5-1014-b4f9-dcd54300afcd
             added to skip list
           - Updated prereqs
