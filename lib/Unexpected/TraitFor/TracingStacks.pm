@@ -66,7 +66,7 @@ sub trace_frame_filter { # Lifted from StackTrace::Auto
 
       # uncoverable branch true
       # uncoverable condition right
-      $ENV{UNEXPECTED_SHOW_RAW_TRACE} and warn "$subr\n";
+      $ENV{UNEXPECTED_SHOW_RAW_TRACE} and warn "${subr}\n";
 
       if    ($found_mark == 2) { return 1 }
       elsif ($found_mark == 1) {
