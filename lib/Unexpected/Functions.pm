@@ -39,15 +39,15 @@ my $_exception_class = sub {
 };
 
 my $_match_class = sub {
-   my ($x, $ref, $blessed, $does, $key) = @_;
+   my ($e, $ref, $blessed, $does, $key) = @_;
 
-   return !defined $key                                       ? !defined $x
-        : $key eq '*'                                         ? 1
-        : $key eq ':str'                                      ? !$ref
-        : $key eq $ref                                        ? 1
-        : $blessed && $x->can( 'class' ) && $x->class eq $key ? 1
-        : $blessed && $x->$does( $key )                       ? 1
-                                                              : 0;
+   return !defined $key                        ? !defined $e
+        : $key eq '*'                          ? 1
+        : $key eq ':str'                       ? !$ref
+        : $key eq $ref                         ? 1
+        : $blessed && $e->can( 'instance_of' ) ? $e->instance_of( $key )
+        : $blessed && $e->$does( $key )        ? 1
+                                               : 0;
 };
 
 my $_quote_maybe = sub {
@@ -58,14 +58,14 @@ my $_gen_checker = sub {
    my @prototable = @_;
 
    return sub {
-      my $x       = shift;
-      my $ref     = ref $x;
-      my $blessed = blessed $x;
-      my $does    = ($blessed && $x->can( 'DOES' )) || 'isa';
+      my $e       = shift;
+      my $ref     = ref $e;
+      my $blessed = blessed $e;
+      my $does    = ($blessed && $e->can( 'DOES' )) || 'isa';
       my @table   = @prototable;
 
       while (my ($key, $value) = splice @table, 0, 2) {
-         $_match_class->( $x, $ref, $blessed, $does, $key ) and return $value
+         $_match_class->( $e, $ref, $blessed, $does, $key ) and return $value
       }
 
       return;

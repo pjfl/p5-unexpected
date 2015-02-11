@@ -283,6 +283,11 @@ my $v = try { $class->throw( class => 'C' ) } catch_class [ C => sub { 42 } ];
 
 is $v, 42, 'Catch class';
 
+$v = try { $class->throw( class => 'D', error => 'Must have an error' ) }
+           catch_class [ B => sub { 42 } ];
+
+is $v, 42, 'Catch class - instance_of';
+
 eval { try { $class->throw( class => 'C' ) } catch_class [ D => sub { 42 } ]; };
 
 $e = _eval_error;
