@@ -35,6 +35,10 @@ after 'BUILD' => sub {
 };
 
 # Public methods
+sub as_boolean {
+   return 1;
+}
+
 sub as_string { # Stringifies the error and inflates the placeholders
    my $self = shift; my $error = $self->error;
 
@@ -96,17 +100,17 @@ L<Moo>
 Customises the constructor. Accepts either a coderef, an object ref,
 a hashref, a scalar, or a list of key / value pairs
 
+=head2 as_boolean
+
+   $bool = $self->as_boolean;
+
+Returns true. Behaviour maybe changed by a subclass
+
 =head2 as_string
 
    $error_text = $self->as_string;
 
 This is what the object stringifies to
-
-=head2 __build_attr_from
-
-   $hash_ref = __build_attr_from( @args );
-
-Function that coerces a hash ref from whatever is passed to it
 
 =head1 Diagnostics
 
