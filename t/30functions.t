@@ -160,6 +160,12 @@ do {
 ok(  is_class_loaded( 'MyException::WithPrototypedStub' ),
      'Defining a stub with a prototype means the class is loaded' );
 
+is interpolate_msg( 'test' ), 'test', 'Interpolate msg - simple';
+is interpolate_msg( { message => '[_1]' } ), "'undef'",
+   'Interpolate msg - undef placeholder';
+is interpolate_msg( { args => [ 'test' ] }, '[_1]' ), "'test'",
+   'Interpolate msg - args in hash';
+
 done_testing;
 
 # Local Variables:

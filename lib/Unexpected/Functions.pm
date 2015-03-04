@@ -10,7 +10,8 @@ use Scalar::Util qw( blessed reftype );
 use Sub::Install qw( install_sub );
 
 our @EXPORT_OK = qw( build_attr_from catch_class exception has_exception
-                     inflate_message is_class_loaded is_one_of_us throw
+                     inflate_message interpolate_msg is_class_loaded
+                     is_one_of_us throw
                      throw_on_error );
 
 my $Exception_Class = 'Unexpected'; my $Should_Quote = 1;
@@ -73,9 +74,11 @@ my $_gen_checker = sub {
 };
 
 my $_inflate_placeholders = sub { # Sub visible strings for null and undef
-   return map { $_quote_maybe->( (length) ? $_ : 'null' ) }
-          map { $_ // 'undef' } @_,
-          map {       'undef' } 0 .. 9;
+   my $defaults = shift;
+
+   return map { $_quote_maybe->( (length) ? $_ : $defaults->[ 1 ] ) }
+          map { $_ // $defaults->[ 0 ] } @_,
+          map {       $defaults->[ 0 ] } 0 .. 9;
 };
 
 # Package methods
@@ -143,9 +146,22 @@ sub has_exception ($;@) {
 }
 
 sub inflate_message ($;@) { # Expand positional parameters of the form [_<n>]
-   my $msg = shift; my @args = $_inflate_placeholders->( @_ );
+   return interpolate_msg( { defaults => [ '[?]', '[]' ] }, @_ );
+}
 
-   $msg =~ s{ \[ _ (\d+) \] }{$args[ $1 - 1 ]}gmx; return $msg;
+sub interpolate_msg ($;@) {
+   my ($car, @cdr) = @_; my $msg = $car; my $opts = {};
+
+   if (ref $car eq 'HASH') {
+      $opts = $car;
+      $msg  = $opts->{message} ? $opts->{message} : shift @cdr;
+      $opts->{args} and push @cdr, @{ $opts->{args} };
+   }
+
+   my $defaults = $opts->{defaults} // [ 'undef', 'null' ];
+   my @vals     = $_inflate_placeholders->( $defaults, @cdr );
+
+   $msg =~ s{ \[ _ (\d+) \] }{$vals[ $1 - 1 ]}gmx; return $msg;
 }
 
 sub is_class_loaded ($) { # Lifted from Class::Load
@@ -300,10 +316,35 @@ the L<Unexpected::TraitFor::ExceptionClasses> role
 
 =head2 inflate_message
 
-   $message = inflate_message( $template, $arg1, $arg2, ... );
+   $message = inflate_message $template, $val1, $val2, ...;
 
 Substitute the placeholders in the C<$template> string (e.g. [_1])
-with the corresponding argument
+with the corresponding value
+
+=head2 interpolate_msg
+
+   $message = interpolate_msg $options, $template, $val1, $val2, ...;
+
+Like inflate message but you can supply an optional hash of options. Option
+hash keys are;
+
+=over 3
+
+=item C<args>
+
+An array reference of placeholder values. Use this in place of the list of
+values
+
+=item C<defaults>
+
+A reference to an array containing the default substitution values for an
+undefined value and a zero length value respectively
+
+=item C<messsage>
+
+The message template
+
+=back
 
 =head2 is_class_loaded
 

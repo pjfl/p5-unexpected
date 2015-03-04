@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Added interpolate_msg which uses new default placeholders
+          - Reversed missing placeholder change
           - Made boolean overload subclassable
           - Replaced last _sub with lexical
           - Missing placeholders replaced with undef and null
