@@ -128,7 +128,7 @@ like $e, qr{ \Q'Parameter' not specified\E }mx,
 
 eval { $class->throw( Unspecified ) }; $e = _eval_error;
 
-like $e, qr{ \Q'[?]' not specified\E }mx, 'Error string from coderef no args';
+like $e, qr{ \Q'undef' not specified\E }mx, 'Error string from coderef no args';
 
 $e = $class->caught( $e, { leader => 'different' } );
 
@@ -217,7 +217,7 @@ SKIP: {
    $can_trace or skip 'Stacktrace broken', 1;
 
    like $e,
-      qr{ main\[ $line1 / \d+ \]:\scat:\s'flap'\scannot\sopen:\s'\[\?\]' }mx,
+      qr{ main\[ $line1 / \d+ \]:\scat:\s'flap'\scannot\sopen:\s'undef' }mx,
       'Placeholer substitution - with quotes';
 };
 
@@ -235,7 +235,7 @@ Unexpected::Functions->quote_bind_values( 0 );
 SKIP: {
    $can_trace or skip 'Stacktrace broken', 1;
 
-   like $e, qr{ main\[ $line1 / \d+ \]:\scat:\sflap\scannot\sopen:\s\[\?\] }mx,
+   like $e, qr{ main\[ $line1 / \d+ \]:\scat:\sflap\scannot\sopen:\sundef }mx,
       'Placeholer substitution - without quotes';
 };
 

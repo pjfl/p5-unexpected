@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Missing placeholders replaced with undef and null
           - Call instance_of in catch_class matching
 
 0.36.1    2014-12-22 01:02:53
