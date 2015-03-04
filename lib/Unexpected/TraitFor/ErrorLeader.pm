@@ -10,24 +10,12 @@ requires qw( as_string frames );
 
 my $Ignore = [ 'Try::Tiny' ];
 
-# Object attributes (public)
-has 'leader' => is => 'lazy', isa => SimpleStr;
-
-has 'level'  => is => 'ro',   isa => NonZeroPositiveInt, default => 1;
-
 # Private functions
 my $_is_member = sub {
    my $wanted = shift; return (first { $_ eq $wanted } @{ $_[ 0 ] }) ? 1 : 0;
 };
 
-# Construction
-around 'as_string' => sub {
-   my ($orig, $self, @args) = @_; my $str = $orig->( $self, @args );
-
-   return $str ? $self->leader.$str : $str;
-};
-
-sub _build_leader {
+my $_build_leader = sub {
    my $self = shift; my $level = $self->level; my $leader = q();
 
    my @frames = $self->frames; my ($line, $package);
@@ -46,7 +34,19 @@ sub _build_leader {
    while ($package and $_is_member->( $package, $self->ignore ));
 
    return $leader;
-}
+};
+
+# Object attributes (public)
+has 'leader' => is => 'lazy', isa => SimpleStr, builder => $_build_leader;
+
+has 'level'  => is => 'ro',   isa => NonZeroPositiveInt, default => 1;
+
+# Construction
+around 'as_string' => sub {
+   my ($orig, $self, @args) = @_; my $str = $orig->( $self, @args );
+
+   return $str ? $self->leader.$str : $str;
+};
 
 # Public methods
 sub ignore {

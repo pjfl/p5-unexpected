@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Replaced last _sub with lexical
           - Missing placeholders replaced with undef and null
           - Call instance_of in catch_class matching
 
