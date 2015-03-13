@@ -61,6 +61,36 @@ eval { $mynzpi = MyNZPI->new( test_nzpi => '1' ) };
 
 is $EVAL_ERROR, q(), 'Non zero positive int - passes';
 
+{  package MyNZPN;
+
+   use Moo;
+   use Unexpected::Types qw( NonZeroPositiveNum );
+
+   has 'test_nzpn'  => is => 'ro', isa => NonZeroPositiveNum, default => sub {};
+
+   $INC{ 'MyNZPN.pm' } = __FILE__;
+}
+
+my $mynzpn; eval { $mynzpn = MyNZPN->new };
+
+like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non zero positive num - undef';
+
+eval { $mynzpi = MyNZPN->new( test_nzpn => '' ) };
+
+like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non zero positive num - null';
+
+eval { $mynzpi = MyNZPN->new( test_nzpn => "0" ) };
+
+like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non zero positive num - zero';
+
+eval { $mynzpi = MyNZPN->new( test_nzpn => "-1" ) };
+
+like $EVAL_ERROR, qr{ not \s+ a \s+ non }mx, 'Non zero positive num - negative';
+
+eval { $mynzpi = MyNZPN->new( test_nzpn => '0.1' ) };
+
+is $EVAL_ERROR, q(), 'Non zero positive num - passes';
+
 {  package MyNNSS;
 
    use Moo;

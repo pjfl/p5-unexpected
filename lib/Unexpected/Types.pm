@@ -9,7 +9,8 @@ use Scalar::Util          qw( blessed );
 use Type::Library             -base, -declare =>
                           qw( LoadableClass NonEmptySimpleStr
                               NonNumericSimpleStr NonZeroPositiveInt
-                              PositiveInt SimpleStr Tracer );
+                              NonZeroPositiveNum PositiveInt PositiveNum
+                              SimpleStr Tracer );
 use Type::Utils           qw( as coerce extends from
                               inline_as message subtype via where );
 use Unexpected::Functions qw( inflate_message );
@@ -60,10 +61,23 @@ subtype NonZeroPositiveInt, as Int,
          ( 'Attribute value [_1] is not a non zero positive integer', $_ ) },
    where     { $_ > 0 };
 
+subtype NonZeroPositiveNum, as Num,
+   inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_ > 0" },
+   message   {
+      inflate_message
+         ( 'Attribute value [_1] is not a non zero positive number', $_ ) },
+   where     { $_ > 0 };
+
 subtype PositiveInt, as Int,
    inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_ >= 0" },
    message   { inflate_message
                   ( 'Attribute value [_1] is not a positive integer', $_ ) },
+   where     { $_ >= 0 };
+
+subtype PositiveNum, as Num,
+   inline_as { $_[ 0 ]->parent->inline_check( $_ )." and $_ >= 0" },
+   message   { inflate_message
+                  ( 'Attribute value [_1] is not a positive number', $_ ) },
    where     { $_ >= 0 };
 
 subtype SimpleStr, as Str,
@@ -132,13 +146,25 @@ L<require_module|Module::Runtime/require_module>
 A string of at least one character and no more than 255 characters that
 contains no newlines
 
+=item C<NonNumericSimpleStr>
+
+A simple string that does not contain any digits
+
 =item C<NonZeroPositiveInt>
 
 A non zero positive integer
 
+=item C<NonZeroPositiveNum>
+
+A non zero positive number
+
 =item C<PositiveInt>
 
 A positive integer including zero
+
+=item C<PositiveNum>
+
+A positive number including zero
 
 =item C<SimpleStr>
 

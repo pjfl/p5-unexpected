@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Added NonZeroPositiveNum and PositiveNum to Types
           - Added interpolate_msg which uses new default placeholders
           - Reversed missing placeholder change
           - Made boolean overload subclassable
