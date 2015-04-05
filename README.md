@@ -1,7 +1,8 @@
 <div>
-    <a href="https://travis-ci.org/pjfl/p5-unexpected"><img src="https://travis-ci.org/pjfl/p5-unexpected.png" alt="p5-unexpected"></a>
-    <a href="https://coveralls.io/r/pjfl/p5-unexpected?branch=master"><img src="https://coveralls.io/repos/pjfl/p5-unexpected/badge.png" alt="p5-unexpected"></a>
-    <a href="http://badge.fury.io/pl/Unexpected"><img src="https://badge.fury.io/pl/Unexpected.svg" alt="p5-unexpected"></a>
+    <a href="https://travis-ci.org/pjfl/p5-unexpected"><img src="https://travis-ci.org/pjfl/p5-unexpected.png" alt="Travis CI Badge"></a>
+    <a href="https://coveralls.io/r/pjfl/p5-unexpected?branch=master"><img src="https://coveralls.io/repos/pjfl/p5-unexpected/badge.png" alt="Coveralls Badge"></a>
+    <a href="http://badge.fury.io/pl/Unexpected"><img src="https://badge.fury.io/pl/Unexpected.svg" alt="CPAN Badge"></a>
+    <a href="http://cpants.cpanauthors.org/dist/Unexpected"><img src="http://cpants.cpanauthors.org/dist/Unexpected.png" alt="Kwalitee Badge"></a>
 </div>
 
 # Name

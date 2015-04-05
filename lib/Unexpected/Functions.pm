@@ -88,15 +88,13 @@ sub import {
    my $ex_class    = delete $global_opts->{exception_class};
    # uncoverable condition false
    my $target      = $global_opts->{into} ||= caller;
-   my $ex_subr     = $target->can( 'EXCEPTION_CLASS' );
    my @want        = @_;
    my @args        = ();
 
-   $ex_subr and $ex_class = $ex_subr->();
+   $ex_class or $ex_class = $_exception_class->( $target );
 
    for my $sym (@want) {
-      if ($ex_class and $ex_class->can( 'is_exception' )
-                    and $ex_class->is_exception( $sym )) {
+      if ($ex_class->can( 'is_exception' ) and $ex_class->is_exception( $sym )){
          my $code = sub { sub { $sym } };
 
          install_sub { as => $sym, code => $code, into => $target, };
