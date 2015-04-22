@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Dropped Coveralls due to permission creep on Github
           - Added Kwalitee badge
           - Added NonZeroPositiveNum and PositiveNum to Types
           - Added interpolate_msg which uses new default placeholders
