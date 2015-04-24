@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Updated copyright year
+
 0.37.1    2015-04-22 21:52:56
           - Dropped Coveralls due to permission creep on Github
           - Added Kwalitee badge
