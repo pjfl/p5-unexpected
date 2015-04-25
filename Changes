@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Stop quote_maybe in Functions::interpolate_msg with extra default
           - Updated copyright year
 
 0.37.1    2015-04-22 21:52:56

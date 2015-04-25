@@ -76,9 +76,10 @@ my $_gen_checker = sub {
 my $_inflate_placeholders = sub { # Sub visible strings for null and undef
    my $defaults = shift;
 
-   return map { $_quote_maybe->( (length) ? $_ : $defaults->[ 1 ] ) }
-          map { $_ // $defaults->[ 0 ] } @_,
-          map {       $defaults->[ 0 ] } 0 .. 9;
+   return map { $defaults->[ 2 ] ? $_ : $_quote_maybe->( $_ ) }
+          map { (length) ? $_ :  $defaults->[ 1 ] }
+          map {            $_ // $defaults->[ 0 ] } @_,
+          map {                  $defaults->[ 0 ] } 0 .. 9;
 };
 
 # Package methods
