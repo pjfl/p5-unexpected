@@ -10,9 +10,8 @@ use Scalar::Util qw( blessed reftype );
 use Sub::Install qw( install_sub );
 
 our @EXPORT_OK = qw( build_attr_from catch_class exception has_exception
-                     inflate_message interpolate_msg is_class_loaded
-                     is_one_of_us throw
-                     throw_on_error );
+                     inflate_message inflate_placeholders is_class_loaded
+                     is_one_of_us throw throw_on_error );
 
 my $Exception_Class = 'Unexpected'; my $Should_Quote = 1;
 
@@ -73,15 +72,6 @@ my $_gen_checker = sub {
    }
 };
 
-my $_inflate_placeholders = sub { # Sub visible strings for null and undef
-   my $defaults = shift;
-
-   return map { $defaults->[ 2 ] ? $_ : $_quote_maybe->( $_ ) }
-          map { (length) ? $_ :  $defaults->[ 1 ] }
-          map {            $_ // $defaults->[ 0 ] } @_,
-          map {                  $defaults->[ 0 ] } 0 .. 9;
-};
-
 # Package methods
 sub import {
    my $class       = shift;
@@ -107,7 +97,7 @@ sub import {
    return;
 }
 
-sub quote_bind_values {
+sub quote_bind_values { # Deprecated. Use third arg in inflate_placeholders defs
    defined $_[ 1 ] and $Should_Quote = !!$_[ 1 ]; return $Should_Quote;
 }
 
@@ -145,22 +135,20 @@ sub has_exception ($;@) {
 }
 
 sub inflate_message ($;@) { # Expand positional parameters of the form [_<n>]
-   return interpolate_msg( { defaults => [ '[?]', '[]' ] }, @_ );
+   return inflate_placeholders( [ '[?]', '[]' ], @_ );
 }
 
-sub interpolate_msg ($;@) {
-   my ($car, @cdr) = @_; my $msg = $car; my $opts = {};
+sub inflate_placeholders ($$;@) { # Sub visible strings for null and undef
+   my $defaults = shift;
+   my $msg      = shift;
+   my @vals     = map { $defaults->[ 2 ] ? $_ : $_quote_maybe->( $_ ) }
+                  # uncoverable condition false
+                  map { (length) ? $_ :  $defaults->[ 1 ] }
+                  map {            $_ // $defaults->[ 0 ] } @_,
+                  map {                  $defaults->[ 0 ] } 0 .. 9;
 
-   if (ref $car eq 'HASH') {
-      $opts = $car;
-      $msg  = $opts->{message} ? $opts->{message} : shift @cdr;
-      $opts->{args} and push @cdr, @{ $opts->{args} };
-   }
-
-   my $defaults = $opts->{defaults} // [ 'undef', 'null' ];
-   my @vals     = $_inflate_placeholders->( $defaults, @cdr );
-
-   $msg =~ s{ \[ _ (\d+) \] }{$vals[ $1 - 1 ]}gmx; return $msg;
+   $msg =~ s{ \[ _ (\d+) \] }{$vals[ $1 - 1 ]}gmx;
+   return $msg;
 }
 
 sub is_class_loaded ($) { # Lifted from Class::Load
@@ -261,7 +249,7 @@ the following signatures
    Unexpected->new( $unexpected_object_ref, { key => 'value', ... } );
 
    # first argument is a code reference - the code reference returns the
-   # exception class and the remaining arguents are treated as a list of
+   # exception class and the remaining arguments are treated as a list of
    # keys and values
    Unexpected->new( Unspecified, args => [ 'parameter name' ] );
    Unexpected->new( Unspecified, [ 'parameter name' ] ); # Shortcut
@@ -317,33 +305,20 @@ the L<Unexpected::TraitFor::ExceptionClasses> role
 
    $message = inflate_message $template, $val1, $val2, ...;
 
-Substitute the placeholders in the C<$template> string (e.g. [_1])
-with the corresponding value
+Substitute the placeholders in the C<$template> string, e.g. C<[_1]>,
+with the corresponding value. Undefined values are represented as C<[?]>,
+zero length strings are represented as C<[]>. Placeholder values will be
+quoted when substituted
 
-=head2 interpolate_msg
+=head2 inflate_placeholders
 
-   $message = interpolate_msg $options, $template, $val1, $val2, ...;
+   $message = inflate_placeholders $defaults, $template, $val1, $val2, ...;
 
-Like inflate message but you can supply an optional hash of options. Option
-hash keys are;
-
-=over 3
-
-=item C<args>
-
-An array reference of placeholder values. Use this in place of the list of
-values
-
-=item C<defaults>
-
-A reference to an array containing the default substitution values for an
-undefined value and a zero length value respectively
-
-=item C<messsage>
-
-The message template
-
-=back
+Substitute the placeholders in the C<$template> string, e.g. C<[_1]>, with the
+corresponding value. The C<$defaults> argument is a tuple (array reference)
+containing the default substitution values for; an undefined value, a zero
+length value, and a boolean which if true prevents quoting of the placeholder
+values when they are substituted into the template
 
 =head2 is_class_loaded
 
@@ -361,9 +336,9 @@ Function which detects instances of this exception class
 
    $bool = Unexpected::Functions->quote_bind_values( $bool );
 
-Accessor / mutator class method that toggles the state on quoting
-the placeholder substitution values in C<inflate_message>. Defaults
-to true
+Deprecated. Use third argument in </inflate_placeholders> defaults
+defaults. Accessor / mutator class method that toggles the state on quoting the
+placeholder substitution values in C<inflate_message>. Defaults to true
 
 =head2 throw
 

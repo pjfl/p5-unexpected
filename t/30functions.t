@@ -160,11 +160,9 @@ do {
 ok(  is_class_loaded( 'MyException::WithPrototypedStub' ),
      'Defining a stub with a prototype means the class is loaded' );
 
-is interpolate_msg( 'test' ), 'test', 'Interpolate msg - simple';
-is interpolate_msg( { message => '[_1]' } ), "'undef'",
-   'Interpolate msg - undef placeholder';
-is interpolate_msg( { args => [ 'test' ] }, '[_1]' ), "'test'",
-   'Interpolate msg - args in hash';
+is inflate_placeholders
+   ( [ 'undef', 'null', 1 ], 'test [_3] [_2] [_1]', 'x', q() ),
+   'test undef null x', 'Inflate_placeholders';
 
 done_testing;
 
