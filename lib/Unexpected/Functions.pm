@@ -138,7 +138,7 @@ sub inflate_message ($;@) { # Expand positional parameters of the form [_<n>]
    return inflate_placeholders( [ '[?]', '[]' ], @_ );
 }
 
-sub inflate_placeholders ($$;@) { # Sub visible strings for null and undef
+sub inflate_placeholders ($;@) { # Sub visible strings for null and undef
    my $defaults = shift;
    my $msg      = shift;
    my @vals     = map { $defaults->[ 2 ] ? $_ : $_quote_maybe->( $_ ) }

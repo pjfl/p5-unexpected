@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Fixed prototype on inflate_placeholders
           - Exposed inflate_placeholders
           - Deprecated quote_bind_values. Deleted interpolate_msg
           - Stop quote_maybe in Functions::interpolate_msg with extra default
