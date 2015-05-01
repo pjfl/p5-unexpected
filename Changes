@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+0.38.1    2015-05-01 14:10:50
           - Fixed prototype on inflate_placeholders
           - Exposed inflate_placeholders
           - Deprecated quote_bind_values. Deleted interpolate_msg
