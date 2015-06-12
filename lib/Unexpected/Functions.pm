@@ -268,7 +268,7 @@ the following signatures
    Unexecpted->new( 'File [_1] not found', args => [ $filename ] );
    Unexecpted->new( 'File [_1] not found', [ $filename ] ); # Shortcut
 
-   arguments are a list of keys and values
+   # arguments are a list of keys and values
    Unexpected->new( key => 'value', ... );
 
 =head2 catch_class
@@ -285,7 +285,7 @@ is a match, call the subroutine provided to handle that exception. Re-throws
 the exception if there is no match or if the exception object has no C<class>
 attribute
 
-=head2 exception;
+=head2 exception
 
    $exception_object_ref = exception $optional_error;
 
@@ -336,7 +336,7 @@ Function which detects instances of this exception class
 
    $bool = Unexpected::Functions->quote_bind_values( $bool );
 
-Deprecated. Use third argument in </inflate_placeholders> defaults
+Deprecated. Use third argument in L</inflate_placeholders> defaults
 defaults. Accessor / mutator class method that toggles the state on quoting the
 placeholder substitution values in C<inflate_message>. Defaults to true
 
