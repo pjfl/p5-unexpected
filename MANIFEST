@@ -14,7 +14,8 @@ lib/Unexpected/TraitFor/StringifyingError.pm
 lib/Unexpected/TraitFor/Throwing.pm
 lib/Unexpected/TraitFor/TracingStacks.pm
 lib/Unexpected/Types.pm
-t/01always_pass.t
+t/00report-metadata.dd
+t/00report-metadata.t
 t/02pod.t
 t/03podcoverage.t
 t/05kwalitee.t

@@ -33,6 +33,11 @@ my $prereqs  = {
     'namespace::autoclean' => '0.22',
     'perl' => '5.010001'
   },
+  'test_requires' => {
+    'File::Spec' => '0',
+    'Module::Metadata' => '0',
+    'Sys::Hostname' => '0'
+  },
 };
 
 if ($] < $perl_ver) { # Not interested in reports below min perl ver
