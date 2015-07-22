@@ -6,7 +6,7 @@ use List::Util        qw( first );
 use Unexpected::Types qw( NonZeroPositiveInt SimpleStr );
 use Moo::Role;
 
-requires qw( as_string frames );
+requires qw( as_string clone frames );
 
 my $Ignore = [ 'Try::Tiny' ];
 
@@ -48,6 +48,10 @@ around 'as_string' => sub {
    return $str ? $self->leader.$str : $str;
 };
 
+before 'clone' => sub {
+   my $self = shift; $self->leader; return;
+};
+
 # Public methods
 sub ignore {
    return $Ignore;
@@ -84,8 +88,8 @@ Prepends a one line stack summary to the exception error message
 
 =head1 Configuration and Environment
 
-Requires the C<as_string> method in the consuming class, as well as
-C<frames> from the stack trace role
+Requires the C<as_string> method in the consuming class, the C<clone> method
+from the C<Throwing> role, as well as C<frames> from the stack trace role
 
 Defines the following attributes;
 

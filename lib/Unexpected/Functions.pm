@@ -160,8 +160,7 @@ sub is_class_loaded ($) { # Lifted from Class::Load
       if (defined $version) {
          not ref $version and return 1;
          # Sometimes $VERSION ends up as a reference to undef (weird)
-         ref $version and reftype $version eq 'SCALAR'
-            and defined ${ $version } and return 1;
+         reftype $version eq 'SCALAR' and defined ${ $version } and return 1;
          blessed $version and return 1; # A version object
       }
    }

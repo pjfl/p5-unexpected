@@ -11,27 +11,28 @@ use Moo::Role;
 
 requires qw( BUILD );
 
-my %Cache;
-
 # Private functions
 my $_cache_key = sub {
    # uncoverable branch true
    return $PID.'-'.(exists $INC{ 'threads.pm' } ? threads->tid() : 0);
 };
 
-# Lifted from Throwable
+my $_exception_cache = {};
+
+# Public attributes. Lifted from Throwable
 has 'previous_exception' => is => 'ro', isa => Maybe[Object],
-   default               => sub { $Cache{ $_cache_key->() } };
+   builder               => sub { $_exception_cache->{ $_cache_key->() } };
 
-# Private methods
-my $_cache_exception = sub {
-   my $self = shift; my $e = bless { %{ $self } }, blessed $self;
+# Construction
+after 'BUILD' => sub {
+   my $self = shift; my $e = $self->clone; delete $e->{previous_exception};
 
-   delete $e->{previous_exception}; $Cache{ $_cache_key->() } = $e;
+   $_exception_cache->{ $_cache_key->() } = $e;
 
    return;
 };
 
+# Private methods
 my $_is_object_ref = sub {
    my ($self, @args) = @_; blessed $self or return 0;
 
@@ -40,19 +41,20 @@ my $_is_object_ref = sub {
    return 1;
 };
 
-# Construction
-after 'BUILD' => sub {
-   my $self = shift; $self->$_cache_exception; return;
-};
-
 # Public methods
 sub caught {
-   my ($self, @args) = @_; $self->$_is_object_ref( @args ) and return $self;
+   my ($self, @args) = @_;
 
-   my $attr  = build_attr_from( @args );
+   $self->$_is_object_ref( @args ) and return $self;
+
+   my $attr  = build_attr_from @args;
    my $error = $attr->{error} ||= $EVAL_ERROR; $error or return;
 
    return (is_one_of_us $error) ? $error : $self->new( $attr );
+}
+
+sub clone {
+   my $self = shift; return bless { %{ $self } }, blessed $self;
 }
 
 sub throw {
@@ -73,7 +75,7 @@ __END__
 
 =pod
 
-=encoding utf8
+=encoding utf-8
 
 =head1 Name
 
@@ -118,7 +120,13 @@ the previous exception the next time an exception is thrown
    $exception_object_ref = Unexpected->caught( @optional_args );
 
 Catches and returns a thrown exception or generates a new exception if
-C<$EVAL_ERROR> has been set. Returns either an exception object or undef
+C<$EVAL_ERROR> has been set. Returns either an exception object or undefined
+
+=head2 clone
+
+   $cloned_exception_object_ref = $exception_object_ref->clone;
+
+Returns a clone of the invocant
 
 =head2 throw
 
@@ -137,7 +145,7 @@ in this case
    Unexpected->throw_on_error( @optional_args );
 
 Calls L</caught> passing in the options C<@args> and if there was an
-exception L</throw>s it
+exception L</throw>s it otherwise returns undefined
 
 =head1 Diagnostics
 
