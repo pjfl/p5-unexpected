@@ -89,6 +89,12 @@ eval { $e->throw( 'Not allowed' ) }; $e = _eval_error;
 
 like $e, qr{ object \s+ with \s+ arguments }mx, 'No throwing objects with args';
 
+eval { Unexpected->clone }; $e = _eval_error;
+
+like $e, qr{ \QClone is an object method\E }mx, 'Clone is an object method';
+
+like $e->clone( { error => 'Mutated' } ), qr{ Mutated }mx, 'Clone mutates';
+
 eval { $class->throw() }; $e = _eval_error;
 
 like $e, qr{ Unknown \s+ error }mx, 'Default error string';

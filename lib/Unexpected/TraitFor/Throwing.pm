@@ -54,7 +54,11 @@ sub caught {
 }
 
 sub clone {
-   my $self = shift; return bless { %{ $self } }, blessed $self;
+   my ($self, $args) = @_;
+
+   my $class = blessed $self or $self->throw( 'Clone is an object method' );
+
+   return bless { %{ $self }, %{ $args // {} } }, $class;
 }
 
 sub throw {
@@ -124,9 +128,10 @@ C<$EVAL_ERROR> has been set. Returns either an exception object or undefined
 
 =head2 clone
 
-   $cloned_exception_object_ref = $exception_object_ref->clone;
+   $cloned_exception_object_ref = $exception_object_ref->clone( $args );
 
-Returns a clone of the invocant
+Returns a clone of the invocant. The optional C<$args> hash reference mutates
+the returned clone
 
 =head2 throw
 
