@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+0.39.1    2015-08-26 23:36:44
           - Added RequestFactory duck type
           - Added tests for clone method
           - Added clone method to Throwing
