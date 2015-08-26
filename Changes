@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Added RequestFactory duck type
           - Added tests for clone method
           - Added clone method to Throwing
           - Replaced 01always-pass.t with Test::ReportMetadata

@@ -146,6 +146,29 @@ $e = Unexpected->caught;
 
 like $e, qr{ not \s+ a \s+ loadable }mx, 'Invalid class name';
 
+{  package ReqFac;
+
+   use Moo;
+
+   $INC{ 'ReqFac.pm' } = __FILE__;
+}
+
+{  package MyReq;
+
+   use Moo;
+   use Unexpected::Types qw( RequestFactory );
+
+   has 'req'  => is => 'ro', isa => RequestFactory,
+      builder => sub { ReqFac->new };
+
+   $INC{ 'MyReq.pm' } = __FILE__;
+}
+
+my $myreq; eval { $myreq = MyReq->new };
+
+like $EVAL_ERROR, qr{ \Qnew_from_simple_request\E }mx,
+   'RequestFactory - missing method';
+
 {  package MyTracer;
 
    use Moo;

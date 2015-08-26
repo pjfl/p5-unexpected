@@ -1,11 +1,6 @@
 Build.PL
 Changes
-LICENSE
 MANIFEST
-META.json
-META.yml
-README
-SIGNATURE
 lib/Unexpected.pm
 lib/Unexpected/Functions.pm
 lib/Unexpected/TraitFor/ErrorLeader.pm
@@ -14,8 +9,6 @@ lib/Unexpected/TraitFor/StringifyingError.pm
 lib/Unexpected/TraitFor/Throwing.pm
 lib/Unexpected/TraitFor/TracingStacks.pm
 lib/Unexpected/Types.pm
-t/00report-metadata.dd
-t/00report-metadata.t
 t/02pod.t
 t/03podcoverage.t
 t/05kwalitee.t

@@ -10,7 +10,7 @@ use Type::Library             -base, -declare =>
                           qw( LoadableClass NonEmptySimpleStr
                               NonNumericSimpleStr NonZeroPositiveInt
                               NonZeroPositiveNum PositiveInt PositiveNum
-                              SimpleStr Tracer );
+                              RequestFactory SimpleStr Tracer );
 use Type::Utils           qw( as coerce extends from
                               inline_as message subtype via where );
 use Unexpected::Functions qw( inflate_message );
@@ -37,9 +37,17 @@ my $_exception_message_for_object_reference = sub {
    return inflate_message( 'String [_1] is not an object reference', $_[ 0 ] );
 };
 
+my $_exception_message_for_req_factory = sub {
+   blessed $_[ 0 ] and return inflate_message
+      'Object [_1] is missing the new_from_simple_request method',
+      blessed $_[ 0 ];
+
+   return $_exception_message_for_object_reference->( $_[ 0 ] );
+};
+
 my $_exception_message_for_tracer = sub {
    blessed $_[ 0 ] and return inflate_message
-      ( 'Object [_1] is missing a frames method', blessed $_[ 0 ] );
+      'Object [_1] is missing a frames method', blessed $_[ 0 ];
 
    return $_exception_message_for_object_reference->( $_[ 0 ] );
 };
@@ -79,6 +87,12 @@ subtype PositiveNum, as Num,
    message   { inflate_message
                   ( 'Attribute value [_1] is not a positive number', $_ ) },
    where     { $_ >= 0 };
+
+subtype RequestFactory, as Object,
+   inline_as { $_[ 0 ]->parent->inline_check( $_ )
+                  ." and $_->can( 'new_from_simple_request' )" },
+   message   { $_exception_message_for_req_factory->( $_ ) },
+   where     { $_->can( 'new_from_simple_request' ) };
 
 subtype SimpleStr, as Str,
    inline_as { $_[ 0 ]->parent->inline_check( $_ )
@@ -165,6 +179,11 @@ A positive integer including zero
 =item C<PositiveNum>
 
 A positive number including zero
+
+=item C<RequestFactory>
+
+Duck type that can; C<body_params>, C<query_params>, C<uri_for>, and
+C<uri_params>
 
 =item C<SimpleStr>
 
