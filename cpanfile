@@ -10,16 +10,18 @@ requires "perl" => "5.010001";
 
 on 'build' => sub {
   requires "Module::Build" => "0.4004";
-  requires "Test::Requires" => "0.08";
-  requires "Try::Tiny" => "0.22";
-  requires "strictures" => "1.005004";
   requires "version" => "0.88";
 };
 
 on 'test' => sub {
   requires "File::Spec" => "0";
+  requires "Module::Build" => "0.4004";
   requires "Module::Metadata" => "0";
   requires "Sys::Hostname" => "0";
+  requires "Test::Requires" => "0.08";
+  requires "Try::Tiny" => "0.22";
+  requires "strictures" => "1.005004";
+  requires "version" => "0.88";
 };
 
 on 'test' => sub {
