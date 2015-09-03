@@ -32,10 +32,19 @@ my $_dereference_code = sub {
    return { class => $code->(), @args };
 };
 
-my $_exception_class = sub {
-   my $caller = shift; my $code = $caller->can( 'EXCEPTION_CLASS' );
+my $_exception_class_cache = {};
 
-   return $code ? $code->() : $Exception_Class;
+my $_exception_class = sub {
+   my $caller = shift;
+
+   exists $_exception_class_cache->{ $caller }
+      and defined $_exception_class_cache->{ $caller }
+      and return  $_exception_class_cache->{ $caller };
+
+   my $code  = $caller->can( 'EXCEPTION_CLASS' );
+   my $class = $code ? $code->() : $Exception_Class;
+
+   return $_exception_class_cache->{ $caller } = $class;
 };
 
 my $_match_class = sub {
@@ -78,7 +87,7 @@ sub import {
    my $global_opts = { $_[ 0 ] && ref $_[ 0 ] eq 'HASH' ? %{+ shift } : () };
    my $ex_class    = delete $global_opts->{exception_class};
    # uncoverable condition false
-   my $target      = $global_opts->{into} ||= caller;
+   my $target      = $global_opts->{into} //= caller;
    my @want        = @_;
    my @args        = ();
 
