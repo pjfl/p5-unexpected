@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+0.40.1    2015-09-04 11:51:43
           - Cache the exception class lookup in Functions
             Won't need to except EXCEPTION_CLASS when importing throw
           - Upstream toolchain update
