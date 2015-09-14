@@ -1,5 +1,10 @@
 Revision history for Unexpected
 
+          - Turning off CPAN Testing Aug 2015.
+            Since the site went down I cannot see the reports so there is no
+            point leaving them running
+          - Eliminated Try::Tiny from abridged stacktrace
+
 0.40.1    2015-09-04 11:51:43
           - Cache the exception class lookup in Functions
             Won't need to except EXCEPTION_CLASS when importing throw

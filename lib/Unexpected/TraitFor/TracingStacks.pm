@@ -42,7 +42,8 @@ sub stacktrace {
       unless ($l_no = $seen{ $package } and $l_no == $frame->line) {
          my $lead = $subr || $package; # uncoverable condition false
 
-         $lead !~ m{ :: __ANON__ \z }mx # uncoverable branch false
+         # uncoverable branch false
+         $lead !~ m{ (?: \A \(eval\) ) | (?: ::try) | (?: :: __ANON__ \z) }mx
             and push @lines, join q( ), $lead, 'line', $frame->line;
          $seen{ $package } = $frame->line;
       }

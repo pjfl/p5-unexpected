@@ -24,6 +24,7 @@ BEGIN {
          skip_all => 'Two colons in $Bin path';
       $host eq 'digitalis' and plan
          skip_all => 'Broken smoker a54c1c84-6bf5-1014-b4f9-dcd54300afcd';
+      plan skip_all => 'CPAN Testing stopped Aug 2015';
    }
 }
 
