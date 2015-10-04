@@ -2,7 +2,7 @@ package Unexpected::TraitFor::StringifyingError;
 
 use namespace::autoclean;
 
-use Unexpected::Functions qw( build_attr_from inflate_message );
+use Unexpected::Functions qw( inflate_message parse_arg_list );
 use Unexpected::Types     qw( ArrayRef Str );
 use Moo::Role;
 
@@ -15,7 +15,7 @@ has 'error' => is => 'ro', isa => Str,      default => 'Unknown error';
 
 # Construction
 around 'BUILDARGS' => sub {
-   my ($orig, $self, @args) = @_; my $attr = build_attr_from( @args );
+   my ($orig, $self, @args) = @_; my $attr = parse_arg_list( @args );
 
    my $e = delete $attr->{error};
 
@@ -52,6 +52,8 @@ sub as_string { # Stringifies the error and inflates the placeholders
 __END__
 
 =pod
+
+=encoding utf-8
 
 =head1 Name
 

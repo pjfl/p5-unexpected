@@ -5,7 +5,7 @@ use namespace::autoclean;
 use Carp                    ( );
 use English               qw( -no_match_vars );
 use Scalar::Util          qw( blessed );
-use Unexpected::Functions qw( build_attr_from is_one_of_us );
+use Unexpected::Functions qw( is_one_of_us parse_arg_list );
 use Unexpected::Types     qw( Maybe Object );
 use Moo::Role;
 
@@ -47,7 +47,7 @@ sub caught {
 
    $self->$_is_object_ref( @args ) and return $self;
 
-   my $attr  = build_attr_from @args;
+   my $attr  = parse_arg_list @args;
    my $error = $attr->{error} ||= $EVAL_ERROR; $error or return;
 
    return (is_one_of_us $error) ? $error : $self->new( $attr );

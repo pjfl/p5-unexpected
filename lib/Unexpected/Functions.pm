@@ -9,9 +9,9 @@ use Package::Stash;
 use Scalar::Util qw( blessed reftype );
 use Sub::Install qw( install_sub );
 
-our @EXPORT_OK = qw( build_attr_from catch_class exception has_exception
+our @EXPORT_OK = qw( catch_class exception has_exception
                      inflate_message inflate_placeholders is_class_loaded
-                     is_one_of_us throw throw_on_error );
+                     is_one_of_us parse_arg_list throw throw_on_error );
 
 my $Exception_Class = 'Unexpected'; my $Should_Quote = 1;
 
@@ -111,7 +111,7 @@ sub quote_bind_values { # Deprecated. Use third arg in inflate_placeholders defs
 }
 
 # Public functions
-sub build_attr_from (;@) { # Coerce a hash ref from whatever was passed
+sub parse_arg_list (;@) { # Coerce a hash ref from whatever was passed
    my $n = 0; $n++ while (defined $_[ $n ]);
 
    return (                $n == 0) ? {}
@@ -198,7 +198,7 @@ __END__
 
 =pod
 
-=encoding utf8
+=encoding utf-8
 
 =head1 Name
 
@@ -237,47 +237,6 @@ that takes these subroutines return values
 Defines no attributes
 
 =head1 Subroutines/Methods
-
-=head2 build_attr_from
-
-   $hash_ref = build_attr_from( <whatever> );
-
-Coerces a hash ref from whatever args are passed. This function is
-responsible for parsing the arguments passed to the constructor. Supports
-the following signatures
-
-   # no defined arguments - returns and empty hash reference
-   Unexpected->new();
-
-   # first argument is one if our own objects - clone it
-   Unexpected->new( $unexpected_object_ref );
-
-   # first argument is one if our own objects, second is a hash reference
-   # - clone the object but mutate it using the hash reference
-   Unexpected->new( $unexpected_object_ref, { key => 'value', ... } );
-
-   # first argument is a code reference - the code reference returns the
-   # exception class and the remaining arguments are treated as a list of
-   # keys and values
-   Unexpected->new( Unspecified, args => [ 'parameter name' ] );
-   Unexpected->new( Unspecified, [ 'parameter name' ] ); # Shortcut
-
-   # first argmentt is a hash reference - clone it
-   Unexpected->new( { key => 'value', ... } );
-
-   # only one scalar argement - the error string
-   Unexpected->new( $error_string );
-
-   # second argement is a hash reference, first argument is the error
-   Unexpected->new( $error_string, { key => 'value', ... } );
-
-   # odd numbered list of arguments is the error followed by keys and values
-   Unexpected->new( $error_string, key => 'value', ... );
-   Unexecpted->new( 'File [_1] not found', args => [ $filename ] );
-   Unexecpted->new( 'File [_1] not found', [ $filename ] ); # Shortcut
-
-   # arguments are a list of keys and values
-   Unexpected->new( key => 'value', ... );
 
 =head2 catch_class
 
@@ -339,6 +298,47 @@ Returns true is the classname as already loaded and compiled
    $bool = is_one_of_us $string_or_exception_object_ref;
 
 Function which detects instances of this exception class
+
+=head2 parse_arg_list
+
+   $hash_ref = parse_arg_list( <whatever> );
+
+Coerces a hash reference from whatever arguments are passed. This function is
+responsible for parsing the arguments passed to the constructor. Supports
+the following signatures
+
+   # No defined arguments - returns and empty hash reference
+   Unexpected->new();
+
+   # First argument is one if our own objects - clone it
+   Unexpected->new( $unexpected_object_ref );
+
+   # First argument is one if our own objects, second is a hash reference
+   # - clone the object but mutate it using the hash reference
+   Unexpected->new( $unexpected_object_ref, { key => 'value', ... } );
+
+   # First argument is a code reference - the code reference returns the
+   # exception class and the remaining arguments are treated as a list of
+   # keys and values
+   Unexpected->new( Unspecified, args => [ 'parameter name' ] );
+   Unexpected->new( Unspecified, [ 'parameter name' ] ); # Shortcut
+
+   # First argmentt is a hash reference - clone it
+   Unexpected->new( { key => 'value', ... } );
+
+   # Only one scalar argement - the error string
+   Unexpected->new( $error_string );
+
+   # Second argement is a hash reference, first argument is the error
+   Unexpected->new( $error_string, { key => 'value', ... } );
+
+   # Odd numbered list of arguments is the error followed by keys and values
+   Unexpected->new( $error_string, key => 'value', ... );
+   Unexecpted->new( 'File [_1] not found', args => [ $filename ] );
+   Unexecpted->new( 'File [_1] not found', [ $filename ] ); # Shortcut
+
+   # Arguments are a list of keys and values
+   Unexpected->new( key => 'value', ... );
 
 =head2 quote_bind_values
 

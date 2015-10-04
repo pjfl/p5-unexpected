@@ -5,7 +5,7 @@ use namespace::autoclean;
 use overload '""'       => sub { $_[ 0 ]->as_string  },
              'bool'     => sub { $_[ 0 ]->as_boolean },
              'fallback' => 1;
-use version; our $VERSION = qv( sprintf '0.41.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.41.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo;
 
@@ -86,17 +86,18 @@ with full stack trace
 Applies exception roles to the exception base class L<Unexpected>. See
 L</Dependencies> for the list of roles that are applied
 
-The list of constructor methods signatures is described in
-L<build_attr_from|Unexpected::Functions/build_attr_from>
+The list of signatures recognised by the constructor method is implemented by
+the L<signature parser|Unexpected::Functions/parse_arg_list>
 
-Error objects are overloaded to stringify to the full error message
-plus a leader if the optional C<ErrorLeader> role has been applied
+Error objects are overloaded to stringify to the full error message plus a
+leader if the optional L<Unexpected::TraitFor::ErrorLeader> role has been
+applied
 
 =head1 Subroutines/Methods
 
 =head2 BUILD
 
-Dummy subroutine which is modified by the applied roles
+Empty subroutine which is modified by the applied roles
 
 =head2 BUILDARGS
 

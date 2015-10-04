@@ -59,17 +59,18 @@ with full stack trace
 Applies exception roles to the exception base class [Unexpected](https://metacpan.org/pod/Unexpected). See
 ["Dependencies"](#dependencies) for the list of roles that are applied
 
-The list of constructor methods signatures is described in
-[build\_attr\_from](https://metacpan.org/pod/Unexpected::Functions#build_attr_from)
+The list of signatures recognised by the constructor method is implemented by
+the [signature parser](https://metacpan.org/pod/Unexpected::Functions#parse_arg_list)
 
-Error objects are overloaded to stringify to the full error message
-plus a leader if the optional `ErrorLeader` role has been applied
+Error objects are overloaded to stringify to the full error message plus a
+leader if the optional [Unexpected::TraitFor::ErrorLeader](https://metacpan.org/pod/Unexpected::TraitFor::ErrorLeader) role has been
+applied
 
 # Subroutines/Methods
 
 ## BUILD
 
-Dummy subroutine which is modified by the applied roles
+Empty subroutine which is modified by the applied roles
 
 ## BUILDARGS
 

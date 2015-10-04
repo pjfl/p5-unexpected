@@ -34,10 +34,10 @@ use Unexpected::Functions { into => 'main' };
 
 use Unexpected::Functions qw( :all );
 
-ok( (main->can( 'build_attr_from' )), 'Imports build_attr_from' );
+ok( (main->can( 'parse_arg_list' )), 'Imports parse_arg_list' );
 ok( (main->can( 'inflate_message' )), 'Imports inflate_message' );
 
-is build_attr_from( bless { error => 'fooled_you' }, 'HASH' )->{error},
+is parse_arg_list( bless { error => 'fooled_you' }, 'HASH' )->{error},
    'fooled_you', 'Ignores blessed if not one of us';
 
 is( (exception 'Bite Me')->error, 'Bite Me', 'Exception function' );
