@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+0.42.1    2015-10-04 11:09:47
           - Strictify the POD encoding
           - Better subroutine naming
           - Toolchain update
