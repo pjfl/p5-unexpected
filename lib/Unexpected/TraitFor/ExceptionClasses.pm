@@ -17,12 +17,16 @@ has 'class' => is => 'ro', isa => sub {
 
 # Construction
 around 'BUILDARGS' => sub {
-   my ($orig, $self, @args) = @_; my $attr = $orig->( $self, @args );
+   my ($orig, $self, @args) = @_; my $attr = $orig->( $self, @args ); my $class;
 
-   if (exists $attr->{class} and my $class = $attr->{class}) {
-      ref $class eq 'CODE' and $class = $attr->{class} = $class->();
-      defined $class and exists $Classes->{ $class }
-         and $attr->{error} //= $Classes->{ $class }->{error};
+   (exists $attr->{class} and $class = $attr->{class}) or return $attr;
+
+   ref $class eq 'CODE' and $class = $attr->{class} = $class->();
+
+   $self->is_exception( $class ) or return $attr;
+
+   for my $k (grep { ! m{ \A parents \z }mx } keys %{ $Classes->{ $class } }) {
+      $attr->{ $k } //= $Classes->{ $class }->{ $k };
    }
 
    return $attr;

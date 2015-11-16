@@ -20,3 +20,4 @@ t/20types.t
 t/30functions.t
 t/40no_exception_class.t
 t/boilerplate.pm
+t/exceptions.dd

@@ -1,5 +1,9 @@
 Revision history for Unexpected
 
+          - Refactored smoker exceptions to dump file
+          - Added another broken smoker to exception list
+          - Can set multiple exception attributes from exception classes
+
 0.42.1    2015-10-04 11:09:47
           - Strictify the POD encoding
           - Better subroutine naming
