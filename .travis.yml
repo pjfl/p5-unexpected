@@ -9,7 +9,8 @@ branches:
 env:
   global:
     - AUTHOR_TESTING=0
-    - secure: aCvhgrduoWshWIpQq5qkPzvcREqeiFXCdYv0e/PH8FT11S2kLI1D9zpsOGRlmPcI5uchsIdgVCGqm+D7N8yR9kIA1Wgdfm40CR8EHViZ8jOMLqjV3IMvbv9JlBCUqzP2YHOTGWtQr8cQ+fv+CYZbiB0r3dH6GZYqJ38HaKTaLPY=
+    - secure: VEc9TWkZfuqPKGogYpfMjP2Vmr+hRSL2cfM7jIpdx+QiFXOzLmnuW93CLMb3G1CrNrEOHWpji9CqqsOMgDMDZi6hFJiLerfJU5NuB4zLft8akTWofg8Iycwj3rcDGEkksJ9KZfwEtdAcAiteFlqQ/KxUXF8wefuXJzeT4VQyqEk=
 before_install:
   - cpanm -n Devel::Cover
-script: perl Build.PL && ./Build && ./Build testcover
+  - cpanm -n Devel::Cover::Report::OwnServer
+script: perl Build.PL && ./Build && cover -test -report ownServer

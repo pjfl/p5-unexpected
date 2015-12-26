@@ -2,6 +2,7 @@
     <a href="https://travis-ci.org/pjfl/p5-unexpected"><img src="https://travis-ci.org/pjfl/p5-unexpected.png" alt="Travis CI Badge"></a>
     <a href="http://badge.fury.io/pl/Unexpected"><img src="https://badge.fury.io/pl/Unexpected.svg" alt="CPAN Badge"></a>
     <a href="http://cpants.cpanauthors.org/dist/Unexpected"><img src="http://cpants.cpanauthors.org/dist/Unexpected.png" alt="Kwalitee Badge"></a>
+    <a href="https://roxsoft.co.uk/coverage/report/unexpected/latest"><img src="https://roxsoft.co.uk/coverage/badge/unexpected/latest" alt="Coverage Badge"></a>
 </div>
 
 # Name

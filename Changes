@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Added coverage badge and coverage report posting
+
 0.43.1    2015-11-29 15:38:05
           - Refactored smoker exceptions to dump file
           - Added another broken smoker to exception list
