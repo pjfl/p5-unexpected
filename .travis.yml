@@ -9,6 +9,7 @@ branches:
 env:
   global:
     - AUTHOR_TESTING=0
+    - COVERAGE_URI="https://roxsoft.co.uk/coverage/report/%s"
     - secure: VEc9TWkZfuqPKGogYpfMjP2Vmr+hRSL2cfM7jIpdx+QiFXOzLmnuW93CLMb3G1CrNrEOHWpji9CqqsOMgDMDZi6hFJiLerfJU5NuB4zLft8akTWofg8Iycwj3rcDGEkksJ9KZfwEtdAcAiteFlqQ/KxUXF8wefuXJzeT4VQyqEk=
 before_install:
   - cpanm -n Devel::Cover

@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Added coverage URI to travis.yml
           - Added coverage badge and coverage report posting
 
 0.43.1    2015-11-29 15:38:05
