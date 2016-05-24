@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Added no_quote_bind_values to StringifyingError
+
 0.44.1    2016-05-08 23:04:28
           - Added coverage URI to travis.yml
           - Added coverage badge and coverage report posting

@@ -2,8 +2,8 @@ package Unexpected::TraitFor::StringifyingError;
 
 use namespace::autoclean;
 
-use Unexpected::Functions qw( inflate_message parse_arg_list );
-use Unexpected::Types     qw( ArrayRef Str );
+use Unexpected::Functions qw( inflate_placeholders parse_arg_list );
+use Unexpected::Types     qw( ArrayRef Bool Str );
 use Moo::Role;
 
 requires qw( BUILD );
@@ -11,7 +11,9 @@ requires qw( BUILD );
 # Object attributes (public)
 has 'args'  => is => 'ro', isa => ArrayRef, default => sub { [] };
 
-has 'error' => is => 'ro', isa => Str,      default => 'Unknown error';
+has 'error' => is => 'ro', isa => Str, default => 'Unknown error';
+
+has 'no_quote_bind_values' => is => 'ro', isa => Bool, default => 0;
 
 # Construction
 around 'BUILDARGS' => sub {
@@ -40,11 +42,13 @@ sub as_boolean {
 }
 
 sub as_string { # Stringifies the error and inflates the placeholders
-   my $self = shift; my $error = $self->error;
+   my $self = shift; my $e = $self->error;
 
-   0 > index $error, '[_' and return "${error}\n";
+   0 > index $e, '[_' and return "${e}\n";
 
-   return inflate_message( $error, @{ $self->args } )."\n";
+   my $opts = [ '[?]', '[]', $self->no_quote_bind_values ];
+
+   return inflate_placeholders( $opts, $e, @{ $self->args } )."\n";
 }
 
 1;
@@ -87,6 +91,13 @@ placeholders of the form C<< [_<n>] >> where C<< <n> >> is an integer
 starting at one. If passed a code ref it will be called passing in the
 calling classname and constructor hash ref, the return value will be
 used as the error string
+
+=item C<no_quote_bind_values>
+
+A boolean that defaults to C<FALSE>. If set to C<TRUE> then when the
+placeholder values are substituted in the calls to
+L<inflate_placeholers|Unexpected::Functions/inflate_placeholders>
+(stringification) they are not wrapped in quotes
 
 =back
 
