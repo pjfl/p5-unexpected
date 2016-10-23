@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+0.45.1    2016-10-23 19:42:39
           - Added no_quote_bind_values to StringifyingError
 
 0.44.1    2016-05-08 23:04:28
