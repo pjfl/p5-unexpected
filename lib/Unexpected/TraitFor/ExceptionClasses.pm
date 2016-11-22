@@ -64,6 +64,8 @@ sub is_exception {
 sub instance_of {
    my ($self, $wanted) = @_; $wanted or return 0;
 
+   ref $wanted eq 'CODE' and $wanted = $wanted->();
+
    exists $Classes->{ $wanted }
       or die "Exception class ${wanted} does not exist";
 
@@ -175,13 +177,14 @@ that of C<has> in C<Moo>
 
    $bool = $exception_obj->instance_of( 'exception_classname' );
 
-Is the exception object an instance of the exception class
+Is the exception object an instance of the exception class. Can also pass
+a code reference like the exported exception class functions
 
 =head2 is_exception
 
    $bool = YourExceptionClass->is_exception( 'exception_classname' );
 
-Returns true if the exception class exits as a result of a call to
+Returns true if the exception class exists as a result of a call to
 L</add_exception>
 
 =head1 Diagnostics

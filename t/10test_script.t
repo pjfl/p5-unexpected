@@ -262,6 +262,8 @@ is $e->instance_of(), 0, 'Null class is false';
 
 is $e->instance_of( 'A' ), 1, 'Inherits exception class';
 
+is $e->instance_of( A ), 1, 'Inherits exception class - coderef';
+
 is $e->instance_of( 'E' ), 0, 'Does not match exception class';
 
 eval { $e->instance_of( 'nonExistant' ) }; $e = _eval_error;
