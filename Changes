@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Better type error file locations
+          - Updated copyright year
           - Can call instance_of with a code reference
           - Toolchain update CVE-2016-1238
 
