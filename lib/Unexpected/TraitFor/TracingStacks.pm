@@ -2,83 +2,114 @@ package Unexpected::TraitFor::TracingStacks;
 
 use namespace::autoclean;
 
-use Scalar::Util      qw( weaken );
 use Unexpected::Types qw( HashRef LoadableClass Tracer );
+use Scalar::Util      qw( weaken );
 use Moo::Role;
 
 requires qw( BUILD );
 
 # Object attributes (public)
-has 'trace'         => is => 'lazy', isa => Tracer, builder => sub {
-   $_[ 0 ]->trace_class->new( %{ $_[ 0 ]->trace_args } ) },
-   handles          => [ qw( frames ) ], init_arg => undef;
+has 'trace' =>
+   is       => 'lazy',
+   isa      => Tracer,
+   builder  => sub {
+      my $self = shift;
 
-has 'trace_args'    => is => 'lazy', isa => HashRef, builder => sub { {
-   filter_frames_early => 1,
-   no_refs          => 1,
-   respect_overload => 0,
-   max_arg_length   => 0,
-   frame_filter     => $_[ 0 ]->trace_frame_filter, } };
+      return $self->trace_class->new(%{$self->trace_args});
+   },
+   handles  => [ qw(frames) ],
+   init_arg => undef;
 
-has 'trace_class'   => is => 'ro',   isa => LoadableClass,
-   default          => 'Devel::StackTrace';
+has 'trace_args'    =>
+   is      => 'lazy',
+   isa     => HashRef,
+   builder => sub {
+      my $self = shift;
+
+      return {
+         filter_frames_early => 1,
+         no_refs             => 1,
+         respect_overload    => 0,
+         max_arg_length      => 0,
+         frame_filter        => $self->trace_frame_filter,
+      };
+   };
+
+has 'trace_class' =>
+   is      => 'ro',
+   isa     => LoadableClass,
+   default => 'Devel::StackTrace';
 
 # Construction
 before 'BUILD' => sub {
-   my $self = shift; $self->trace; return;
+   my $self = shift;
+
+   $self->trace;
+   return;
 };
 
 # Public methods
 sub message { # Stringify self and a full stack trace
-   my $self = shift; return "${self}\n".$self->trace->as_string."\n";
+   my $self = shift;
+
+   return "${self}\n".$self->trace->as_string."\n";
 }
 
 sub stacktrace {
-   my ($self, $skip) = @_; my (@lines, %seen, $subr);
+   my ($self, $skip) = @_;
+
+   my (@lines, %seen, $subr);
 
    for my $frame (reverse $self->frames) {
-      my $package = $frame->package; my $l_no;
+      my $package = $frame->package;
+      my $l_no;
 
-      unless ($l_no = $seen{ $package } and $l_no == $frame->line) {
+      unless ($l_no = $seen{$package} and $l_no == $frame->line) {
          my $lead = $subr || $package; # uncoverable condition false
 
          # uncoverable branch false
-         $lead !~ m{ (?: \A \(eval\) ) | (?: ::try) | (?: :: __ANON__ \z) }mx
-            and push @lines, join q( ), $lead, 'line', $frame->line;
-         $seen{ $package } = $frame->line;
+         push @lines, join q( ), $lead, 'line', $frame->line
+            if $lead !~ m{ (?: \A \(eval\) )|(?: ::try)|(?: :: __ANON__ \z) }mx;
+
+         $seen{$package} = $frame->line;
       }
 
-      $frame->subroutine !~ m{ :: __ANON__ \z }mx # uncoverable branch false
-         and $subr = $frame->subroutine;
+      # uncoverable branch false
+      $subr = $frame->subroutine if $frame->subroutine !~ m{ :: __ANON__ \z }mx;
    }
 
-   defined $skip or $skip = 0; pop @lines while ($skip--);
+   $skip = 0 unless defined $skip;
+
+   pop @lines while ($skip--);
 
    return wantarray ? reverse @lines : (join "\n", reverse @lines)."\n";
 }
 
 sub trace_frame_filter { # Lifted from StackTrace::Auto
-   my $self = shift; my $found_mark = 0; weaken( $self );
+   my $self       = shift; weaken($self);
+   my $found_mark = 0;
 
    return sub {
       my ($raw)    = @_;
-      my  $subr    = $raw->{caller}->[ 3 ];
+      my  $subr    = $raw->{caller}->[3];
      (my  $package = $subr) =~ s{ :: \w+ \z }{}mx;
 
       # uncoverable branch true
       # uncoverable condition right
-      $ENV{UNEXPECTED_SHOW_RAW_TRACE} and warn "${subr}\n";
+      warn "${subr}\n" if $ENV{UNEXPECTED_SHOW_RAW_TRACE};
 
       if    ($found_mark == 2) { return 1 }
       elsif ($found_mark == 1) {
          # uncoverable branch true
          # uncoverable condition right
-         $subr =~ m{ :: new \z }mx and $self->isa( $package ) and return 0;
-         $found_mark++; return 1;
+         return 0 if $subr =~ m{ :: new \z }mx && $self->isa($package);
+
+         $found_mark++;
+         return 1;
       }
 
       # uncoverable condition right
-      $subr =~ m{ :: new \z }mx and $self->isa( $package ) and $found_mark++;
+      $found_mark++ if $subr =~ m{ :: new \z }mx && $self->isa($package);
       return 0;
    }
 }
@@ -185,7 +216,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2017 Peter Flanigan. All rights reserved
+Copyright (c) 2021 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

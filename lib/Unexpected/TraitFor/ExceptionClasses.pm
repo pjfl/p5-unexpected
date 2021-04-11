@@ -3,30 +3,45 @@ package Unexpected::TraitFor::ExceptionClasses;
 use namespace::autoclean;
 
 use Unexpected::Functions qw( inflate_message );
+use Ref::Util             qw( is_arrayref is_coderef is_hashref );
 use Moo::Role;
 
-my $ROOT = 'Unexpected'; my $Classes = { $ROOT => {} };
+my $root    = 'Unexpected';
+my $classes = { $root => {} };
 
-__PACKAGE__->add_exception( 'Unspecified' => {
-   parents => $ROOT, error => 'Parameter [_1] not specified' } );
+__PACKAGE__->add_exception('Unspecified' => {
+  error => 'Parameter [_1] not specified', parents => $root,
+});
 
 # Public attributes
-has 'class' => is => 'ro', isa => sub {
-   ($_[ 0 ] and exists $Classes->{ $_[ 0 ] }) or die inflate_message
-      ( 'Exception class [_1] does not exist', $_[ 0 ] ) }, default => $ROOT;
+has 'class' =>
+   is      => 'ro',
+   isa     => sub {
+      my $self = shift;
+
+      die inflate_message 'Exception class [_1] does not exist', $self
+         unless $self && exists $classes->{$self};
+   },
+   default => $root;
 
 # Construction
 around 'BUILDARGS' => sub {
-   my ($orig, $self, @args) = @_; my $attr = $orig->( $self, @args ); my $class;
+   my ($orig, $self, @args) = @_;
 
-   (exists $attr->{class} and $class = $attr->{class}) or return $attr;
+   my $attr = $orig->($self, @args);
 
-   ref $class eq 'CODE' and $class = $attr->{class} = $class->();
+   my $class;
 
-   $self->is_exception( $class ) or return $attr;
+   if (exists $attr->{class}) {
+      return $attr unless $class = $attr->{class};
+   }
 
-   for my $k (grep { ! m{ \A parents \z }mx } keys %{ $Classes->{ $class } }) {
-      $attr->{ $k } //= $Classes->{ $class }->{ $k };
+   $class = $attr->{class} = $class->() if is_coderef $class;
+
+   return $attr unless $self->is_exception($class);
+
+   for my $k (grep { ! m{ \A parents \z }mx } keys %{$classes->{$class}}) {
+      $attr->{$k} //= $classes->{$class}->{$k};
    }
 
    return $attr;
@@ -34,47 +49,53 @@ around 'BUILDARGS' => sub {
 
 # Public class methods
 sub add_exception {
-   my ($self, $class, $args) = @_; $args //= {};
+   my ($self, $class, $args) = @_;
 
-   defined $class or die "Parameter 'exception class' not specified";
+   $args //= {};
 
-   exists $Classes->{ $class }
-      and die "Exception class ${class} already exists";
+   die "Parameter 'exception class' not specified" unless defined $class;
 
-   ref $args ne 'HASH' and $args = { parents => $args };
+   die "Exception class ${class} already exists" if exists $classes->{$class};
 
-   my $parents = $args->{parents} //= [ $ROOT ];
+   $args = { parents => $args } unless is_hashref $args;
 
-   ref $parents ne 'ARRAY' and $parents = $args->{parents} = [ $parents ];
+   my $parents = $args->{parents} //= [$root];
 
-   for my $parent (@{ $parents }) {
-      exists $Classes->{ $parent } or die
-         "Exception class ${class} parent class ${parent} does not exist";
+   $parents = $args->{parents} = [$parents] unless is_arrayref $parents;
+
+   for my $parent (@{$parents}) {
+      die "Exception class ${class} parent class ${parent} does not exist"
+         unless exists $classes->{$parent};
    }
 
-   $Classes->{ $class } = $args;
+   $classes->{$class} = $args;
    return;
 }
 
 sub is_exception {
-   return $_[ 1 ] && !ref $_[ 1 ] && exists $Classes->{ $_[ 1 ] } ? 1 : 0;
+   my ($self, $class) = @_;
+
+   return $class && !ref $class && exists $classes->{$class} ? 1 : 0;
 }
 
 # Public object methods
 sub instance_of {
-   my ($self, $wanted) = @_; $wanted or return 0;
+   my ($self, $wanted) = @_;
 
-   ref $wanted eq 'CODE' and $wanted = $wanted->();
+   return 0 unless $wanted;
 
-   exists $Classes->{ $wanted }
-      or die "Exception class ${wanted} does not exist";
+   $wanted = $wanted->() if is_coderef $wanted;
 
-   my @classes = ( $self->class );
+   die "Exception class ${wanted} does not exist"
+      unless exists $classes->{$wanted};
 
-   while (defined (my $class = shift @classes)) {
-      $class eq $wanted and return 1;
-      exists $Classes->{ $class }->{parents}
-         and push @classes, @{ $Classes->{ $class }->{parents} };
+   my @isa = ($self->class);
+
+   while (defined (my $class = shift @isa)) {
+      return 1 if $class eq $wanted;
+
+      push @isa, @{$classes->{$class}->{parents}}
+         if exists $classes->{$class}->{parents};
    }
 
    return 0;
@@ -219,7 +240,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2017 Peter Flanigan. All rights reserved
+Copyright (c) 2021 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

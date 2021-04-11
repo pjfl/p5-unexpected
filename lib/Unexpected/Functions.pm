@@ -6,6 +6,7 @@ use parent 'Exporter::Tiny';
 
 use Carp         qw( croak );
 use Package::Stash;
+use Ref::Util    qw( is_arrayref is_coderef is_hashref );
 use Scalar::Util qw( blessed reftype );
 use Sub::Install qw( install_sub );
 
@@ -13,88 +14,22 @@ our @EXPORT_OK = qw( catch_class exception has_exception
                      inflate_message inflate_placeholders is_class_loaded
                      is_one_of_us parse_arg_list throw throw_on_error );
 
-my $Exception_Class = 'Unexpected'; my $Should_Quote = 1;
-
-# Private functions
-my $_catch = sub {
-   my $block = shift; return ((bless \$block, 'Try::Tiny::Catch'), @_);
-};
-
-my $_clone_one_of_us = sub {
-   return $_[ 1 ] ? { %{ $_[ 0 ] }, %{ $_[ 1 ] } } : { error => $_[ 0 ] };
-};
-
-my $_dereference_code = sub {
-   my ($code, @args) = @_;
-
-   $args[ 0 ] and ref $args[ 0 ] eq 'ARRAY' and unshift @args, 'args';
-
-   return { class => $code->(), @args };
-};
-
-my $_exception_class_cache = {};
-
-my $_exception_class = sub {
-   my $caller = shift;
-
-   exists $_exception_class_cache->{ $caller }
-      and defined $_exception_class_cache->{ $caller }
-      and return  $_exception_class_cache->{ $caller };
-
-   my $code  = $caller->can( 'EXCEPTION_CLASS' );
-   my $class = $code ? $code->() : $Exception_Class;
-
-   return $_exception_class_cache->{ $caller } = $class;
-};
-
-my $_match_class = sub {
-   my ($e, $ref, $blessed, $does, $key) = @_;
-
-   return !defined $key                        ? !defined $e
-        : $key eq '*'                          ? 1
-        : $key eq ':str'                       ? !$ref
-        : $key eq $ref                         ? 1
-        : $blessed && $e->can( 'instance_of' ) ? $e->instance_of( $key )
-        : $blessed && $e->$does( $key )        ? 1
-                                               : 0;
-};
-
-my $_quote_maybe = sub {
-   return $Should_Quote ? "'".$_[ 0 ]."'" : $_[ 0 ];
-};
-
-my $_gen_checker = sub {
-   my @prototable = @_;
-
-   return sub {
-      my $e       = shift;
-      my $ref     = ref $e;
-      my $blessed = blessed $e;
-      my $does    = ($blessed && $e->can( 'DOES' )) || 'isa';
-      my @table   = @prototable;
-
-      while (my ($key, $value) = splice @table, 0, 2) {
-         $_match_class->( $e, $ref, $blessed, $does, $key ) and return $value
-      }
-
-      return;
-   }
-};
+my $exception_class = 'Unexpected';
 
 # Package methods
 sub import {
    my $class       = shift;
-   my $global_opts = { $_[ 0 ] && ref $_[ 0 ] eq 'HASH' ? %{+ shift } : () };
+   my $global_opts = { $_[0] && is_hashref $_[0] ? %{+ shift } : () };
    my $ex_class    = delete $global_opts->{exception_class};
    # uncoverable condition false
    my $target      = $global_opts->{into} //= caller;
    my @want        = @_;
    my @args        = ();
 
-   $ex_class or $ex_class = $_exception_class->( $target );
+   $ex_class = _exception_class($target) unless $ex_class;
 
    for my $sym (@want) {
-      if ($ex_class->can( 'is_exception' ) and $ex_class->is_exception( $sym )){
+      if ($ex_class->can('is_exception') && $ex_class->is_exception($sym)) {
          my $code = sub { sub { $sym } };
 
          install_sub { as => $sym, code => $code, into => $target, };
@@ -102,94 +37,176 @@ sub import {
       else { push @args, $sym }
    }
 
-   $class->SUPER::import( $global_opts, @args );
+   $class->SUPER::import($global_opts, @args);
    return;
 }
 
+my $should_quote = 1;
+
 sub quote_bind_values { # Deprecated. Use third arg in inflate_placeholders defs
-   defined $_[ 1 ] and $Should_Quote = !!$_[ 1 ]; return $Should_Quote;
+   my ($class, $flag) = @_;
+
+   $should_quote = !!$flag if defined $flag;
+
+   return $should_quote;
 }
 
 # Public functions
 sub parse_arg_list (;@) { # Coerce a hash ref from whatever was passed
    my $n = 0; $n++ while (defined $_[ $n ]);
 
-   return (                $n == 0) ? {}
-        : (is_one_of_us( $_[ 0 ] )) ? $_clone_one_of_us->( @_ )
-        : ( ref $_[ 0 ] eq  'CODE') ? $_dereference_code->( @_ )
-        : ( ref $_[ 0 ] eq  'HASH') ? { %{ $_[ 0 ] } }
-        : (                $n == 1) ? { error => $_[ 0 ] }
-        : ( ref $_[ 1 ] eq 'ARRAY') ? { error => (shift), args => @_ }
-        : ( ref $_[ 1 ] eq  'HASH') ? { error => $_[ 0 ], %{ $_[ 1 ] } }
-        : (            $n % 2 == 1) ? { error => @_ }
-                                    : { @_ };
+   return (            $n == 0) ? {}
+        : (is_one_of_us($_[0])) ? _clone_one_of_us(@_)
+        : (   is_coderef $_[0]) ? _dereference_code(@_)
+        : (   is_hashref $_[0]) ? { %{$_[0]} }
+        : (            $n == 1) ? { error => $_[0] }
+        : (  is_arrayref $_[1]) ? { error => (shift), args => @_ }
+        : (   is_hashref $_[1]) ? { error => $_[0], %{ $_[1] } }
+        : (        $n % 2 == 1) ? { error => @_ }
+                                : { @_ };
 }
 
 sub catch_class ($@) {
-   my $check = $_gen_checker->( @{+ shift }, '*' => sub { die $_[ 0 ] } );
+   my $check = _gen_checker( @{+ shift }, '*' => sub { die $_[0] } );
 
-   wantarray or croak 'Useless bare catch_class()';
+   croak 'Useless bare catch_class()' unless wantarray;
 
-   return $_catch->( sub { ($check->( $_[ 0 ] ) || return)->( $_[ 0 ] ) }, @_ );
+   return _catch(sub { ($check->($_[0]) || return)->($_[0]) }, @_);
 }
 
 sub exception (;@) {
-   return $_exception_class->( caller )->caught( @_ );
+   return _exception_class->(caller)->caught(@_);
 }
 
 sub has_exception ($;@) {
-   my ($name, %args) = @_; my $exception_class = caller;
+   my ($name, %args) = @_;
 
-   return $exception_class->add_exception( $name, \%args );
+   my $caller = caller;
+
+   return $caller->add_exception($name, \%args);
 }
 
 sub inflate_message ($;@) { # Expand positional parameters of the form [_<n>]
-   return inflate_placeholders( [ '[?]', '[]' ], @_ );
+   return inflate_placeholders([ '[?]', '[]' ], @_);
 }
 
 sub inflate_placeholders ($;@) { # Sub visible strings for null and undef
    my $defaults = shift;
    my $msg      = shift;
-   my @vals     = map { $defaults->[ 2 ] ? $_ : $_quote_maybe->( $_ ) }
+   my @vals     = map { $defaults->[2] ? $_ : _quote_maybe($_) }
                   # uncoverable condition false
-                  map { (length) ? $_ :  $defaults->[ 1 ] }
-                  map {            $_ // $defaults->[ 0 ] } @_,
-                  map {                  $defaults->[ 0 ] } 0 .. 9;
+                  map { (length) ? $_ :  $defaults->[1] }
+                  map {            $_ // $defaults->[0] } @_,
+                  map {                  $defaults->[0] } 0 .. 9;
 
    $msg =~ s{ \[ _ (\d+) \] }{$vals[ $1 - 1 ]}gmx;
    return $msg;
 }
 
 sub is_class_loaded ($) { # Lifted from Class::Load
-   my $class = shift; my $stash = Package::Stash->new( $class );
+   my $class = shift;
+   my $stash = Package::Stash->new($class);
 
-   if ($stash->has_symbol( '$VERSION' )) {
-      my $version = ${ $stash->get_symbol( '$VERSION' ) };
+   if ($stash->has_symbol('$VERSION')) {
+      my $version = ${$stash->get_symbol('$VERSION')};
 
       if (defined $version) {
-         not ref $version and return 1;
+         return 1 if not ref $version;
          # Sometimes $VERSION ends up as a reference to undef (weird)
-         reftype $version eq 'SCALAR' and defined ${ $version } and return 1;
-         blessed $version and return 1; # A version object
+         return 1 if reftype $version eq 'SCALAR' and defined ${$version};
+
+         return 1 if blessed $version; # A version object
       }
    }
 
-   $stash->has_symbol( '@ISA' ) and @{ $stash->get_symbol( '@ISA' ) }
-      and return 1;
+   return 1 if $stash->has_symbol('@ISA') && @{$stash->get_symbol('@ISA')};
+
    # Check for any method
-   return $stash->list_all_symbols( 'CODE' ) ? 1 : 0;
+   return $stash->list_all_symbols('CODE') ? 1 : 0;
 }
 
 sub is_one_of_us ($) {
-   return $_[ 0 ] && (blessed $_[ 0 ]) && $_[ 0 ]->isa( $Exception_Class );
+   my $x = shift;
+
+   return $x && (blessed $x) && $x->isa($exception_class) ? 1 : 0;
 }
 
 sub throw (;@) {
-   $_exception_class->( caller )->throw( @_ );
+   _exception_class(caller)->throw(@_);
 }
 
 sub throw_on_error (;@) {
-   return $_exception_class->( caller )->throw_on_error( @_ );
+   return _exception_class(caller)->throw_on_error(@_);
+}
+
+# Private functions
+sub _catch {
+   my ($block, @args) = @_;
+
+   return ((bless \$block, 'Try::Tiny::Catch'), @args);
+}
+
+sub _clone_one_of_us {
+   my ($self, $args) = @_;
+
+   return $args ? { %{$self}, %{$args}} : { error => $self };
+}
+
+sub _dereference_code {
+   my ($code, @args) = @_;
+
+   unshift @args, 'args' if $args[0] and is_arrayref $args[0];
+
+   return { class => $code->(), @args };
+}
+
+my $exception_class_cache = {};
+
+sub _exception_class {
+   my $caller = shift;
+
+   return $exception_class_cache->{$caller}
+      if exists $exception_class_cache->{$caller}
+      && defined $exception_class_cache->{$caller};
+
+   my $code  = $caller->can('EXCEPTION_CLASS');
+   my $class = $code ? $code->() : $exception_class;
+
+   return $exception_class_cache->{$caller} = $class;
+}
+
+sub _gen_checker {
+   my @proto_table = @_;
+
+   return sub {
+      my $e       = shift;
+      my $ref     = ref $e;
+      my $blessed = blessed $e;
+      my $does    = ($blessed && $e->can('DOES')) || 'isa';
+      my @table   = @proto_table;
+
+      while (my ($key, $value) = splice @table, 0, 2) {
+         return $value if _match_class($e, $ref, $blessed, $does, $key);
+      }
+
+      return;
+   }
+}
+
+sub _match_class {
+   my ($e, $ref, $blessed, $does, $key) = @_;
+
+   return !defined $key                      ? !defined $e
+        : $key eq '*'                        ? 1
+        : $key eq ':str'                     ? !$ref
+        : $key eq $ref                       ? 1
+        : $blessed && $e->can('instance_of') ? $e->instance_of($key)
+        : $blessed && $e->$does($key)        ? 1
+                                             : 0;
+}
+
+sub _quote_maybe {
+   return $should_quote ? "'".$_[0]."'" : $_[0];
 }
 
 1;
@@ -398,7 +415,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2017 Peter Flanigan. All rights reserved
+Copyright (c) 2021 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

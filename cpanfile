@@ -3,6 +3,7 @@ requires "Exporter::Tiny" => "0.042";
 requires "Module::Runtime" => "0.014";
 requires "Moo" => "2.000001";
 requires "Package::Stash" => "0.37";
+requires "Ref::Util" => "0.203";
 requires "Sub::Install" => "0.928";
 requires "Type::Tiny" => "1.000002";
 requires "namespace::autoclean" => "0.26";

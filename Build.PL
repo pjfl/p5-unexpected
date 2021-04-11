@@ -20,6 +20,7 @@ my $prereqs  = {
     'Module::Runtime' => '0.014',
     'Moo' => '2.000001',
     'Package::Stash' => '0.37',
+    'Ref::Util' => '0.203',
     'Sub::Install' => '0.928',
     'Type::Tiny' => '1.000002',
     'namespace::autoclean' => '0.26',

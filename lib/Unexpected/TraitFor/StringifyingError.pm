@@ -4,6 +4,7 @@ use namespace::autoclean;
 
 use Unexpected::Functions qw( inflate_placeholders parse_arg_list );
 use Unexpected::Types     qw( ArrayRef Bool Str );
+use Ref::Util             qw( is_coderef );
 use Moo::Role;
 
 requires qw( BUILD );
@@ -17,13 +18,20 @@ has 'no_quote_bind_values' => is => 'ro', isa => Bool, default => 0;
 
 # Construction
 around 'BUILDARGS' => sub {
-   my ($orig, $self, @args) = @_; my $attr = parse_arg_list( @args );
+   my ($orig, $self, @args) = @_;
 
-   my $e = delete $attr->{error};
+   my $attr = parse_arg_list @args;
+   my $e    = delete $attr->{error};
 
-   $e and ref $e eq 'CODE' and $e = $e->( $self, $attr );
-   $e and $e .= q() and chomp $e;
-   $e and $attr->{error} = $e;
+   $e = $e->($self, $attr) if $e && is_coderef $e;
+
+   if ($e) {
+      $e .= q();
+      chomp $e;
+   }
+
+   $attr->{error} = $e if $e;
+
    return $attr;
 };
 
@@ -33,7 +41,11 @@ after 'BUILD' => sub {
    # uses overload string. Moose class inherits from Moose class which
    # has consumed a ::Role::WithOverloading works. Moo inherits from
    # Moo also works
-   my $self = shift; $self->as_string; return;
+   my $self = shift;
+
+   $self->as_string;
+
+   return;
 };
 
 # Public methods
@@ -42,13 +54,14 @@ sub as_boolean {
 }
 
 sub as_string { # Stringifies the error and inflates the placeholders
-   my $self = shift; my $e = $self->error;
+   my $self = shift;
+   my $e    = $self->error;
 
-   0 > index $e, '[_' and return "${e}\n";
+   return "${e}\n" if 0 > index $e, '[_';
 
    my $opts = [ '[?]', '[]', $self->no_quote_bind_values ];
 
-   return inflate_placeholders( $opts, $e, @{ $self->args } )."\n";
+   return inflate_placeholders($opts, $e, @{$self->args})."\n";
 }
 
 1;
@@ -157,7 +170,7 @@ Peter Flanigan C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2017 Peter Flanigan. All rights reserved
+Copyright (c) 2021 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>

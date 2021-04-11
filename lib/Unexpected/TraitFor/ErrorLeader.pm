@@ -2,63 +2,74 @@ package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::autoclean;
 
-use List::Util        qw( first );
 use Unexpected::Types qw( NonZeroPositiveInt SimpleStr );
+use List::Util        qw( first );
 use Moo::Role;
 
-requires qw( as_string clone frames );
+requires qw(as_string clone frames);
 
-my $Ignore = [ 'Try::Tiny' ];
-
-# Private functions
-my $_is_member = sub {
-   my $wanted = shift; return (first { $_ eq $wanted } @{ $_[ 0 ] }) ? 1 : 0;
-};
-
-my $_build_leader = sub {
-   my $self = shift; my $level = $self->level; my $leader = q();
-
-   my @frames = $self->frames; my ($line, $package);
-
-   $level >= scalar @frames and $level = scalar @frames - 1;
-
-   do {
-      # uncoverable condition right
-      if ($frames[ $level ] and $package = $frames[ $level ]->package) {
-         $line    = $frames[ $level ]->line;
-         $leader  = $package; $leader =~ s{ :: }{-}gmx;
-         $leader .= "[${line}/${level}]: "; $level++;
-      }
-      else { $leader = $package = q() }
-   }
-   while ($package and $_is_member->( $package, $self->ignore ));
-
-   return $leader;
-};
+my $ignore = ['Try::Tiny'];
 
 # Object attributes (public)
-has 'leader' => is => 'lazy', isa => SimpleStr, builder => $_build_leader;
+has 'leader' => is => 'lazy', isa => SimpleStr, builder => '_build_leader';
 
 has 'level'  => is => 'ro',   isa => NonZeroPositiveInt, default => 1;
 
 # Construction
 around 'as_string' => sub {
-   my ($orig, $self, @args) = @_; my $str = $orig->( $self, @args );
+   my ($orig, $self, @args) = @_;
+
+   my $str = $orig->($self, @args);
 
    return $str ? $self->leader.$str : $str;
 };
 
 before 'clone' => sub {
-   my $self = shift; $self->leader; return;
+   my $self = shift;
+
+   $self->leader;
+   return;
 };
 
 # Public methods
 sub ignore {
-   return $Ignore;
+   return $ignore;
 }
 
 sub ignore_class {
-   shift; return push @{ $Ignore }, @_;
+   shift; return push @{$ignore}, @_;
+}
+
+# Private methods
+sub _build_leader {
+   my $self   = shift;
+   my @frames = $self->frames;
+   my $leader = q();
+   my $level  = $self->level;
+   my ($line, $package);
+
+   $level = scalar @frames - 1 if $level >= scalar @frames;
+
+   do {
+      # uncoverable condition right
+      if ($frames[$level] and $package = $frames[$level]->package) {
+         $line    = $frames[$level]->line;
+         $leader  = $package; $leader =~ s{ :: }{-}gmx;
+         $leader .= "[${line}/${level}]: ";
+         $level++;
+      }
+      else { $leader = $package = q() }
+   }
+   while ($package and _is_member($package, $self->ignore));
+
+   return $leader;
+}
+
+# Private functions
+sub _is_member {
+   my ($wanted, $list) = @_;
+
+   return (first { $_ eq $wanted } @{ $list }) ? 1 : 0;
 }
 
 1;
@@ -115,16 +126,16 @@ attribute to the return value
 
    $array_ref = $self->ignore;
 
-Read only accessor for the C<$Ignore> package scoped
-variable. Defaults to an empty array ref
+Read only accessor for the package scoped variable. Defaults to an empty array
+reference
 
 =head2 ignore_class
 
    Unexpected->ignore_class( $classname );
 
-The C<$Ignore> package scoped variable is an array ref of methods
-whose presence should be ignored by the error message leader. This
-method pushes C<$classname> onto that array ref
+The C<ignore> package scoped variable is an array reference of methods whose
+presence should be ignored by the error message leader. This method pushes
+C<$classname> onto that array ref
 
 =head1 Diagnostics
 
@@ -162,7 +173,7 @@ Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 License and Copyright
 
-Copyright (c) 2017 Peter Flanigan. All rights reserved
+Copyright (c) 2021 Peter Flanigan. All rights reserved
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. See L<perlartistic>
