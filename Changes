@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Removed Perl v5.10 from Travis config
           - Refactored coding style
 
 1.0.1     2017-07-31 22:45:46
