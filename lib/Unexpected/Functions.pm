@@ -6,7 +6,7 @@ use parent 'Exporter::Tiny';
 
 use Carp         qw( croak );
 use Package::Stash;
-use Ref::Util    qw( is_arrayref is_coderef is_hashref );
+use Ref::Util    qw( is_arrayref is_coderef is_plain_hashref);
 use Scalar::Util qw( blessed reftype );
 use Sub::Install qw( install_sub );
 
@@ -19,7 +19,7 @@ my $exception_class = 'Unexpected';
 # Package methods
 sub import {
    my $class       = shift;
-   my $global_opts = { $_[0] && is_hashref $_[0] ? %{+ shift } : () };
+   my $global_opts = { $_[0] && is_plain_hashref $_[0] ? %{+ shift } : () };
    my $ex_class    = delete $global_opts->{exception_class};
    # uncoverable condition false
    my $target      = $global_opts->{into} //= caller;
@@ -55,15 +55,15 @@ sub quote_bind_values { # Deprecated. Use third arg in inflate_placeholders defs
 sub parse_arg_list (;@) { # Coerce a hash ref from whatever was passed
    my $n = 0; $n++ while (defined $_[ $n ]);
 
-   return (            $n == 0) ? {}
-        : (is_one_of_us($_[0])) ? _clone_one_of_us(@_)
-        : (   is_coderef $_[0]) ? _dereference_code(@_)
-        : (   is_hashref $_[0]) ? { %{$_[0]} }
-        : (            $n == 1) ? { error => $_[0] }
-        : (  is_arrayref $_[1]) ? { error => (shift), args => @_ }
-        : (   is_hashref $_[1]) ? { error => $_[0], %{ $_[1] } }
-        : (        $n % 2 == 1) ? { error => @_ }
-                                : { @_ };
+   return (               $n == 0) ? {}
+        : (   is_one_of_us($_[0])) ? _clone_one_of_us(@_)
+        : (      is_coderef $_[0]) ? _dereference_code(@_)
+        : (is_plain_hashref $_[0]) ? { %{$_[0]} }
+        : (               $n == 1) ? { error => "$_[0]" }
+        : (     is_arrayref $_[1]) ? { error => (shift), args => @_ }
+        : (is_plain_hashref $_[1]) ? { error => "$_[0]", %{ $_[1] } }
+        : (           $n % 2 == 1) ? { error => @_ }
+                                   : { @_ };
 }
 
 sub catch_class ($@) {
@@ -155,7 +155,8 @@ sub _clone_one_of_us {
 sub _dereference_code {
    my ($code, @args) = @_;
 
-   unshift @args, 'args' if $args[0] and is_arrayref $args[0];
+   unshift @args, 'args' if $args[0] && is_arrayref $args[0];
+   @args = %{$args[0]}   if $args[0] && is_plain_hashref $args[0];
 
    return { class => $code->(), @args };
 }

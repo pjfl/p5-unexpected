@@ -1,5 +1,7 @@
 Revision history for Unexpected
 
+          - Added original to object in ErrorLeader
+          - Fixed blessed hashref bug in signature parser
           - Removed Perl v5.10 from Travis config
           - Refactored coding style
 

@@ -40,7 +40,7 @@ sub caught {
    my $attr  = parse_arg_list @args;
    my $error = $attr->{error} ||= $EVAL_ERROR;
 
-   return unless $error;
+   return unless $error || $attr->{class};
 
    return is_one_of_us($error) ? $error : $self->new($attr);
 }
