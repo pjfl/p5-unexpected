@@ -2,7 +2,7 @@ package Unexpected::TraitFor::ErrorLeader;
 
 use namespace::autoclean;
 
-use Unexpected::Types qw( NonZeroPositiveInt SimpleStr );
+use Unexpected::Types qw( NonZeroPositiveInt SimpleStr Str );
 use List::Util        qw( first );
 use Moo::Role;
 
@@ -15,14 +15,14 @@ has 'leader' => is => 'lazy', isa => SimpleStr, builder => '_build_leader';
 
 has 'level'  => is => 'ro',   isa => NonZeroPositiveInt, default => 1;
 
-has 'original' => is => 'rwp', isa => SimpleStr;
+has 'original' => is => 'rwp', isa => Str;
 
 # Construction
 around 'as_string' => sub {
    my ($orig, $self, @args) = @_;
 
    my $str = $orig->($self, @args);
-   my $original = $str; chomp $original; $self->_set_original($original);
+   my $original = "${str}"; chomp $original; $self->_set_original($original);
 
    return $str ? $self->leader.$str : $str;
 };
