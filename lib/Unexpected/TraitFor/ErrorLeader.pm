@@ -119,27 +119,37 @@ Set to the package and line number where the error should be reported
 A positive integer which defaults to one. How many additional stack frames
 to pop before calculating the C<leader> attribute
 
+=item C<original>
+
+The original error message without the leader prepended
+
 =back
+
+=head1 Subroutines/Methods
+
+=over 3
+
+=item as_string
 
 Modifies C<as_string> in the consuming class. Prepends the C<leader>
 attribute to the return value
 
-=head1 Subroutines/Methods
-
-=head2 ignore
+=item ignore
 
    $array_ref = $self->ignore;
 
 Read only accessor for the package scoped variable. Defaults to an empty array
 reference
 
-=head2 ignore_class
+=item ignore_class
 
    Unexpected->ignore_class( $classname );
 
 The C<ignore> package scoped variable is an array reference of methods whose
 presence should be ignored by the error message leader. This method pushes
 C<$classname> onto that array ref
+
+=back
 
 =head1 Diagnostics
 

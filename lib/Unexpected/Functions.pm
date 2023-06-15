@@ -6,7 +6,7 @@ use parent 'Exporter::Tiny';
 
 use Carp         qw( croak );
 use Package::Stash;
-use Ref::Util    qw( is_arrayref is_coderef is_plain_hashref);
+use Ref::Util    qw( is_arrayref is_coderef is_hashref is_plain_hashref);
 use Scalar::Util qw( blessed reftype );
 use Sub::Install qw( install_sub );
 
@@ -58,11 +58,11 @@ sub parse_arg_list (;@) { # Coerce a hash ref from whatever was passed
    return (               $n == 0) ? {}
         : (   is_one_of_us($_[0])) ? _clone_one_of_us(@_)
         : (      is_coderef $_[0]) ? _dereference_code(@_)
-        : (is_plain_hashref $_[0]) ? { %{$_[0]} }
+        : (      is_hashref $_[0]) ? { %{$_[0]} }
         : (               $n == 1) ? { error => "$_[0]" }
         : (     is_arrayref $_[1]) ? { error => (shift), args => @_ }
         : (is_plain_hashref $_[1]) ? { error => "$_[0]", %{ $_[1] } }
-        : (           $n % 2 == 1) ? { error => @_ }
+        : (           $n % 2 == 1) ? { error => (shift), @_ }
                                    : { @_ };
 }
 

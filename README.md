@@ -50,7 +50,7 @@ Unexpected - Localised exception classes composed from roles
 # Description
 
 An exception class that supports error messages with placeholders, a
-[throw](https://metacpan.org/pod/Unexpected::TraitFor::Throwing#throw) method with automatic
+[throw](https://metacpan.org/pod/Unexpected%3A%3ATraitFor%3A%3AThrowing#throw) method with automatic
 re-throw upon detection of self, conditional throw if an exception was
 caught and a simplified stack trace in addition to the error message
 with full stack trace
@@ -61,10 +61,10 @@ Applies exception roles to the exception base class [Unexpected](https://metacpa
 ["Dependencies"](#dependencies) for the list of roles that are applied
 
 The list of signatures recognised by the constructor method is implemented by
-the [signature parser](https://metacpan.org/pod/Unexpected::Functions#parse_arg_list)
+the [signature parser](https://metacpan.org/pod/Unexpected%3A%3AFunctions#parse_arg_list)
 
 Error objects are overloaded to stringify to the full error message plus a
-leader if the optional [Unexpected::TraitFor::ErrorLeader](https://metacpan.org/pod/Unexpected::TraitFor::ErrorLeader) role has been
+leader if the optional [Unexpected::TraitFor::ErrorLeader](https://metacpan.org/pod/Unexpected%3A%3ATraitFor%3A%3AErrorLeader) role has been
 applied
 
 # Subroutines/Methods
@@ -80,17 +80,17 @@ Differentiates different constructor method signatures
 # Diagnostics
 
 String overload is performed in this class as opposed to the stringify
-error role since overloading is not supported in [Moo::Role](https://metacpan.org/pod/Moo::Role)
+error role since overloading is not supported in [Moo::Role](https://metacpan.org/pod/Moo%3A%3ARole)
 
 # Dependencies
 
-- [namespace::autoclean](https://metacpan.org/pod/namespace::autoclean)
+- [namespace::autoclean](https://metacpan.org/pod/namespace%3A%3Aautoclean)
 - [overload](https://metacpan.org/pod/overload)
 - [Moo](https://metacpan.org/pod/Moo)
-- [Unexpected::TraitFor::ExceptionClasses](https://metacpan.org/pod/Unexpected::TraitFor::ExceptionClasses)
-- [Unexpected::TraitFor::StringifyingError](https://metacpan.org/pod/Unexpected::TraitFor::StringifyingError)
-- [Unexpected::TraitFor::Throwing](https://metacpan.org/pod/Unexpected::TraitFor::Throwing)
-- [Unexpected::TraitFor::TracingStacks](https://metacpan.org/pod/Unexpected::TraitFor::TracingStacks)
+- [Unexpected::TraitFor::ExceptionClasses](https://metacpan.org/pod/Unexpected%3A%3ATraitFor%3A%3AExceptionClasses)
+- [Unexpected::TraitFor::StringifyingError](https://metacpan.org/pod/Unexpected%3A%3ATraitFor%3A%3AStringifyingError)
+- [Unexpected::TraitFor::Throwing](https://metacpan.org/pod/Unexpected%3A%3ATraitFor%3A%3AThrowing)
+- [Unexpected::TraitFor::TracingStacks](https://metacpan.org/pod/Unexpected%3A%3ATraitFor%3A%3ATracingStacks)
 
 # Incompatibilities
 
@@ -110,7 +110,7 @@ are welcome
 
 Larry Wall - For the Perl programming language
 
-[Throwable::Error](https://metacpan.org/pod/Throwable::Error) - Lifted the stack frame filter from here
+[Throwable::Error](https://metacpan.org/pod/Throwable%3A%3AError) - Lifted the stack frame filter from here
 
 John Sargent - Came up with the package name
 
