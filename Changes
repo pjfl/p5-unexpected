@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Better signature parser detection of foreign exception objects
           - Fixed failing test
           - Added original to object in ErrorLeader
           - Fixed blessed hashref bug in signature parser

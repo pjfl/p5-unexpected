@@ -58,7 +58,8 @@ sub parse_arg_list (;@) { # Coerce a hash ref from whatever was passed
    return (               $n == 0) ? {}
         : (   is_one_of_us($_[0])) ? _clone_one_of_us(@_)
         : (      is_coderef $_[0]) ? _dereference_code(@_)
-        : (      is_hashref $_[0]) ? { %{$_[0]} }
+        : (is_plain_hashref $_[0]) ? { %{$_[0]} }
+        : (is_error_object($_[0])) ? { error => $_[0]->{error}, %{ $_[1] // {}}}
         : (               $n == 1) ? { error => "$_[0]" }
         : (     is_arrayref $_[1]) ? { error => (shift), args => @_ }
         : (is_plain_hashref $_[1]) ? { error => "$_[0]", %{ $_[1] } }
@@ -123,6 +124,12 @@ sub is_class_loaded ($) { # Lifted from Class::Load
 
    # Check for any method
    return $stash->list_all_symbols('CODE') ? 1 : 0;
+}
+
+sub is_error_object ($) {
+   my $x = shift;
+
+   return $x && (blessed $x) && exists $x->{error} ? 1 : 0;
 }
 
 sub is_one_of_us ($) {
