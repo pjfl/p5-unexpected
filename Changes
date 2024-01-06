@@ -1,5 +1,6 @@
 Revision history for Unexpected
 
+          - Better error object testing in signature parser
           - Better signature parser detection of foreign exception objects
           - Fixed failing test
           - Added original to object in ErrorLeader

@@ -129,7 +129,11 @@ sub is_class_loaded ($) { # Lifted from Class::Load
 sub is_error_object ($) {
    my $x = shift;
 
-   return $x && (blessed $x) && exists $x->{error} ? 1 : 0;
+   return 0 unless $x && blessed $x;
+
+   return 1 if is_hashref $x && exists $x->{error};
+
+   return 0;
 }
 
 sub is_one_of_us ($) {
